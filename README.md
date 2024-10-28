@@ -47,9 +47,21 @@ The core of the application consists of a **TimeManagerBot** which helps in trac
 
 ```bash
 .
+├── DB
+│   └── menu.json
 ├── LOGS
 │   └── YYYY-MM-DD
-│       └── APP
+│       └── BASE-APP
+│           ├── BACK
+│           │   └── self-manager-backend_YYYY-MM-DD_HH-MM-SS.log
+│           ├── DB
+│           │   └── self-manager-database_YYYY-MM-DD_HH-MM-SS.log
+│           ├── DRIVER
+│           │   └── self-manager-driver_YYYY-MM-DD_HH-MM-SS.log
+│           ├── FRONT
+│           │   └── self-manager-frontend_YYYY-MM-DD_HH-MM-SS.log
+│           └── GENERAL
+│               └── self-manager-general_YYYY-MM-DD_HH-MM-SS.log
 ├── mvnw
 ├── pom.xml
 ├── src
