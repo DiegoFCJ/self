@@ -165,7 +165,10 @@ If you'd like to contribute to this project:
 5. Create a Pull Request
 
 ---
+## 🗂️ Project overview
+![alt text](image.png)
 
+---
 ## 📄 License
 
 This project is licensed under the **MIT License**. See [LICENSE](LICENSE) for more details.
