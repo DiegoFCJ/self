@@ -1,6 +1,8 @@
-# ✨ SELF - Self Management dfcj Project
+<div align="left" style="display: flex; align-items: center;">
+    <img src="app-icon.png" alt="Self Project Icon" width="30" height="30" style="margin-right: 10px;">
+    <h1 style="margin: 0; display: inline; vertical-align: middle;"> SELF - Self Management dfcj Project</h1>
+</div>
 
-![Self Project](app-icon.png)
 
 Welcome to the **Self Project**, a personal management tool built using Java, Spring Boot, and various popular frameworks and libraries. This project is designed for self-management tasks, including time management automation through bots. 
 
