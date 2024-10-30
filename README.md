@@ -1,6 +1,6 @@
 <div align="left" style="display: flex; align-items: center;">
     <img src="app-icon.png" alt="Self Project Icon" width="30" height="30" style="margin-right: 10px;">
-    <h1 style="margin: 0; display: inline; vertical-align: middle;"> SELF - Self Management dfcj Project</h1>
+    <h1 style="margin: 0; display: inline; vertical-align: middle;"> SELF - DFCJ Project</h1>
 </div>
 
 
