@@ -1,5 +1,5 @@
 .head-btn {
-    -fx-background-color: #1e1e1e;
+    -fx-background-color: none;
     -fx-padding: 4px 0 0 0;
 
     background-color: #1e1e1e;
@@ -18,12 +18,12 @@
 
 
 .menu-btn {
-    -fx-text-fill: white;
+    /* -fx-text-fill: white; */
     -fx-pref-width: 250px;
     -fx-pref-height: 60px;
-    -fx-background-radius: 5px;
+    /* -fx-background-radius: 5px; */
 
-    -fx-background-color: #373837;
+    /* -fx-background-color: #373837; */
     -fx-font-size: 20px;
     -fx-padding: 8px;
     -fx-border-radius: 5px;
@@ -35,12 +35,12 @@
 }
 
 .menu-btn:hover {
-    -fx-background-color: #454545;
+    /* -fx-background-color: #454545; */
     background-color: #454545;
 }
 
 .menu-btn:disabled {
-    -fx-text-fill: white;
-    -fx-background-color: gray;
+    /* -fx-text-fill: white;
+    -fx-background-color: gray; */
     background-color: gray;
 }
