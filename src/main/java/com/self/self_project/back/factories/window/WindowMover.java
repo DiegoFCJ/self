@@ -17,12 +17,12 @@ public class WindowMover {
 
     public void addGrabMoveEventHandlers(Stage stage) {
         stage.getScene().setOnMousePressed(event -> {
-            CustomLoggerUtils.info("MousePressed", "Mouse pressed for window movement at X = " + event.getScreenX() + ", Y = " + event.getScreenY());
+            //CustomLoggerUtils.info("MousePressed", "Mouse pressed for window movement at X = " + event.getScreenX() + ", Y = " + event.getScreenY());
             if (event.getButton() == MouseButton.PRIMARY && !isNearEdge(event, stage)) {
                 windowState.setDragOffsetX(event.getSceneX());
                 windowState.setDragOffsetY(event.getSceneY());
                 stage.getScene().setCursor(Cursor.CLOSED_HAND);
-                CustomLoggerUtils.info("WindowDragStart", "Starting window drag, dragOffsetX = " + windowState.getDragOffsetX() + ", dragOffsetY = " + windowState.getDragOffsetY());
+                //CustomLoggerUtils.info("WindowDragStart", "Starting window drag, dragOffsetX = " + windowState.getDragOffsetX() + ", dragOffsetY = " + windowState.getDragOffsetY());
             }
         });
 
@@ -30,7 +30,7 @@ public class WindowMover {
             if (event.getButton() == MouseButton.PRIMARY && !isNearEdge(event, stage)) {
                 stage.setX(event.getScreenX() - windowState.getDragOffsetX());
                 stage.setY(event.getScreenY() - windowState.getDragOffsetY());
-                CustomLoggerUtils.info("WindowDragged", "Dragging window to X = " + stage.getX() + ", Y = " + stage.getY());
+                //CustomLoggerUtils.info("WindowDragged", "Dragging window to X = " + stage.getX() + ", Y = " + stage.getY());
             }
         });
 

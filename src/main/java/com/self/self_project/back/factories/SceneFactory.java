@@ -42,7 +42,8 @@ public class SceneFactory {
         for (MenuDTO actionMenu : submenu.getMenuActions()) {
             Button menuButton = buttonsFactory.createButton(actionMenu.getTitle(), e -> {
                 CustomLoggerUtils.info(LOGS.SCENE_FACTORY, actionMenu.getTitle() + " button clicked.");
-                // Qui puoi implementare la logica per le azioni o cambiare scena se ci sono altri sottomenu
+                // Qui puoi implementare la logica per le azioni o cambiare scena se ci sono
+                // altri sottomenu
             });
             subMenuBox.getChildren().add(menuButton);
         }
@@ -52,7 +53,7 @@ public class SceneFactory {
         stage.show();
         CustomLoggerUtils.info(LOGS.SCENE_FACTORY, "Submenu scene shown for " + submenu.getTitleString());
     }
-    
+
     /**
      * Changes the current scene based on the provided SceneDTO.
      *
@@ -60,13 +61,14 @@ public class SceneFactory {
      */
     public void changeScene(SceneDTO sceneDTO) {
         CustomLoggerUtils.info(LOGS.SCENE_FACTORY, "Attempting to change scene to: " + sceneDTO.getMenuType());
-    
+
         // Push the current scene to the history stack before changing
         if (!sceneHistory.isEmpty()) {
             SceneDTO currentScene = sceneHistory.peek();
             if (!currentScene.equals(sceneDTO)) { // Now this comparison will work properly
                 sceneHistory.push(currentScene);
-                CustomLoggerUtils.info(LOGS.SCENE_FACTORY, "Pushed current scene to history: " + currentScene.getMenuType());
+                CustomLoggerUtils.info(LOGS.SCENE_FACTORY,
+                        "Pushed current scene to history: " + currentScene.getMenuType());
             } else {
                 CustomLoggerUtils.info(LOGS.SCENE_FACTORY, "Scene is the same as current. No change made.");
             }
@@ -75,39 +77,40 @@ public class SceneFactory {
             sceneHistory.push(sceneDTO);
             CustomLoggerUtils.info(LOGS.SCENE_FACTORY, "Added initial scene to history: " + sceneDTO.getMenuType());
         }
-    
+
         VBox menuLayout;
         menuLayout = menuFactory.createMainMenu(primaryStage, this);
-    
+
         // Determine which menu layout to create based on SceneDTO
         switch (sceneDTO.getMenuType()) {
             case "Main":
                 menuLayout = menuFactory.createMainMenu(primaryStage, this);
                 break;
             case "Automation":
-                //menuLayout = menuFactory.getAutomationMenu(primaryStage, this);
+                // menuLayout = menuFactory.getAutomationMenu(primaryStage, this);
                 break;
             case "University":
-                //menuLayout = menuFactory.getUniversityMenu(primaryStage, this);
+                // menuLayout = menuFactory.getUniversityMenu(primaryStage, this);
                 break;
             default:
                 CustomLoggerUtils.error(LOGS.SCENE_FACTORY, "Unknown menu type: " + sceneDTO.getMenuType());
                 throw new IllegalArgumentException("Unknown menu type: " + sceneDTO.getMenuType());
         }
-    
+
         // Create the scene layout with header and menu
         sceneLayout = new VBox(HeaderFactory.createHeader(primaryStage, sceneDTO.isShowBackButton(), this), menuLayout);
         CustomLoggerUtils.info(LOGS.SCENE_FACTORY, sceneDTO.getMenuType() + " menu scene created.");
-    
+
         // Call createScene with the new layout
         createScene(sceneLayout, sceneDTO.getWidth(), sceneDTO.getHeight());
-    }    
+    }
 
     /**
      * Goes back to the previous scene.
      */
     public void goBack() {
-        CustomLoggerUtils.info(LOGS.SCENE_FACTORY, "Attempting to go back to the previous scene. Scene History: " + sceneHistory);
+        CustomLoggerUtils.info(LOGS.SCENE_FACTORY,
+                "Attempting to go back to the previous scene. Scene History: " + sceneHistory);
         if (sceneHistory.size() > 1) {
             // Pop the current scene
             sceneHistory.pop();
@@ -118,7 +121,7 @@ public class SceneFactory {
         } else {
             CustomLoggerUtils.warn(LOGS.SCENE_FACTORY, "No previous scene to go back to.");
         }
-    }    
+    }
 
     /**
      * Creates a Scene with the specified layout and dimensions.
@@ -130,6 +133,7 @@ public class SceneFactory {
     private void createScene(VBox layout, double width, double height) {
         clip = new javafx.scene.shape.Rectangle(width, height);
         layout.setClip(clip);
+
         CustomLoggerUtils.info(LOGS.SCENE_FACTORY, "Creating scene with width: " + width + " and height: " + height);
 
         Scene scene = new Scene(layout, width, height);
@@ -139,18 +143,29 @@ public class SceneFactory {
         scene.getStylesheets().add(getClass().getResource("/styles/btn.css").toExternalForm());
 
         CustomLoggerUtils.info(LOGS.SCENE_FACTORY, "Scene created with layout.");
-        
+
         // Set the new scene to the primary stage
         primaryStage.setScene(scene);
         primaryStage.show(); // Show the updated stage
         CustomLoggerUtils.info(LOGS.SCENE_FACTORY, "Scene displayed on primary stage.");
+
+        // Aggiungi un listener per aggiornare il ritaglio quando il palco viene
+        // ridimensionato
+        primaryStage.widthProperty().addListener((obs, oldWidth, newWidth) -> {
+            clip.setWidth(newWidth.doubleValue());
+        });
+        primaryStage.heightProperty().addListener((obs, oldHeight, newHeight) -> {
+            clip.setHeight(newHeight.doubleValue());
+        });
     }
 
     /**
      * Creates the main menu scene.
      *
-     * @param showHomeButton Indicates whether to show the home button in the header.
-     * @param showBackButton Indicates whether to show the back button in the header.
+     * @param showHomeButton Indicates whether to show the home button in the
+     *                       header.
+     * @param showBackButton Indicates whether to show the back button in the
+     *                       header.
      */
     public void createMainMenuScene(boolean showHomeButton, boolean showBackButton) {
         SceneDTO sceneDTO = new SceneDTO(showHomeButton, showBackButton, "Main", MENU.WINDOW_WIDTH, MENU.WINDOW_HEIGHT);
@@ -181,12 +196,25 @@ public class SceneFactory {
      */
     public void adjustUIForResize() {
         if (clip != null) {
-            clip.setWidth(primaryStage.getWidth());
-            clip.setHeight(primaryStage.getHeight());
+            primaryStage.widthProperty().addListener((obs, oldVal, newVal) -> {
+                if (clip != null) {
+                    clip.setWidth(newVal.doubleValue());
+                    CustomLoggerUtils.info(LOGS.SCENE_FACTORY, "Clip width updated to: " + newVal);
+                }
+            });
+
+            primaryStage.heightProperty().addListener((obs, oldVal, newVal) -> {
+                if (clip != null) {
+                    clip.setHeight(newVal.doubleValue());
+                    CustomLoggerUtils.info(LOGS.SCENE_FACTORY, "Clip height updated to: " + newVal);
+                }
+            });
+
             sceneLayout.setPrefWidth(primaryStage.getWidth());
             sceneLayout.setPrefHeight(primaryStage.getHeight());
             sceneLayout.requestLayout();
-            CustomLoggerUtils.info(LOGS.SCENE_FACTORY, "UI adjusted for window resize to width: " + primaryStage.getWidth() + " and height: " + primaryStage.getHeight());
+            CustomLoggerUtils.info(LOGS.SCENE_FACTORY, "UI adjusted for window resize to width: "
+                    + primaryStage.getWidth() + " and height: " + primaryStage.getHeight());
         } else {
             CustomLoggerUtils.warn(LOGS.SCENE_FACTORY, "Clip is null, unable to adjust UI for resize.");
         }

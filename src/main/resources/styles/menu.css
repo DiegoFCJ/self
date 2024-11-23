@@ -1,18 +1,28 @@
 .vbox {
+    -fx-alignment: center;
+
     -fx-background-color: #1e1e1e;
     -fx-padding: 20px;
-    -fx-alignment: center;
     -fx-border-color: #2e2e2e;
     -fx-border-width: 0 1px 1px 1px;
     -fx-border-radius: 0 0 13px 13px;
     -fx-border-style: solid;
+    /* -fx-pref-width: 600px;
+    -fx-pref-height: 400px; */
 
-    /* Fixed dimensions */
-    -fx-pref-width: 600px;  /* Set desired width */
-    -fx-pref-height: 400px; /* Set desired height */
+    background-color: #1e1e1e;
+    padding: 20px;
+    border-color: #2e2e2e;
+    border-width: 0 1px 1px 1px;
+    border-radius: 0 0 13px 13px;
+    border-style: solid;
+    /* width: 600px;
+    height: 400px; */
+
 }
 
 .label {
     -fx-text-fill: white;
     -fx-font-size: 20px;
+    font-size: 20px;
 }

@@ -8,7 +8,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 public class WindowResizeFactory {
-    
+
     private WindowDTO windowState;
     private boolean isResizing = false;
 
@@ -19,15 +19,16 @@ public class WindowResizeFactory {
     public void addResizeEventHandlers(Stage stage) {
         stage.getScene().setOnMousePressed(event -> {
             // Log mouse press event
-            CustomLoggerUtils.info("MousePressed", "Mouse pressed at X = " + event.getScreenX() + ", Y = " + event.getScreenY());
+            CustomLoggerUtils.info("MousePressed",
+                    "Mouse pressed at X = " + event.getScreenX() + ", Y = " + event.getScreenY());
             // Check if the primary mouse button is pressed and if near an edge
             if (event.getButton() == MouseButton.PRIMARY && isNearEdge(event, stage)) {
-                isResizing = true;  // Start resizing
+                isResizing = true; // Start resizing
                 windowState.setInitialX(event.getScreenX());
                 windowState.setInitialY(event.getScreenY());
                 windowState.setWidth(stage.getWidth());
                 windowState.setHeight(stage.getHeight());
-                event.consume();  // Prevent other handlers from interfering
+                event.consume(); // Prevent other handlers from interfering
             }
         });
 
@@ -39,18 +40,18 @@ public class WindowResizeFactory {
 
                 // Calculate new width and height dynamically based on mouse position
                 if (isNearRightEdge(event, stage)) {
-                    double newWidth = Math.max(windowState.getWidth() + deltaX, 100);  // Minimum width of 100
-                    stage.setWidth(newWidth);  // Set new width
+                    double newWidth = Math.max(windowState.getWidth() + deltaX, 100); // Minimum width of 100
+                    stage.setWidth(newWidth); // Set new width
                 }
                 if (isNearBottomEdge(event, stage)) {
-                    double newHeight = Math.max(windowState.getHeight() + deltaY, 100);  // Minimum height of 100
-                    stage.setHeight(newHeight);  // Set new height
+                    double newHeight = Math.max(windowState.getHeight() + deltaY, 100); // Minimum height of 100
+                    stage.setHeight(newHeight); // Set new height
                 }
 
                 // Update initial position for next drag
                 windowState.setInitialX(event.getScreenX());
                 windowState.setInitialY(event.getScreenY());
-                event.consume();  // Consume the event to stop propagation
+                event.consume(); // Consume the event to stop propagation
             }
         });
 
@@ -58,18 +59,19 @@ public class WindowResizeFactory {
             if (isResizing) {
                 CustomLoggerUtils.info("MouseReleased", "Resize operation completed.");
             }
-            isResizing = false;  // Reset resizing flag
+            isResizing = false; // Reset resizing flag
         });
 
         stage.getScene().setOnMouseMoved(event -> {
             Cursor cursor = getResizeCursor(event, stage);
-            stage.getScene().setCursor(cursor);  // Set appropriate resize cursor
-            CustomLoggerUtils.info("MouseMoved", "Cursor changed to " + cursor.toString() + " at X = " + event.getScreenX() + ", Y = " + event.getScreenY());
+            stage.getScene().setCursor(cursor); // Set appropriate resize cursor
+            //CustomLoggerUtils.info("MouseMoved", "Cursor changed to " + cursor.toString() + " at X = "
+            //        + event.getScreenX() + ", Y = " + event.getScreenY());
         });
     }
 
     private boolean isNearEdge(MouseEvent event, Stage stage) {
-        double edgeSize = 5;  // Size of the edge to consider
+        double edgeSize = 5; // Size of the edge to consider
         double mouseX = event.getScreenX() - stage.getX();
         double mouseY = event.getScreenY() - stage.getY();
         boolean nearEdge = (mouseX < edgeSize || mouseX > (stage.getWidth() - edgeSize) ||
@@ -79,7 +81,7 @@ public class WindowResizeFactory {
     }
 
     private boolean isNearRightEdge(MouseEvent event, Stage stage) {
-        double edgeSize = 5;  // Size of the right edge
+        double edgeSize = 5; // Size of the right edge
         double mouseX = event.getScreenX() - stage.getX();
         boolean nearRightEdge = mouseX > (stage.getWidth() - edgeSize);
         CustomLoggerUtils.info("isNearRightEdge", "Mouse near right edge: " + nearRightEdge);
@@ -87,7 +89,7 @@ public class WindowResizeFactory {
     }
 
     private boolean isNearBottomEdge(MouseEvent event, Stage stage) {
-        double edgeSize = 5;  // Size of the bottom edge
+        double edgeSize = 5; // Size of the bottom edge
         double mouseY = event.getScreenY() - stage.getY();
         boolean nearBottomEdge = mouseY > (stage.getHeight() - edgeSize);
         CustomLoggerUtils.info("isNearBottomEdge", "Mouse near bottom edge: " + nearBottomEdge);
@@ -95,7 +97,7 @@ public class WindowResizeFactory {
     }
 
     private Cursor getResizeCursor(MouseEvent event, Stage stage) {
-        double edgeSize = 5;  // Size of the edge to consider
+        double edgeSize = 5; // Size of the edge to consider
         double mouseX = event.getScreenX() - stage.getX();
         double mouseY = event.getScreenY() - stage.getY();
 
