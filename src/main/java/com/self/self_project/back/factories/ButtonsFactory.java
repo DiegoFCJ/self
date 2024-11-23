@@ -1,11 +1,14 @@
 package com.self.self_project.back.factories;
 
+import javafx.application.Platform;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.shape.Circle;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import com.self.self_project.utils.logging.CustomLoggerUtils;
 import com.self.self_project.constants.LOGS;
@@ -65,41 +68,45 @@ public class ButtonsFactory {
         maximizeButton.getStyleClass().add("head-btn");
         maximizeButton.setCursor(Cursor.HAND);
 
+        final double[] previousWidth = { 0 };
+        final double[] previousHeight = { 0 };
+
         updateMaximizeButton(primaryStage, maximizeButton);
-        System.out.println("clicked maximize");
 
-        // Memorizziamo le dimensioni precedenti della finestra
-        final double initialWidth = primaryStage.getWidth();
-        final double initialHeight = primaryStage.getHeight();
-
-        // Aggiungiamo un listener per monitorare la proprietà maximized
         primaryStage.maximizedProperty().addListener((obs, wasMaximized, isNowMaximized) -> {
             updateMaximizeButton(primaryStage, maximizeButton);
-            CustomLoggerUtils.info(LOGS.BUTTON_FACTORY, "Maximize button updated, is now maximized: " + isNowMaximized);
+            System.out.println("Maximized property changed: " + isNowMaximized);
         });
 
-        // Gestiamo il comportamento del pulsante
         maximizeButton.setOnAction(e -> {
-            if (primaryStage.isMaximized()) {
-                // Ripristiniamo le dimensioni precedenti quando il pulsante viene cliccato per
-                // ripristinare
-                primaryStage.setMaximized(false);
-                primaryStage.setWidth(initialWidth); // Ripristiniamo la larghezza
-                primaryStage.setHeight(initialHeight); // Ripristiniamo l'altezza
-                CustomLoggerUtils.info(LOGS.BUTTON_FACTORY, "Maximize button clicked, stage restored. Size: " +
-                        primaryStage.getWidth() + "x" + primaryStage.getHeight());
+            if (!primaryStage.isMaximized()) {
+                // Salva le dimensioni precedenti
+                previousWidth[0] = primaryStage.getWidth();
+                previousHeight[0] = primaryStage.getHeight();
+                System.out.println("Saved current dimensions: " + previousWidth[0] + "x" + previousHeight[0]);
+
+                // Forza massimizzazione
+                Platform.runLater(() -> {
+                    Screen screen = Screen.getPrimary();
+                    Rectangle2D bounds = screen.getVisualBounds();
+
+                    primaryStage.setX(bounds.getMinX());
+                    primaryStage.setY(bounds.getMinY());
+                    primaryStage.setWidth(bounds.getWidth());
+                    primaryStage.setHeight(bounds.getHeight());
+
+                    System.out.println("Maximized to full screen.");
+                });
+
             } else {
-                // Salviamo le dimensioni correnti della finestra prima di massimizzare
-                double currentWidth = primaryStage.getWidth();
-                double currentHeight = primaryStage.getHeight();
-
-                // Massimizziamo la finestra al 100% della larghezza e altezza disponibile
-                primaryStage.setMaximized(true);
-                primaryStage.setWidth(primaryStage.getOwner().getWidth()); // 100% della larghezza disponibile
-                primaryStage.setHeight(primaryStage.getOwner().getHeight()); // 100% dell'altezza disponibile
-
-                CustomLoggerUtils.info(LOGS.BUTTON_FACTORY, "Maximize button clicked, stage maximized. Size: " +
-                        primaryStage.getWidth() + "x" + primaryStage.getHeight());
+                // Ripristina le dimensioni precedenti
+                Platform.runLater(() -> {
+                    primaryStage.setX((Screen.getPrimary().getVisualBounds().getWidth() - previousWidth[0]) / 2);
+                    primaryStage.setY((Screen.getPrimary().getVisualBounds().getHeight() - previousHeight[0]) / 2);
+                    primaryStage.setWidth(previousWidth[0]);
+                    primaryStage.setHeight(previousHeight[0]);
+                    System.out.println("Restored previous dimensions: " + previousWidth[0] + "x" + previousHeight[0]);
+                });
             }
         });
 

@@ -7,8 +7,8 @@
     -fx-border-width: 0 1px 1px 1px;
     -fx-border-radius: 0 0 13px 13px;
     -fx-border-style: solid;
-    /* -fx-pref-width: 600px;
-    -fx-pref-height: 400px; */
+    -fx-pref-width: 600px;
+    -fx-pref-height: 400px;
 
     background-color: #1e1e1e;
     padding: 20px;
@@ -16,8 +16,8 @@
     border-width: 0 1px 1px 1px;
     border-radius: 0 0 13px 13px;
     border-style: solid;
-    /* width: 600px;
-    height: 400px; */
+    width: 600px;
+    height: 400px;
 
 }
 

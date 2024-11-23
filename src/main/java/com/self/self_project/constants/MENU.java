@@ -20,8 +20,8 @@ public class MENU {
     public static final String UNI_EXAMS_CATALOGUE_BTN = "Catalogo Esami";
 
     // Dimensioni della finestra
-    public static final double WINDOW_WIDTH = 600; // Larghezza della finestra
-    public static final double WINDOW_HEIGHT = 400; // Altezza della finestra
+    public static double WINDOW_WIDTH = 600; // Larghezza della finestra
+    public static double WINDOW_HEIGHT = 400; // Altezza della finestra
     
     // Dimensioni dei bottoni
     public static final double BUTTON_WIDTH = 200; // Larghezza dei bottoni
