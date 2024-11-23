@@ -178,7 +178,7 @@ If you'd like to contribute to this project:
 
 ---
 ## 🗂️ Project overview
-![alt text](self.png)
+![alt text](image.png)
 
 ---
 ## 📄 License
