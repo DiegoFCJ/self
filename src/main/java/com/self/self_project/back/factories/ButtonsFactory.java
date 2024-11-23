@@ -3,10 +3,12 @@ package com.self.self_project.back.factories;
 import javafx.application.Platform;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Cursor;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -56,56 +58,86 @@ public class ButtonsFactory {
         return minimizeButton;
     }
 
-    /**
-     * Creates a button for maximizing/restoring the specified stage.
-     *
-     * @param primaryStage The stage to maximize.
-     * @return A Button instance that maximizes/restores the stage.
-     */
     public static Button createMaximizeButton(Stage primaryStage) {
         Button maximizeButton = new Button();
         maximizeButton.setShape(new Circle(8));
         maximizeButton.getStyleClass().add("head-btn");
         maximizeButton.setCursor(Cursor.HAND);
 
+        // Variabili per salvare dimensioni e posizione precedenti
         final double[] previousWidth = { 0 };
         final double[] previousHeight = { 0 };
+        final double[] previousX = { 0 };
+        final double[] previousY = { 0 };
 
+        // Flag per sapere se la finestra è stata forzatamente massimizzata
+        final boolean[] isForcedMaximized = { false };
+
+        // Funzione per aggiornare l'icona del bottone
         updateMaximizeButton(primaryStage, maximizeButton);
 
+        // Listener per sincronizzare il bottone con lo stato del `Stage`
         primaryStage.maximizedProperty().addListener((obs, wasMaximized, isNowMaximized) -> {
-            updateMaximizeButton(primaryStage, maximizeButton);
+            if (!isForcedMaximized[0]) {
+                updateMaximizeButton(primaryStage, maximizeButton);
+            }
             System.out.println("Maximized property changed: " + isNowMaximized);
         });
 
+        // Gestione del click sul bottone
         maximizeButton.setOnAction(e -> {
-            if (!primaryStage.isMaximized()) {
-                // Salva le dimensioni precedenti
-                previousWidth[0] = primaryStage.getWidth();
-                previousHeight[0] = primaryStage.getHeight();
-                System.out.println("Saved current dimensions: " + previousWidth[0] + "x" + previousHeight[0]);
+            System.out.println("Is window maximized (real): " + primaryStage.isMaximized() + " Forced maximized: "
+                    + isForcedMaximized[0]);
+            if (!isForcedMaximized[0]) {
+                if (!primaryStage.isMaximized()) {
+                    // Salva le dimensioni e posizione precedenti prima della massimizzazione
+                    previousWidth[0] = primaryStage.getWidth();
+                    previousHeight[0] = primaryStage.getHeight();
+                    previousX[0] = primaryStage.getX();
+                    previousY[0] = primaryStage.getY();
 
-                // Forza massimizzazione
-                Platform.runLater(() -> {
-                    Screen screen = Screen.getPrimary();
-                    Rectangle2D bounds = screen.getVisualBounds();
+                    System.out.println("Saved current dimensions: " + previousWidth[0] + "x" + previousHeight[0]);
 
-                    primaryStage.setX(bounds.getMinX());
-                    primaryStage.setY(bounds.getMinY());
-                    primaryStage.setWidth(bounds.getWidth());
-                    primaryStage.setHeight(bounds.getHeight());
+                    // Forza massimizzazione a schermo intero
+                    Platform.runLater(() -> {
+                        Screen screen = Screen.getPrimary();
+                        Rectangle2D bounds = screen.getVisualBounds();
 
-                    System.out.println("Maximized to full screen.");
-                });
+                        primaryStage.setX(bounds.getMinX());
+                        primaryStage.setY(bounds.getMinY());
+                        primaryStage.setWidth(bounds.getWidth());
+                        primaryStage.setHeight(bounds.getHeight());
 
+                        // Imposta il background per coprire tutto lo schermo
+                        updateBackground(primaryStage);
+
+                        // Imposta il flag che la finestra è stata forzata a massimizzarsi
+                        isForcedMaximized[0] = true;
+
+                        System.out.println("Maximized to full screen.");
+
+                        // Aggiorna subito l'icona dopo la massimizzazione
+                        updateMaximizeButton(primaryStage, maximizeButton);
+                    });
+                }
             } else {
-                // Ripristina le dimensioni precedenti
+                // Ripristina le dimensioni precedenti solo se è forzata la massimizzazione
                 Platform.runLater(() -> {
-                    primaryStage.setX((Screen.getPrimary().getVisualBounds().getWidth() - previousWidth[0]) / 2);
-                    primaryStage.setY((Screen.getPrimary().getVisualBounds().getHeight() - previousHeight[0]) / 2);
+                    primaryStage.setX(previousX[0]);
+                    primaryStage.setY(previousY[0]);
                     primaryStage.setWidth(previousWidth[0]);
                     primaryStage.setHeight(previousHeight[0]);
+
                     System.out.println("Restored previous dimensions: " + previousWidth[0] + "x" + previousHeight[0]);
+
+                    // Ripristina anche la posizione
+                    updateBackground(primaryStage);
+
+                    // Aggiorna subito l'icona dopo il ripristino
+                    updateMaximizeButton(primaryStage, maximizeButton);
+
+                    // Reset del flag dopo il ripristino
+                    isForcedMaximized[0] = false;
                 });
             }
         });
@@ -113,21 +145,39 @@ public class ButtonsFactory {
         return maximizeButton;
     }
 
-    /**
-     * Updates the maximize button's graphic based on the stage's current state.
-     *
-     * @param primaryStage   The stage to check the maximized state of.
-     * @param maximizeButton The button to update.
-     */
     public static void updateMaximizeButton(Stage primaryStage, Button maximizeButton) {
-        if (primaryStage.isMaximized()) {
-            maximizeButton.setGraphic(new ImageView(
-                    new Image(HeaderFactory.class.getResourceAsStream("/icons/icons8-ripristino-32.png"))));
-        } else {
-            maximizeButton.setGraphic(
-                    new ImageView(new Image(HeaderFactory.class.getResourceAsStream("/icons/icons8-circle-32.png"))));
+        System.out.println("Updating maximize button. Stage width: " + primaryStage.getWidth() + " Height: "
+                + primaryStage.getHeight());
+        try {
+            // Se la finestra è forzata a essere massimizzata
+            if (primaryStage.getWidth() >= Screen.getPrimary().getVisualBounds().getWidth() &&
+                    primaryStage.getHeight() >= Screen.getPrimary().getVisualBounds().getHeight()) {
+                maximizeButton.setGraphic(new ImageView(
+                        new Image(HeaderFactory.class.getResourceAsStream("/icons/icons8-ripristino-32.png"))));
+                System.out.println("Set restore icon.");
+            } else {
+                maximizeButton.setGraphic(new ImageView(
+                        new Image(HeaderFactory.class.getResourceAsStream("/icons/icons8-circle-32.png"))));
+                System.out.println("Set maximize icon.");
+            }
+        } catch (Exception e) {
+            System.out.println("Error loading icons: " + e.getMessage());
         }
         CustomLoggerUtils.info(LOGS.BUTTON_FACTORY, "Maximize button graphic updated.");
+    }
+
+    // Funzione per aggiornare il background in base alle dimensioni dello schermo
+    public static void updateBackground(Stage primaryStage) {
+        // Accediamo alla scena principale della finestra
+        Scene scene = primaryStage.getScene();
+
+        // Impostiamo il background per coprire l'intero schermo
+        if (primaryStage.getWidth() >= Screen.getPrimary().getVisualBounds().getWidth() &&
+                primaryStage.getHeight() >= Screen.getPrimary().getVisualBounds().getHeight()) {
+            scene.setFill(Color.BLACK); // Esempio di background nero
+        } else {
+            scene.setFill(Color.LIGHTGRAY); // Background di default quando non è massimizzato
+        }
     }
 
     /**
