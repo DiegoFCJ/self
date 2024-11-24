@@ -5,6 +5,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import com.scriptagher.backend.SpringApp;
@@ -44,7 +46,8 @@ public class MainApp extends Application {
     }
 
     /**
-     * Starts the JavaFX application by loading the main FXML view and displaying the primary stage.
+     * Starts the JavaFX application by loading the main FXML view and displaying
+     * the primary stage.
      *
      * @param primaryStage The primary stage for this JavaFX application.
      * @throws IOException if the FXML file cannot be loaded.
@@ -57,6 +60,13 @@ public class MainApp extends Application {
         Scene scene = new Scene(root);
 
         CustomLogger.info("start", "Setting up the primary stage");
+
+        // Imposta la finestra senza bordi (senza barra del titolo)
+        primaryStage.initStyle(StageStyle.TRANSPARENT); // Questo rimuove la barra del titolo e i bordi
+
+        // Opzionale: se vuoi anche rendere la finestra trasparente
+        primaryStage.setOpacity(1.0); // 1.0 è opaco, 0.0 è completamente trasparente
+
         primaryStage.setScene(scene);
         primaryStage.setTitle("Scriptagher");
         primaryStage.show();
@@ -64,7 +74,8 @@ public class MainApp extends Application {
     }
 
     /**
-     * Stops the application by closing the Spring Boot context and performing necessary cleanup.
+     * Stops the application by closing the Spring Boot context and performing
+     * necessary cleanup.
      *
      * @throws Exception if an error occurs during shutdown.
      */

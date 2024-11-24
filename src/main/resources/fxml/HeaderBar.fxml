@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
+
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.shape.Circle?>
-<?import javafx.scene.control.Label?>
 
-<HBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.scriptagher.frontend.controller.HeaderBarController" 
-      style="-fx-background-color: #2b2b2b; -fx-padding: 10;" spacing="10" alignment="CENTER_LEFT">
+<HBox alignment="CENTER_LEFT" spacing="10" style="-fx-background-color: #2b2b2b; -fx-padding: 10;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="com.scriptagher.frontend.controller.HeaderBarController">
     <!-- Logo o icona -->
-    <Circle radius="15" stroke="white" fill="deepskyblue" strokeWidth="2" />
+    <Circle fill="deepskyblue" radius="15" stroke="white" strokeWidth="2" />
 
     <!-- Titolo -->
-    <Label fx:id="titleLabel" text="Scriptagher" style="-fx-text-fill: white; -fx-font-size: 18;" />
+    <Label fx:id="titleLabel" style="-fx-text-fill: white; -fx-font-size: 18;" text="Scriptagher" />
 
     <!-- Spaziatore -->
     <Region HBox.hgrow="ALWAYS" />
@@ -21,29 +22,38 @@
     <!-- Pulsanti -->
     <Button fx:id="minimizeButton" style="-fx-background-color: transparent;">
         <graphic>
-            <ImageView fitHeight="20" fitWidth="20">
+            <ImageView fitHeight="20" fitWidth="20" styleClass="head-btn">
                 <image>
                     <Image url="@/icons/icons8-macos-riduci-a-icona-32.png" />
                 </image>
             </ImageView>
         </graphic>
+        <cursor>
+            <Cursor fx:constant="HAND" />
+        </cursor>
     </Button>
     <Button fx:id="maximizeButton" style="-fx-background-color: transparent;">
         <graphic>
-            <ImageView fitHeight="20" fitWidth="20">
+            <ImageView fitHeight="20" fitWidth="20" styleClass="head-btn">
                 <image>
-                    <Image url="@/icons/icons8-ripristino-32.png" />
+                    <Image url="@/icons/icons8-circle-32.png" />
                 </image>
             </ImageView>
         </graphic>
+        <cursor>
+            <Cursor fx:constant="HAND" />
+        </cursor>
     </Button>
     <Button fx:id="closeButton" style="-fx-background-color: transparent;">
         <graphic>
-            <ImageView fitHeight="20" fitWidth="20">
+            <ImageView fitHeight="20" fitWidth="20" styleClass="head-btn">
                 <image>
                     <Image url="@/icons/icons8-spegnere-32.png" />
                 </image>
             </ImageView>
         </graphic>
+        <cursor>
+            <Cursor fx:constant="HAND" />
+        </cursor>
     </Button>
 </HBox>

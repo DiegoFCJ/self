@@ -6,7 +6,7 @@
     padding: 10;
 }
 
-.header-bar .button {
+.header-bar button {
     -fx-background-color: transparent;
     -fx-text-fill: white;
     -fx-font-size: 14px;
@@ -15,16 +15,10 @@
     font-size: 14px;
 }
 
-.header-bar .button:hover {
-    -fx-text-fill: rgb(233, 233, 233);
-    -fx-cursor: pointer;
-    
-    cursor: pointer;
-}
-
-.header-bar .button:hover {
-    -fx-background-color: #555;
+.head-btn:hover {
+    -fx-background-color: #ff0000;
     -fx-text-fill: white;
 
-    background-color: #555;
+    background-color: #ff0000;
+    cursor: pointer;
 }
