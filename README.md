@@ -146,6 +146,7 @@ The core of the application consists of a **TimeManagerBot** which helps in trac
 3. Run the application:
    ```bash
    ./mvnw spring-boot:run
+   ./mvnw javafx:run
    ```
 
    The application will start and open a GUI window.
