@@ -2,11 +2,16 @@ package com.scriptagher.frontend.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.control.Label;
+
+import java.net.URL;
+import java.util.ResourceBundle;
+
 import com.scriptagher.shared.logger.CustomLogger;
 
-public class MainViewController {
+public class MainViewController implements Initializable {
 
     @FXML
     private Label welcomeLabel;
@@ -16,8 +21,8 @@ public class MainViewController {
 
     private HeaderBarController headerBarController;
 
-    @FXML
-    public void initialize() {
+    @Override
+    public void initialize(URL url, ResourceBundle bundle) {
         try {
             // Carica l'HeaderBar e ottieni il suo controller
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/HeaderBar.fxml"));
@@ -25,7 +30,7 @@ public class MainViewController {
             headerBarController = loader.getController();
 
             // Imposta dinamicamente il titolo
-            headerBarController.setTitle("Scriptagher Application");
+            headerBarController.setTitle("Scriptagher");
         } catch (Exception e) {
             e.printStackTrace();
         }

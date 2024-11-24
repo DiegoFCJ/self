@@ -2,29 +2,58 @@
 
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
 
-<HBox alignment="CENTER_LEFT" spacing="10" style="-fx-background-color: #2b2b2b; -fx-padding: 10;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="com.scriptagher.frontend.controller.HeaderBarController">
+<HBox alignment="CENTER_LEFT" minWidth="400.0" onDragDetected="#moveWindow" onDragOver="#releaseAndChangeCursor" style="-fx-background-color: #2c2c2c; -fx-padding: 10;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.scriptagher.frontend.controller.HeaderBarController">
     <!-- Logo o icona -->
-    <Circle fill="deepskyblue" radius="15" stroke="white" strokeWidth="2" />
+    <Circle fill="#214a2b" radius="15" scaleX="0.5" scaleY="0.5" scaleZ="0.0" stroke="white" strokeWidth="2" />
+    <Button fx:id="titleLabel" mnemonicParsing="false" style="-fx-background-color: transparent;" text="Scriptagher" textFill="WHITE" translateX="-10.0">
+        <font>
+            <Font size="18.0" />
+        </font>
+            <cursor>
+                <Cursor fx:constant="HAND" />
+            </cursor>
+    </Button>
 
-    <!-- Titolo -->
-    <Label fx:id="titleLabel" style="-fx-text-fill: white; -fx-font-size: 18;" text="Scriptagher" />
-
-    <!-- Spaziatore -->
+          <!-- Spaziatore -->
     <Region HBox.hgrow="ALWAYS" />
+    <Button fx:id="back" style="-fx-background-color: transparent; visibility: hidden;">
+        <graphic>
+            <ImageView fitHeight="20" fitWidth="20">
+                <image>
+                <Image url="@../icons/icons8-go-back-32.png" />
+                </image>
+            </ImageView>
+        </graphic>
+        <cursor>
+            <Cursor fx:constant="HAND" />
+        </cursor>
+    </Button>
+    <Button fx:id="dashboard" style="-fx-background-color: transparent;">
+        <graphic>
+            <ImageView fitHeight="20" fitWidth="20">
+                <image>
+                <Image url="@../icons/icons8-dashboard-open-32.png" />
+                </image>
+            </ImageView>
+        </graphic>
+        <cursor>
+            <Cursor fx:constant="HAND" />
+        </cursor>
+    </Button>
 
-    <!-- Pulsanti -->
+          <!-- Pulsanti -->
     <Button fx:id="minimizeButton" style="-fx-background-color: transparent;">
         <graphic>
-            <ImageView fitHeight="20" fitWidth="20" styleClass="head-btn">
+            <ImageView fitHeight="20" fitWidth="20">
                 <image>
-                    <Image url="@/icons/icons8-macos-riduci-a-icona-32.png" />
+                    <Image url="@../icons/icons8-macos-riduci-a-icona-32.png" />
                 </image>
             </ImageView>
         </graphic>
@@ -36,7 +65,7 @@
         <graphic>
             <ImageView fitHeight="20" fitWidth="20" styleClass="head-btn">
                 <image>
-                    <Image url="@/icons/icons8-circle-32.png" />
+                    <Image url="@../icons/icons8-circle-32.png" />
                 </image>
             </ImageView>
         </graphic>
@@ -48,7 +77,7 @@
         <graphic>
             <ImageView fitHeight="20" fitWidth="20" styleClass="head-btn">
                 <image>
-                    <Image url="@/icons/icons8-spegnere-32.png" />
+                    <Image url="@../icons/icons8-spegnere-32.png" />
                 </image>
             </ImageView>
         </graphic>
