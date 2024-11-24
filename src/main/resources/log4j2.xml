@@ -69,7 +69,7 @@
         </Logger>
 
         <!-- Logger per i log del componente FRONT -->
-        <Logger name="com.scriptagher.front" level="DEBUG" additivity="false">
+        <Logger name="com.scriptagher.frontend" level="DEBUG" additivity="false">
             <AppenderRef ref="FrontLogFile"/>
         </Logger>
 
@@ -84,7 +84,7 @@
         </Logger>
 
         <!-- Logger radice -->
-        <Root level="ERROR"> <!-- Cambia qui in DEBUG per assicurarti che tutto sia loggato -->
+        <Root level="ERROR">
             <AppenderRef ref="GeneralLogFile"/>
         </Root>
     </Loggers>

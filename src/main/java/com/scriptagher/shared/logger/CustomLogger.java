@@ -64,15 +64,16 @@ public class CustomLogger {
         // Use keywords in the operationType to determine the log file category
         if (operationType.contains("backend")) {
             component = "BACK";
-        } else if (operationType.contains("front")) {
+        } else if (operationType.contains("frontend")) {
             component = "FRONT";
         } else if (operationType.contains("data")) {
             component = "DATA";
         } else {
             component = "GENERAL";
         }
+        // System.out.println(operationType + "operation" + component);
         return component;
-    }
+    }    
 
     /**
      * Logs a message with a specified level, operation type, and description.
@@ -82,9 +83,8 @@ public class CustomLogger {
      * @param description   A description of the log message.
      */
     private static void log(String level, String operationType, String description) {
-        String componentTocheck;
-        componentTocheck = componentCheck(operationType);
-        String logDirectory = String.format("LOGS/%s/BASE-APP/%s", todayDate, componentTocheck);
+        String logDirectory = String.format("LOGS/%s/BASE-APP/%s", todayDate, componentCheck(operationType));
+        //System.out.println(componentCheck(operationType) + "            logDirectory           " + logDirectory + "            operationType           " + operationType);
         String component = determineComponent();
 
         Logger componentLogger = LoggerFactory.getLogger("com.scriptagher." + component.toLowerCase());

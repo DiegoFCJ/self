@@ -143,7 +143,13 @@ The core of the application consists of a **TimeManagerBot** which helps in trac
    ./mvnw clean install
    ```
 
-3. Run the application:
+3. Set JAVA_HOME environment
+   ```bash
+   export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+   export PATH=$JAVA_HOME/bin:$PATH
+   ```
+
+4. Run the application:
    ```bash
    ./mvnw spring-boot:run
    ./mvnw javafx:run

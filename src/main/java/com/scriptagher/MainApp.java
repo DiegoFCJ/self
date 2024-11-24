@@ -58,7 +58,7 @@ public class MainApp extends Application {
 
         CustomLogger.info("start", "Setting up the primary stage");
         primaryStage.setScene(scene);
-        primaryStage.setTitle("Your App Title");
+        primaryStage.setTitle("Scriptagher");
         primaryStage.show();
         CustomLogger.info("start", "JavaFX application started successfully");
     }
