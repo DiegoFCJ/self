@@ -29,7 +29,7 @@ public class MainApp extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         // Carica il file FXML per l'interfaccia JavaFX
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/front/view/fxml/MainView.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainView.fxml"));
         Parent root = loader.load();
         Scene scene = new Scene(root);
 

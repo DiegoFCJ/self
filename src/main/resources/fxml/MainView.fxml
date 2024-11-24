@@ -3,7 +3,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.scriptagher.controller.MainViewController" spacing="10" alignment="center" style="-fx-padding: 20;">
+<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.scriptagher.backend.controller.MainViewController" spacing="10" alignment="center" style="-fx-padding: 20;">
     <Label fx:id="welcomeLabel" text="Welcome to your JavaFX + Spring Boot App!" />
     <Button text="Click Me" onAction="#handleButtonClick"/>
 </VBox>

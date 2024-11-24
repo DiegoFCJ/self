@@ -35,6 +35,7 @@
         <orgapache.version>4.5.13</orgapache.version>
         <gson.version>2.8.9</gson.version>
         <lombok.version>1.18.28</lombok.version>
+
     </properties>
 
     <dependencies>
@@ -55,6 +56,12 @@
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
         </dependency>
+
+        <!-- Selenium ChromeDriver -->
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-chrome-driver</artifactId>
+        </dependency>      
 
         <!-- SLF4J API -->
         <dependency>
@@ -140,7 +147,7 @@
             <version>${javafx.version}</version>
         </dependency>
         
-        <!-- JavaFX FXML (optional if you use FXML for your UI) -->
+        <!-- JavaFX FXML (opzionale se usi FXML per le tue interfacce) -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
@@ -165,7 +172,7 @@
 
     <build>
         <plugins>
-            <!-- Plugin Maven Compiler -->
+            <!-- Maven Compiler Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -177,17 +184,20 @@
                 </configuration>
             </plugin>
 
-            <!-- Spring Boot Maven Plugin (opzionale, se non usi JavaFX per avviare Spring Boot) -->
+            <!-- Spring Boot Maven Plugin -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
 
-            <!-- Plugin per eseguire JavaFX tramite Maven -->
+            <!-- JavaFX Maven Plugin -->
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>${jfxmvnplugin.version}</version>
+                <configuration>
+                    <mainClass>com.scriptagher.MainApp</mainClass> <!-- Classe JavaFX -->
+                </configuration>
                 <executions>
                     <execution>
                         <goals>
@@ -195,8 +205,18 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+            <!-- Exec Maven Plugin (Opzionale, per Spring Boot standalone) -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>${mvnexec.version}</version>
                 <configuration>
-                    <mainClass>com.scriptagher.MainApp</mainClass>
+                    <mainClass>com.scriptagher.backend.SpringApp</mainClass>
+                    <arguments>
+                        <argument>-Djava.awt.headless=false</argument>
+                    </arguments>
                 </configuration>
             </plugin>
         </plugins>

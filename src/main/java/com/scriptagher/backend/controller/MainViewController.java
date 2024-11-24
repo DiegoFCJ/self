@@ -1,4 +1,4 @@
-package com.scriptagher.front.controller;
+package com.scriptagher.backend.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
