@@ -1,51 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="mainPane" prefHeight="431.0" prefWidth="638.0" style="-fx-background-color: #181818; -fx-border-radius: 10px;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.scriptagher.frontend.controller.MainViewController">
-    <top>
-        <fx:include source="HeaderBar.fxml" />
-    </top>
-   <center>
-      <TabPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #1f1f1f;" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
-        <tabs>
-          <Tab style="-fx-background-color: #1f1f1f;" text="first bot">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: #1f1f1f;">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.scriptagher.frontend.controller.MainViewController">
+   <children>
+      <BorderPane fx:id="mainPane" prefHeight="500.0" prefWidth="700.0" style="-fx-background-color: #181818; -fx-border-radius: 10px;">
+         <top>
+            <fx:include source="HeaderBar.fxml" />
+         </top>
+         <left>
+            <AnchorPane fx:id="leftPane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+               <children>
+                  <VBox focusTraversable="true" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
-                          <VBox alignment="CENTER" spacing="10" style="-fx-background-color: #1f1f1f;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                              <Button onAction="#handleButtonClick" text="Click Me">
-                              <cursor>
-                                 <Cursor fx:constant="HAND" />
-                              </cursor>
-                              </Button>
-                              <Label fx:id="welcomeLabel" alignment="CENTER" style="-fx-font-size: 24;" text="Benvenuto in Scriptagher!" textFill="WHITE" />
-                          </VBox>
+                        <Label minWidth="200.0" text="Label">
+                           <padding>
+                              <Insets bottom="3.0" left="5.0" top="2.0" />
+                           </padding>
+                        </Label>
+                        <MenuButton contentDisplay="RIGHT" minHeight="50.0" minWidth="200.0" mnemonicParsing="false" text="MenuButton" textFill="WHITE">
+                           <items>
+                              <MenuItem mnemonicParsing="false" text="Action 1" />
+                              <MenuItem mnemonicParsing="false" text="Action 2" />
+                           </items>
+                        </MenuButton>
                      </children>
-                  </AnchorPane>
-            </content>
-          </Tab>
-          <Tab style="-fx-background-color: #1f1f1f;" text="second Bot">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: #1f1f1f;" />
-            </content>
-          </Tab>
-        </tabs>
-      </TabPane>
-   </center>
-   <left>
-      <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: #181818; -fx-border-radius: 10px;" BorderPane.alignment="CENTER">
-         <children>
-            <VBox prefHeight="200.0" prefWidth="100.0" />
-         </children>
-      </StackPane>
-   </left>
-</BorderPane>
+                  </VBox>
+               </children>
+            </AnchorPane>
+         </left>
+         <center>
+            <TabPane fx:id="fullContent" nodeOrientation="LEFT_TO_RIGHT" style="-fx-background-color: transparent;" tabClosingPolicy="ALL_TABS" tabMaxHeight="20.0" tabMaxWidth="100.0" BorderPane.alignment="CENTER">
+               <tabs>
+                  <Tab style="-fx-background-color: #1f1f1f; -fx-color: white;" text="first bot">
+                     <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="423.0" prefWidth="468.0" style="-fx-background-color: #1f1f1f;">
+                           <children>
+                              <VBox alignment="CENTER" spacing="10" style="-fx-background-color: #1f1f1f;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <Button onAction="#handleButtonClick" text="Click Me">
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor>
+                                    </Button>
+                                    <Label fx:id="welcomeLabel" alignment="CENTER" style="-fx-font-size: 24;" text="Benvenuto in Scriptagher!" textFill="WHITE" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </AnchorPane>
+                     </content>
+                  </Tab>
+                  <Tab style="-fx-background-color: #1f1f1f;" text="second Bot">
+                     <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: #1f1f1f;" />
+                     </content>
+                  </Tab>
+               </tabs>
+               <cursor>
+                  <Cursor fx:constant="DEFAULT" />
+               </cursor>
+            </TabPane>
+         </center>
+         <right>
+            <Pane prefHeight="443.0" prefWidth="0.0" BorderPane.alignment="CENTER" />
+         </right>
+      </BorderPane>
+   </children>
+</AnchorPane>
