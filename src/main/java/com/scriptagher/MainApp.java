@@ -55,21 +55,30 @@ public class MainApp extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         CustomLogger.info("start", "Loading MainView.fxml");
+
+        // Carica la vista principale
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainView.fxml"));
         Parent root = loader.load();
+
+        // Configura la scena
         Scene scene = new Scene(root);
+
+        // Aggiungi il file CSS per il border-radius
+        scene.getStylesheets().add(getClass().getResource("/css/global.css").toExternalForm());
+
+        // Rendi la scena trasparente
+        scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
 
         CustomLogger.info("start", "Setting up the primary stage");
 
-        // Imposta la finestra senza bordi (senza barra del titolo)
-        primaryStage.initStyle(StageStyle.TRANSPARENT); // Questo rimuove la barra del titolo e i bordi
+        // Rimuovi la barra del titolo e i bordi della finestra
+        primaryStage.initStyle(StageStyle.TRANSPARENT);
 
-        // Opzionale: se vuoi anche rendere la finestra trasparente
-        primaryStage.setOpacity(1.0); // 1.0 è opaco, 0.0 è completamente trasparente
-
+        // Imposta la scena e mostra la finestra
         primaryStage.setScene(scene);
         primaryStage.setTitle("Scriptagher");
         primaryStage.show();
+
         CustomLogger.info("start", "JavaFX application started successfully");
     }
 

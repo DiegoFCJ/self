@@ -32,6 +32,11 @@ public class MainViewController implements Initializable {
         try {
             System.out.println("Inizializzo MainViewController...");
 
+            // Aggiungi lo stile CSS al mainPane
+            mainPane.getStylesheets().add(getClass().getResource("/css/global.css").toExternalForm());
+            mainPane.getStylesheets().add(getClass().getResource("/css/header.css").toExternalForm());
+            mainPane.getStyleClass().add("rounded-border");
+
             // Carica l'HeaderBar e ottieni il suo controller
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/HeaderBar.fxml"));
             mainPane.setTop(loader.load());
@@ -53,7 +58,7 @@ public class MainViewController implements Initializable {
                 headerBarController.configureDashboardButton(leftPane, fullContent);
                 System.out.println("Pannello sinistro inizialmente nascosto.");
             }
-            
+
             // Imposta dinamicamente il titolo
             headerBarController.setTitle("Scriptagher");
             System.out.println("Titolo impostato su 'Scriptagher'.");
@@ -61,7 +66,6 @@ public class MainViewController implements Initializable {
             System.err.println("Errore durante l'inizializzazione del MainViewController: ");
             e.printStackTrace();
         }
-
     }
 
     /**
