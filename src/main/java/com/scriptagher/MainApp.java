@@ -6,7 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-
+import javafx.scene.paint.Color;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import com.scriptagher.backend.SpringApp;
@@ -63,11 +63,8 @@ public class MainApp extends Application {
         // Configura la scena
         Scene scene = new Scene(root);
 
-        // Aggiungi il file CSS per il border-radius
-        scene.getStylesheets().add(getClass().getResource("/css/global.css").toExternalForm());
-
         // Rendi la scena trasparente
-        scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
+        scene.setFill(Color.TRANSPARENT);
 
         CustomLogger.info("start", "Setting up the primary stage");
 

@@ -7,64 +7,14 @@
     -fx-border-width: 0.5px;
 }
 
-/* Per l'AnchorPane */
-.anchor-pane {
-    -fx-border-radius: 10px;
-}
-
 /* Per il BorderPane */
 .border-pane {
     -fx-background-color: #181818;
-}
-
-.tab-pane {
-    -fx-background-color: transparent;
-    -fx-tab-max-height: 20px;
-    -fx-tab-max-width: 100px;
     -fx-border-color: #1f1f1f;
-    -fx-border-width: 0.5px;
-    -fx-background-radius: 0 0 10px 0;
-    -fx-border-radius: 0 0 10px 0;
-    -fx-padding: 0 0 0 0;
-}
-
-
-.tab {
-    -fx-background-color: #181818;
-    -fx-color: white;
-}
-
-/* Per i Tab */
-.tab-pane .tab-header-background {
-    -fx-background-color: #1f1f1f;
-}
-
-.tab-pane .tab-label {
-    -fx-text-fill: white;
-}
-
-/* Per l'AnchorPane interno ai Tab */
-.anchor-pane {
-    -fx-background-color: #1f1f1f;
-    -fx-border-radius: 10px;
-    -fx-border-color: #2b2b2b;
     -fx-border-width: 0.5px;
 }
 
 /* Per i pulsanti */
 .button {
     -fx-cursor: hand;
-}
-
-/* Per il Label di benvenuto */
-.label#welcomeLabel {
-    -fx-font-size: 24;
-    -fx-text-fill: white;
-}
-
-/* Per il MenuButton */
-.menu-button {
-    -fx-text-fill: white;
-    -fx-text-overrun: word-ellipsis;
-    -fx-font-size: 14px;
 }

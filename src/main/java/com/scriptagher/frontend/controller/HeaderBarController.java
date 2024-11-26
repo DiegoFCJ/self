@@ -116,7 +116,7 @@ public class HeaderBarController implements Initializable {
         double stepSize = (endMargin - startMargin) / (double) steps;
 
         // Durata totale dell'animazione
-        double totalDuration = 0.4; // secondi
+        double totalDuration = 0.1; // secondi
         double stepDuration = totalDuration / steps;
 
         for (int i = 0; i <= steps; i++) {
@@ -138,7 +138,7 @@ public class HeaderBarController implements Initializable {
      */
     private void animateSlide(AnchorPane leftPane, int widthChange, boolean visible) {
         TranslateTransition slide = new TranslateTransition();
-        slide.setDuration(Duration.seconds(0.4));
+        slide.setDuration(Duration.seconds(0.1));
         slide.setNode(leftPane);
         slide.setToX(visible ? 0 : widthChange);
         slide.setOnFinished(e -> leftPane.setVisible(visible));
@@ -150,7 +150,7 @@ public class HeaderBarController implements Initializable {
      */
     private void animateFullContent(TabPane fullContent, double fromX, double toX) {
         TranslateTransition transition = new TranslateTransition();
-        transition.setDuration(Duration.seconds(0.4));
+        transition.setDuration(Duration.seconds(0.1));
         transition.setNode(fullContent);
         transition.setFromX(fromX);
         transition.setToX(toX);
@@ -160,8 +160,9 @@ public class HeaderBarController implements Initializable {
     /**
      * Imposta dinamicamente il titolo della barra.
      */
-    public void setTitle(String title) {
-        titleLabel.setText(title);
+    public void setTitle() {
+        String userName = System.getProperty("user.name");
+        titleLabel.setText(userName.toUpperCase());
     }
 
     @FXML

@@ -1,0 +1,34 @@
+/* Per l'AnchorPane */
+.anchor-pane {
+    -fx-border-radius: 10px;
+    -fx-background-color: #1f1f1f;
+    -fx-border-color: #2b2b2b;
+    -fx-border-width: 0.5px;
+}
+
+/* Per il MenuButton */
+.menu-button {
+    -fx-background-color: #181818;
+    -fx-text-overrun: word-ellipsis;
+    -fx-font-size: 14px;
+}
+
+/* Per il MenuButton */
+.menu-button .label {
+    -fx-text-fill: white;
+}
+
+.menu-button .arrow-button .arrow{
+    -fx-text-fill: white;
+    -fx-background-color: white;
+}
+
+.menu-item {
+    -fx-background-color: #181818;
+    -fx-text-fill: white;
+}
+
+.menu-item:hover {
+    -fx-background-color: #1f1f1f;
+    -fx-text-fill: rgb(248, 248, 248);
+}

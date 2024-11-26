@@ -11,7 +11,8 @@
 
 <HBox alignment="CENTER_LEFT" minWidth="400.0" onDragDetected="#moveWindow" onDragOver="#releaseAndChangeCursor" 
       styleClass="hbox-header" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" 
-      fx:controller="com.scriptagher.frontend.controller.HeaderBarController">
+      fx:controller="com.scriptagher.frontend.controller.HeaderBarController"
+      stylesheets="@../css/header.css">
     <!-- Logo o icona -->
     <Circle radius="15" styleClass="logo-circle" />
 

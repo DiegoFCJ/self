@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane  
+    fx:id="leftPane"
+    prefHeight="200.0" 
+    prefWidth="200.0" 
+    stylesheets="@../css/left-pane.css"
+    BorderPane.alignment="CENTER"
+    xmlns="http://javafx.com/javafx/23.0.1" 
+    xmlns:fx="http://javafx.com/fxml/1" 
+    fx:controller="com.scriptagher.frontend.controller.LeftPaneController"
+>
+    <children>
+        <VBox 
+            prefHeight="200.0" 
+            prefWidth="100.0" 
+            style="-fx-border-color: #1f1f1f; -fx-border-width: 0.5px;" 
+            AnchorPane.bottomAnchor="0.0" 
+            AnchorPane.leftAnchor="0.0" 
+            AnchorPane.rightAnchor="0.0" 
+            AnchorPane.topAnchor="0.0"
+        >
+            <children>
+                <Label 
+                    minWidth="200.0" 
+                    text="Label"
+                >
+                    <padding>
+                        <Insets bottom="3.0" left="5.0" top="2.0" />
+                    </padding>
+                </Label>
+                <MenuButton 
+                    contentDisplay="RIGHT" 
+                    minHeight="50.0" 
+                    minWidth="200.0" 
+                    mnemonicParsing="false" 
+                    popupSide="RIGHT" 
+                    text="First Bot Menu"
+                >
+                    <items>
+                        <MenuItem 
+                            fx:id="menuItemAction1"
+                            mnemonicParsing="false" 
+                            text="Action 1" 
+                            onAction="#handleMenuAction1"
+                        />
+                        <MenuItem 
+                            fx:id="menuItemAction2"
+                            mnemonicParsing="false" 
+                            text="Action 2" 
+                            onAction="#handleMenuAction2"
+                        />
+                    </items>
+                    <cursor>
+                        <Cursor fx:constant="HAND" />
+                    </cursor>
+                </MenuButton>
+            </children>
+        </VBox>
+    </children>
+</AnchorPane>

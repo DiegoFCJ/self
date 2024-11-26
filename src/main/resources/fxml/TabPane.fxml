@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<TabPane 
+    fx:id="tabPane" 
+    xmlns="http://javafx.com/javafx/23.0.1" 
+    stylesheets="@../css/tab-pane.css" 
+    xmlns:fx="http://javafx.com/fxml/1" 
+    fx:controller="com.scriptagher.frontend.controller.TabPaneController"
+>
+    <tabs>
+        <Tab text="Tutorial" fx:id="tutorialTab">
+            <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="423.0" prefWidth="468.0">
+                    <children>
+                        <VBox alignment="CENTER" prefHeight="423.0" prefWidth="499.0" spacing="10" 
+                            AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="39.0" 
+                            AnchorPane.topAnchor="0.0"
+                        >
+                            <children>
+                                <Label 
+                                    fx:id="welcomeLabel" 
+                                    alignment="CENTER" 
+                                    text="Titolo + messaggio di Benvenuto in Scriptagher!" 
+                                />
+                                <Label 
+                                    alignment="CENTER" 
+                                    text="Questa sezione è dedicata al tutorial di utilizzo del software e ti permetterà di comprenderne meglio le sue funzionalità"
+                                />
+                                <Button 
+                                    onAction="#handleStartTutorial" 
+                                    text="Start Tutorial" 
+                                />
+                            </children>
+                        </VBox>
+                    </children>
+                </AnchorPane>
+            </content>
+        </Tab>
+        <Tab text="Bot Name">
+            <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="423.0" prefWidth="468.0">
+                    <children>
+                        <VBox 
+                            alignment="CENTER" 
+                            spacing="10" 
+                            AnchorPane.bottomAnchor="0.0" 
+                            AnchorPane.leftAnchor="0.0" 
+                            AnchorPane.rightAnchor="0.0" 
+                            AnchorPane.topAnchor="0.0"
+                        >
+                            <children>
+                                <Label 
+                                    fx:id="welcomeLabel1" 
+                                    alignment="CENTER" 
+                                    text="Benvenuto in Scriptagher!" 
+                                />
+                                <Label 
+                                    alignment="CENTER" 
+                                    text="Questa sezione è dedicata al tutorial di utilizzo del software e ti permetterà di comprenderne meglio le sue funzionalità"
+                                />
+                                <Button 
+                                    onAction="#handleStartTutorial" 
+                                    text="Start Tutorial" 
+                                />
+                            </children>
+                        </VBox>
+                    </children>
+                </AnchorPane>
+            </content>
+        </Tab>
+    </tabs>
+</TabPane>
