@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
     <Appenders>
-        <!-- Appender for BACK logs -->
         <RollingFile name="BackLogFile"
                      fileName="LOGS/${date:yyyy-MM-dd}/BASE-APP/BACK/scriptagher-backend_${date:yyyy-MM-dd_HH-mm-ss}.log"
                      filePattern="LOGS/${date:yyyy-MM-dd}/BASE-APP/BACK/scriptagher-backend_${date:yyyy-MM-dd_HH-mm-ss}-%i.log.gz">
@@ -16,7 +15,6 @@
             </DefaultRolloverStrategy>
         </RollingFile>
 
-        <!-- Appender for FRONT logs -->
         <RollingFile name="FrontLogFile"
                      fileName="LOGS/${date:yyyy-MM-dd}/BASE-APP/FRONT/scriptagher-frontend_${date:yyyy-MM-dd_HH-mm-ss}.log"
                      filePattern="LOGS/${date:yyyy-MM-dd}/BASE-APP/FRONT/scriptagher-frontend_${date:yyyy-MM-dd_HH-mm-ss}-%i.log.gz">
@@ -31,7 +29,6 @@
             </DefaultRolloverStrategy>
         </RollingFile>
 
-        <!-- Appender for DATA logs -->
         <RollingFile name="DataLogFile"
                      fileName="LOGS/${date:yyyy-MM-dd}/BASE-APP/DATA/scriptagher-data_${date:yyyy-MM-dd_HH-mm-ss}.log"
                      filePattern="LOGS/${date:yyyy-MM-dd}/BASE-APP/DATA/scriptagher-data_${date:yyyy-MM-dd_HH-mm-ss}-%i.log.gz">
@@ -59,35 +56,23 @@
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingFile>
-
     </Appenders>
 
     <Loggers>
-        <!-- Logger per i log del componente BACK -->
-        <Logger name="com.scriptagher.backend" level="DEBUG" additivity="false">
+        <Logger name="com.scriptagher.back" level="info" additivity="false">
             <AppenderRef ref="BackLogFile"/>
         </Logger>
-
-        <!-- Logger per i log del componente FRONT -->
-        <Logger name="com.scriptagher.frontend" level="DEBUG" additivity="false">
+        <Logger name="com.scriptagher.front" level="info" additivity="false">
             <AppenderRef ref="FrontLogFile"/>
         </Logger>
-
-        <!-- Logger per i log del componente DATA -->
-        <Logger name="com.scriptagher.data" level="DEBUG" additivity="false">
+        <Logger name="com.scriptagher.data" level="info" additivity="false">
             <AppenderRef ref="DataLogFile"/>
         </Logger>
-
-        <!-- Logger per log generali -->
-        <Logger name="com.scriptagher.general" level="DEBUG" additivity="false">
+        <Logger name="com.scriptagher.general" level="info" additivity="false">
             <AppenderRef ref="GeneralLogFile"/>
         </Logger>
-
-        <!-- Logger radice -->
-        <Root level="ERROR">
+        <Root level="info">
             <AppenderRef ref="GeneralLogFile"/>
         </Root>
     </Loggers>
-
-
 </Configuration>

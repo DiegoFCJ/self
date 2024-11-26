@@ -1,10 +1,8 @@
 package com.scriptagher.frontend.controller;
 
-import java.net.URL;
-import java.util.ResourceBundle;
 import com.scriptagher.frontend.service.MaximizeService;
+import com.scriptagher.frontend.service.StageManager;
 import com.scriptagher.frontend.service.WindowService;
-
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
@@ -18,8 +16,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Stage;
 import javafx.util.Duration;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 public class HeaderBarController implements Initializable {
 
@@ -48,15 +47,18 @@ public class HeaderBarController implements Initializable {
     public void initialize(URL url, ResourceBundle bundle) {
         // Configura i pulsanti della finestra
         closeButton.setOnAction(e -> System.exit(0));
+
         minimizeButton.setOnAction(e -> {
-            Stage stage = (Stage) minimizeButton.getScene().getWindow();
-            stage.setIconified(true);
+            // Usa StageManager per minimizzare la finestra
+            StageManager.minimize();
         });
+
         maximizeButton.setOnAction(e -> {
-            Stage stage = (Stage) maximizeButton.getScene().getWindow();
-            maximizeService.updateMaximizeButton(stage, maximizeButton);
-            stage.setFullScreen(!stage.isFullScreen());
+            // Usa StageManager per gestire la massimizzazione
+            StageManager.maximize();
+            maximizeService.updateMaximizeButton(StageManager.getStage(), maximizeButton);
         });
+
         back.setOnAction(e -> System.out.println("back: " + e));
     }
 
@@ -102,6 +104,7 @@ public class HeaderBarController implements Initializable {
             }
         });
     }
+
 
     /**
      * Anima i margini di un nodo in modo fluido utilizzando una Timeline.

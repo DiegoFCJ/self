@@ -10,6 +10,7 @@ import javafx.scene.paint.Color;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import com.scriptagher.backend.SpringApp;
+import com.scriptagher.frontend.service.StageManager;
 import com.scriptagher.shared.logger.CustomLogger;
 
 import java.io.IOException;
@@ -56,27 +57,23 @@ public class MainApp extends Application {
     public void start(Stage primaryStage) throws IOException {
         CustomLogger.info("start", "Loading MainView.fxml");
 
-        // Carica la vista principale
+        // Imposta lo stage nel StageManager
+        if (primaryStage != null) {
+            StageManager.setStage(primaryStage);
+            System.out.println("Stage impostato correttamente: " + primaryStage);
+        } else {
+            System.err.println("primaryStage è nullo");
+        }
+
+        // Continua con il caricamento della scena
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainView.fxml"));
         Parent root = loader.load();
-
-        // Configura la scena
         Scene scene = new Scene(root);
-
-        // Rendi la scena trasparente
         scene.setFill(Color.TRANSPARENT);
-
-        CustomLogger.info("start", "Setting up the primary stage");
-
-        // Rimuovi la barra del titolo e i bordi della finestra
         primaryStage.initStyle(StageStyle.TRANSPARENT);
-
-        // Imposta la scena e mostra la finestra
         primaryStage.setScene(scene);
         primaryStage.setTitle("Scriptagher");
         primaryStage.show();
-
-        CustomLogger.info("start", "JavaFX application started successfully");
     }
 
     /**

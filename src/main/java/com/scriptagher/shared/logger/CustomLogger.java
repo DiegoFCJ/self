@@ -9,13 +9,14 @@ import java.time.format.DateTimeFormatter;
 
 /**
  * Utility class for logging operations throughout the application.
- * This class provides methods to log messages at various levels, 
+ * This class provides methods to log messages at various levels,
  * including debug, info, warn, and error.
- * It also facilitates the creation of a ChromeDriver service with logging capabilities.
+ * It also facilitates the creation of a ChromeDriver service with logging
+ * capabilities.
  */
 public class CustomLogger {
     private static final Logger logger = LoggerFactory.getLogger(CustomLogger.class);
-    
+
     private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final String todayDate = LocalDateTime.now().format(dateFormatter);
 
@@ -71,24 +72,28 @@ public class CustomLogger {
         } else {
             component = "GENERAL";
         }
-        // System.out.println(operationType + "operation" + component);
+        System.out.println("operationType: " + operationType + "\n component: " + component);
         return component;
-    }    
+    }
 
     /**
      * Logs a message with a specified level, operation type, and description.
      *
-     * @param level        The level of the log (DEBUG, INFO, WARN, ERROR).
+     * @param level         The level of the log (DEBUG, INFO, WARN, ERROR).
      * @param operationType The type of operation being logged.
      * @param description   A description of the log message.
      */
     private static void log(String level, String operationType, String description) {
-        String logDirectory = String.format("LOGS/%s/BASE-APP/%s", todayDate, componentCheck(operationType));
-        //System.out.println(componentCheck(operationType) + "            logDirectory           " + logDirectory + "            operationType           " + operationType);
         String component = determineComponent();
+        String logDirectory = String.format("LOGS/%s/BASE-APP/%s", todayDate, component);
 
         Logger componentLogger = LoggerFactory.getLogger("com.scriptagher." + component.toLowerCase());
-        File logFile = createLogFile(logDirectory);
+        File logFile = createLogFile(logDirectory, component);
+
+        System.out.println("component: " + component);
+        System.out.println("logDirectory: " + logDirectory);
+        System.out.println("componentLogger: " + componentLogger);
+        System.out.println("logFile: " + logFile);
 
         // Ensure the directory exists
         if (!logFile.getParentFile().exists() && !logFile.getParentFile().mkdirs()) {
@@ -100,24 +105,26 @@ public class CustomLogger {
     }
 
     /**
-     * Finds the first caller StackTraceElement that is not part of the logger utility
+     * Finds the first caller StackTraceElement that is not part of the logger
+     * utility
      * or the Java standard libraries.
      *
      * @return The StackTraceElement representing the caller.
      */
     private static StackTraceElement findCallerStackTraceElement() {
         StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-        
+
         for (int i = 3; i < stackTrace.length; i++) {
             StackTraceElement element = stackTrace[i];
             String className = element.getClassName();
-            
-            // Check if this class name is NOT the logger utility class or Java standard classes
+
+            // Check if this class name is NOT the logger utility class or Java standard
+            // classes
             if (!className.contains("shared.logger.CustomLogger") && !className.startsWith("java.")) {
                 return element; // Return the first non-logger and non-standard class
             }
         }
-        
+
         throw new IllegalStateException("No suitable caller found in the stack trace.");
     }
 
@@ -133,19 +140,39 @@ public class CustomLogger {
         // Check if the class name matches any of the expected components
         String classUpperFolder = getClassNameAfter(caller.getClassName(), "scriptagher");
         String component;
+        System.out.println(caller.getClassName());
         component = componentCheck(classUpperFolder);
-        
+
         return component;
     }
 
     /**
-     * Creates a log file with the current date and time in the specified log directory.
+     * Creates a log file with the current date and time in the specified log
+     * directory.
      *
      * @param logDirectory The directory where the log file will be created.
      * @return A File object representing the log file.
      */
-    private static File createLogFile(String logDirectory) {
-        return new File(logDirectory + "/scriptagher_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss")) + ".log");
+    private static File createLogFile(String logDirectory, String component) {
+        String componentExtName = "";
+        switch (component) {
+            case "BACK":
+                componentExtName = "backend_";
+                break;
+            case "FRONT":
+                componentExtName = "frontend_";
+                break;
+            case "DATA":
+                componentExtName = "data_";
+                break;
+
+            default:
+                componentExtName = "general_";
+        }
+
+        return new File(logDirectory + "/scriptagher-"
+                + componentExtName
+                + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss")) + ".log");
     }
 
     /**
@@ -165,22 +192,22 @@ public class CustomLogger {
         StackTraceElement caller = findCallerStackTraceElement();
 
         return String.format(
-            LOGS.LOG_FORMAT,
-            now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),     // Date
-            now.format(DateTimeFormatter.ofPattern("HH:mm:ss,SSS")),   // Time with milliseconds
-            threadId,                                                  // Thread ID
-            level,                                                     // Log level
-            getClassNameAfter(caller.getClassName(), "scriptagher"), // Class name
-            caller.getLineNumber(),                                   // Line number
-            operationType,                                            // Operation type
-            description                                               // Description
+                LOGS.LOG_FORMAT,
+                now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), // Date
+                now.format(DateTimeFormatter.ofPattern("HH:mm:ss,SSS")), // Time with milliseconds
+                threadId, // Thread ID
+                level, // Log level
+                getClassNameAfter(caller.getClassName(), "scriptagher"), // Class name
+                caller.getLineNumber(), // Line number
+                operationType, // Operation type
+                description // Description
         );
     }
 
     /**
      * Logs the message at the specified level using the appropriate logger.
      *
-     * @param level           The level of the log (DEBUG, INFO, WARN, ERROR).
+     * @param level            The level of the log (DEBUG, INFO, WARN, ERROR).
      * @param formattedMessage The formatted log message to be logged.
      * @param componentLogger  The logger instance for the specific component.
      */
@@ -199,16 +226,18 @@ public class CustomLogger {
                 componentLogger.error(formattedMessage);
                 break;
             default:
-                componentLogger.info(formattedMessage); // Default to INFO level
+                componentLogger.info(formattedMessage);
                 break;
         }
     }
 
     /**
-     * Extracts the simple class name from the full class name based on a specified package part.
+     * Extracts the simple class name from the full class name based on a specified
+     * package part.
      *
      * @param fullClassName The full name of the class.
-     * @param packagePart   The package part to be stripped from the full class name.
+     * @param packagePart   The package part to be stripped from the full class
+     *                      name.
      * @return The simple class name.
      */
     private static String getClassNameAfter(String fullClassName, String packagePart) {
@@ -222,33 +251,35 @@ public class CustomLogger {
     /**
      * Determines the log directory based on the specified component.
      * 
-     * @param component The component for which the log directory needs to be determined.
+     * @param component The component for which the log directory needs to be
+     *                  determined.
      * @return The log directory path.
      */
     public static void cleanEmptyLogFiles() {
         String logDirectoryPath = "LOGS/" + todayDate; // Path to the log directory
-    
+
         File logDirectory = new File(logDirectoryPath);
         if (logDirectory.exists() && logDirectory.isDirectory()) {
             // List all subdirectories in the log directory (e.g., BASE-APP)
             File[] componentDirs = logDirectory.listFiles(File::isDirectory);
-    
+
             if (componentDirs != null) {
                 for (File componentDir : componentDirs) {
-                    
-                    // List all subdirectories in the component directory (e.g., BACK, FRONT, DB, DRIVER, GENERAL)
+
+                    // List all subdirectories in the component directory (e.g., BACK, FRONT, DB,
+                    // DRIVER, GENERAL)
                     File[] subDirs = componentDir.listFiles(File::isDirectory);
                     if (subDirs != null) {
                         for (File subDir : subDirs) {
-                            
+
                             // List all log files in the subdirectory
                             File[] logFiles = subDir.listFiles(File::isFile);
-                            
+
                             if (logFiles != null) {
                                 boolean foundEmptyFile = false; // Flag to check if any empty file is found
-    
+
                                 for (File logFile : logFiles) {
-                                    
+
                                     // Check if the file is empty
                                     if (logFile.length() == 0) {
                                         foundEmptyFile = true; // Set flag to true
@@ -256,22 +287,25 @@ public class CustomLogger {
                                         if (logFile.delete()) {
                                             logger.info("Deleted empty log file: " + logFile.getAbsolutePath());
                                         } else {
-                                            logger.warn("Failed to delete empty log file: " + logFile.getAbsolutePath());
+                                            logger.warn(
+                                                    "Failed to delete empty log file: " + logFile.getAbsolutePath());
                                         }
                                     } else {
                                     }
                                 }
-    
+
                                 // Check if any empty files were found in this subdirectory
                                 if (!foundEmptyFile) {
-                                    logger.info("No empty log files found in subdirectory: " + subDir.getAbsolutePath());
+                                    logger.info(
+                                            "No empty log files found in subdirectory: " + subDir.getAbsolutePath());
                                 }
                             } else {
                                 logger.warn("No log files found in subdirectory: " + subDir.getAbsolutePath());
                             }
                         }
                     } else {
-                        logger.warn("No subdirectories found in component directory: " + componentDir.getAbsolutePath());
+                        logger.warn(
+                                "No subdirectories found in component directory: " + componentDir.getAbsolutePath());
                     }
                 }
             } else {
@@ -281,5 +315,4 @@ public class CustomLogger {
             logger.warn("Log directory does not exist: " + logDirectoryPath);
         }
     }
-    
 }
