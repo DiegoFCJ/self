@@ -30,7 +30,7 @@ section {
     margin-bottom: 30px;
 }
 
-section h2{
+section h2 {
     margin-bottom: 10px;
     display: flex;
     flex-direction: column;
@@ -65,6 +65,7 @@ section h2{
 
 .button {
     background-color: #007BFF !important;
+    padding-inline: 12px !important;
 }
 
 .button:hover {
@@ -80,6 +81,7 @@ button {
     display: inline-block;
     border: none;
     cursor: pointer;
+    margin: 3px;
 }
 
 button:hover {
