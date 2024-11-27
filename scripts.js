@@ -121,7 +121,7 @@ function capitalize(str) {
  * @param {string} botName - The name of the bot to download.
  */
 function downloadBot(language, botName) {
-    const url = `https://raw.githubusercontent.com/diegofcj/scriptagher/bot-list/bots/${language}/${botName}.zip`;
+    const url = `https://raw.githubusercontent.com/diegofcj/scriptagher/bot-list/bots/${language}/${botName}/${botName}.zip`;
     fetch(url)
         .then((response) => {
             if (!response.ok) {
