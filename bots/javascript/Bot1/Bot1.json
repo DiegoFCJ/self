@@ -1,5 +1,6 @@
 {
     "botName": "Bot2",
     "startCommand": "node bots/Bot2/Bot2.js",
+    "description": "This bot performs automated data scraping for websites.",
     "language": "javascript"
 }
