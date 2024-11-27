@@ -89,20 +89,46 @@ async function fetchBots(basePath, language) {
     const botFolderPath = `${basePath}/${language}`;
 
     try {
-        const response = await fetch(`${botFolderPath}/Bot1/bot.json`); // Assuming each bot has a bot.json
-        if (response.ok) {
-            const botData = await response.json();
-            bots.push({
-                botName: botData.botName,
-                description: botData.description,
-                sourcePath: botData.startCommand.replace('python3 ', '').replace('java -jar ', '').replace('node ', ''),
-            });
+        // Fetch all bot folders in the language directory
+        const botDirs = await fetchBotDirectories(botFolderPath); // Dynamically fetch bot directories
+
+        // For each bot directory, fetch the corresponding bot.json file
+        for (const botDir of botDirs) {
+            const botJsonPath = `${botFolderPath}/${botDir}/bot.json`;
+
+            try {
+                const response = await fetch(botJsonPath);
+                if (response.ok) {
+                    const botData = await response.json();
+                    bots.push({
+                        botName: botData.botName,
+                        description: botData.description,
+                        sourcePath: botData.startCommand.replace('python3 ', '').replace('java -jar ', '').replace('node ', ''),
+                    });
+                }
+            } catch (error) {
+                console.error(`No bot.json found for ${botDir} in ${language} folder.`);
+            }
         }
     } catch (error) {
         console.error(`No bots found in ${language} folder.`);
     }
 
     return bots;
+}
+
+/**
+ * Fetches the list of bot directories in a given language folder.
+ * @param {string} path - The path to the language folder.
+ * @returns {Promise<string[]>} - Array of bot folder names.
+ */
+async function fetchBotDirectories(path) {
+    // This function assumes you have a list of bot directories you want to check.
+    // GitHub Pages does not allow directory listings, so you need to know your directory structure.
+    // For now, we will statically return bot directories, but you could also use an API to dynamically list them if available.
+
+    // Example static return, modify if you have other ways to list directories dynamically
+    return ['Bot1', 'Bot2'];
 }
 
 /**
@@ -115,11 +141,11 @@ function capitalize(str) {
 }
 
 /**
-* Function to handle bot downloads.
-* This interacts with the backend API to download bots dynamically.
-* @param {string} language - The language folder of the bot (e.g., 'java', 'python').
-* @param {string} botName - The name of the bot to download.
-*/
+ * Function to handle bot downloads.
+ * This interacts with the backend API to download bots dynamically.
+ * @param {string} language - The language folder of the bot (e.g., 'java', 'python').
+ * @param {string} botName - The name of the bot to download.
+ */
 function downloadBot(language, botName) {
    const url = `/api/bots/${language}/${botName}/download`;
    fetch(url)
