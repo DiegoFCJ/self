@@ -59,6 +59,7 @@ async function populateBotList() {
  */
 async function fetchBotsConfig(basePath) {
     try {
+        // Usa il percorso corretto per il file bots.json
         const response = await fetch(`${basePath}/bots.json`);
         if (!response.ok) {
             throw new Error('Failed to fetch bots configuration.');
@@ -69,6 +70,39 @@ async function fetchBotsConfig(basePath) {
         console.error('Error fetching bots configuration:', error);
         return {}; // Return empty object in case of error
     }
+}
+
+async function fetchBots(basePath, language) {
+    const bots = [];
+    const botFolderPath = `${basePath}/${language}`;
+
+    try {
+        // Carica la configurazione dal file bots.json
+        const botDirs = await fetchBotDirectories(botFolderPath); // Ottieni le cartelle dei bot dal file bots.json
+
+        // Per ogni bot, carica il file bot.json
+        for (const bot of botDirs) {
+            const botJsonPath = `${basePath}/${language}/${bot.path}`;  // Usa il percorso corretto per il bot
+
+            try {
+                const response = await fetch(botJsonPath);
+                if (response.ok) {
+                    const botData = await response.json();
+                    bots.push({
+                        botName: botData.botName,
+                        description: botData.description || 'No description available',
+                        sourcePath: botData.startCommand.replace('python3 ', '').replace('java -jar ', '').replace('node ', ''),
+                    });
+                }
+            } catch (error) {
+                console.error(`No bot.json found for ${bot.botName} in ${language} folder.`);
+            }
+        }
+    } catch (error) {
+        console.error(`No bots found in ${language} folder.`);
+    }
+
+    return bots;
 }
 
 /**

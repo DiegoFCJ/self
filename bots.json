@@ -2,23 +2,23 @@
     "java": [
         {
             "botName": "Bot1",
-            "path": "Bot1/bot.json"
+            "path": "java/Bot1/bot.json"
         },
         {
             "botName": "Bot2",
-            "path": "Bot2/bot.json"
+            "path": "java/Bot2/bot.json"
         }
     ],
     "javascript": [
         {
             "botName": "Bot1",
-            "path": "Bot1/bot.json"
+            "path": "javascript/Bot1/bot.json"
         }
     ],
     "python": [
         {
             "botName": "Bot1",
-            "path": "Bot1/bot1.json"
+            "path": "python/Bot1/bot1.json"
         }
     ]
 }
