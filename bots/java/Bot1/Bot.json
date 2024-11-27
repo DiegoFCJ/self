@@ -1,0 +1,9 @@
+{
+    "botName": "Bot1",
+    "startCommand": "java -cp . bots.java.Bot1.Bot1",
+    "description": "This bot performs automated data scraping for websites.",
+    "language": "java"
+}
+
+
+   

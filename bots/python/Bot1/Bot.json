@@ -1,0 +1,6 @@
+{
+    "botName": "Bot3",
+    "startCommand": "python3 bots/python/Bot3/Bot3.py",
+    "description": "This bot performs automated data scraping for websites.",
+    "language": "Python"
+}
