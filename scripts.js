@@ -1,17 +1,19 @@
 // Base path for bots
 const BASE_PATH = 'bots';
 
+// Function to initialize the bot list on page load
+document.addEventListener('DOMContentLoaded', populateBotList);
+
 /**
- * Fetch JSON files for each bot dynamically.
+ * Populate the bot list dynamically by checking existing language directories.
  */
 async function populateBotList() {
     try {
-        // Fetch the folder structure from the backend
         const languages = await fetchLanguages(BASE_PATH);
 
         // Access the main container for bot sections
         const botSections = document.getElementById('bot-sections');
-        botSections.innerHTML = '';
+        botSections.innerHTML = ''; // Clear existing content
 
         for (const language of languages) {
             // Fetch bots in each language folder
@@ -27,6 +29,7 @@ async function populateBotList() {
             const botContainer = document.createElement('div');
             botContainer.classList.add('bot-container');
 
+            // Add each bot under the corresponding language section
             for (const bot of bots) {
                 const botDiv = document.createElement('div');
                 botDiv.classList.add('bot');
@@ -49,13 +52,30 @@ async function populateBotList() {
 }
 
 /**
- * Fetches the list of languages (folders) in the bots directory.
+ * Fetches the list of language directories (folders) in the bots directory.
+ * It checks if a folder contains any bot JSON files by attempting to fetch a sample bot JSON.
  * @param {string} basePath - Base path for bots.
  * @returns {Promise<string[]>} - Array of language folder names.
  */
 async function fetchLanguages(basePath) {
-    const response = await fetch(`${basePath}/languages.json`);
-    return response.json();
+    const languages = [];
+    const languageDirs = ['java', 'javascript', 'python']; // Static list of possible languages
+
+    // Check each language directory to see if it exists by attempting to fetch a bot JSON file
+    for (const language of languageDirs) {
+        const pathToCheck = `${basePath}/${language}/Bot1/bot.json`; // Sample bot file to check existence
+
+        try {
+            const response = await fetch(pathToCheck);
+            if (response.ok) {
+                languages.push(language); // Add language to list if folder exists
+            }
+        } catch (error) {
+            console.log(`${language} folder does not exist.`);
+        }
+    }
+
+    return languages;
 }
 
 /**
@@ -66,18 +86,20 @@ async function fetchLanguages(basePath) {
  */
 async function fetchBots(basePath, language) {
     const bots = [];
-    const response = await fetch(`${basePath}/${language}/bots.json`);
-    const botFiles = await response.json();
+    const botFolderPath = `${basePath}/${language}`;
 
-    for (const botFile of botFiles) {
-        const botResponse = await fetch(`${basePath}/${language}/${botFile}/bot.json`);
-        const botData = await botResponse.json();
-
-        bots.push({
-            botName: botData.botName,
-            description: botData.description,
-            sourcePath: botData.startCommand.replace('python3 ', '').replace('java -jar ', '').replace('node ', ''),
-        });
+    try {
+        const response = await fetch(`${botFolderPath}/Bot1/bot.json`); // Assuming each bot has a bot.json
+        if (response.ok) {
+            const botData = await response.json();
+            bots.push({
+                botName: botData.botName,
+                description: botData.description,
+                sourcePath: botData.startCommand.replace('python3 ', '').replace('java -jar ', '').replace('node ', ''),
+            });
+        }
+    } catch (error) {
+        console.error(`No bots found in ${language} folder.`);
     }
 
     return bots;
@@ -90,15 +112,6 @@ async function fetchBots(basePath, language) {
  */
 function capitalize(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-/**
- * Handles bot download functionality (placeholder).
- * @param {string} language - The bot's programming language.
- * @param {string} botName - The bot's name.
- */
-function downloadBot(language, botName) {
-    alert(`Download functionality for ${botName} in ${language} will be implemented.`);
 }
 
 /**
@@ -127,6 +140,3 @@ function downloadBot(language, botName) {
            alert('Could not download the bot. Please try again.');
        });
 }
-
-// Initialize the bot list on page load
-document.addEventListener('DOMContentLoaded', populateBotList);
