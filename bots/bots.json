@@ -1,24 +1,28 @@
 {
+    "python": [
+        {
+            "botName": "Bot1",
+            "path": "Bot1.zip"
+        },
+        {
+            "botName": "Zipper",
+            "path": "Zipper.zip"
+        }
+    ],
     "java": [
         {
             "botName": "Bot1",
-            "path": "java/Bot1/bot.json"
+            "path": "Bot1.zip"
         },
         {
             "botName": "Bot2",
-            "path": "java/Bot2/bot.json"
+            "path": "Bot2.zip"
         }
     ],
     "javascript": [
         {
             "botName": "Bot1",
-            "path": "javascript/Bot1/bot.json"
-        }
-    ],
-    "python": [
-        {
-            "botName": "Bot1",
-            "path": "python/Bot1/bot1.json"
+            "path": "Bot1.zip"
         }
     ]
 }
