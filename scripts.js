@@ -45,7 +45,7 @@ async function populateBotList() {
                     botDiv.innerHTML = `
                         <h3>${botDetails.botName}</h3>
                         <p>Description: ${botDetails.description || 'No description available'}</p>
-                        <p>Start Command: ${botDetails.startCommand || 'No start commands provided'}</p>
+                        <p>Start Command <br>${botDetails.startCommand || 'No start commands provided'}</p>
                         <button onclick="window.open('${botDetails.sourcePath || '#'}', '_blank');" class="button">View Source</button>
                         <button onclick="downloadBot('${language}', '${bot.botName}')">Download</button>
                     `;

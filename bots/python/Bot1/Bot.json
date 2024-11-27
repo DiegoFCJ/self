@@ -1,6 +1,6 @@
 {
     "botName": "Bot3",
-    "startCommand": "python3 bots/python/Bot3/Bot3.py",
+    "startCommand": "python3 Bot3.py",
     "description": "This bot performs automated data scraping for websites.",
     "sourcePath": "https://github.com/DiegoFCJ/scriptagher/tree/bot-list-dev/bots/python/Bot1/Bot1",
     "language": "Python"
