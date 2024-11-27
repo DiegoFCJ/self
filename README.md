@@ -40,24 +40,12 @@ Adding your bot to the repository involves the following steps:
 Each bot folder must include a JSON file named `<bot-name>`.json. This file should contain:
 ```json
 {
-    "botName": "MyAwesomeBot",
-    "description": "This bot automates XYZ tasks.",
-    "startCommand": "python3 bots/python/MyAwesomeBot/MyAwesomeBot.py",
-    "language": "Python"
+    "botName": "",
+    "description": "",
+    "startCommand": "",
+    "sourcePath": "",
+    "language": ""
 }
-```
-### 5. Add Links in index.html
-Update the HTML file (index.html) to include your bot:
-
-1. Add a new `<li>` element under the appropriate language section.
-2. Ensure it links to your bot's primary file and includes a brief description.
-
-Example: 
-```html
-<li>
-    <a href="bots/python/MyAwesomeBot/MyAwesomeBot.py" target="_blank">MyAwesomeBot</a>
-    - Automates XYZ tasks.
-</li>
 ```
 
 ### 🔑 Rules for Adding Bots
@@ -79,7 +67,7 @@ Example:
 bots/
 └── python/
     └── MyAwesomeBot/
-        ├── MyAwesomeBot.py
+        ├── MyAwesomeBot.zip
         ├── MyAwesomeBot.json
 ```
 
@@ -89,6 +77,7 @@ bots/
     "botName": "MyAwesomeBot",
     "description": "This bot performs automated data scraping for websites.",
     "startCommand": "python3 bots/python/MyAwesomeBot/MyAwesomeBot.py",
+    "sourcePath": "https://github.com/<YourGitHubName>/MyAwesomeBot",
     "language": "Python"
 }
 ```
@@ -99,18 +88,24 @@ bots/
 3. Bot Hosting: Bots are hosted in this repository and served via GitHub Pages for easy downloading.
 
 ### 🌟 Submitting a Pull Request
-1. After adding your bot and updating the necessary files, commit your changes:
+1. Create a new branch under bot-list-feature branch:
+    ```bash
+    git checkout bot-list-feature
+    git checkout -b Your-Bot-Name
+    ```
+
+2. After adding your bot and updating the necessary files, commit your changes:
     ```bash
     git add .
     git commit -m "Added MyAwesomeBot"
     ```
 
-2. Push your changes to your forked repository:
+3. Push your changes to your forked repository:
     ```bash
     git push origin main
     ```
 
-3. Open a Pull Request to the original repository with a clear description of your bot.
+4. Open a Pull Request to the original repository with a clear description of your bot.
 
 ### 🛡 License
 By contributing, you agree that your bot will be open-sourced under the same license as this repository. Ensure you have the rights to share the bot.
