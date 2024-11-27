@@ -2,5 +2,6 @@
     "botName": "Bot2",
     "startCommand": "node bots/javascript/Bot2/Bot2.js",
     "description": "This bot performs automated data scraping for websites.",
+    "sourcePath": "https://github.com/DiegoFCJ/scriptagher/tree/bot-list-dev/bots/javascript/Bot1/Bot1",
     "language": "javascript"
 }

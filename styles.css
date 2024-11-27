@@ -64,31 +64,26 @@ section h2{
 }
 
 .button {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: #007BFF;
-    color: #ffffff;
-    border-radius: 5px;
-    text-decoration: none;
-    font-size: 0.9rem;
+    background-color: #007BFF !important;
 }
 
 .button:hover {
-    background-color: #0056b3;
+    background-color: #0056b3 !important;
 }
 
 button {
-    padding: 10px 20px;
-    background-color: #28a745;
+    background-color: #00b7ff;
     color: #ffffff;
-    border: none;
+    padding: 10px 20px;
     border-radius: 5px;
     font-size: 0.9rem;
+    display: inline-block;
+    border: none;
     cursor: pointer;
 }
 
 button:hover {
-    background-color: #218838;
+    background-color: #0080b3;
 }
 
 /* Footer */
