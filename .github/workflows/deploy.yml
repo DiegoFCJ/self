@@ -1,0 +1,23 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - bot-list  # Trigger del workflow quando viene fatto un push sul branch 'bot-list'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest  # Esegui il workflow su un runner Ubuntu
+
+    steps:
+    # Checkout del codice
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    # Impostazione di GitHub Pages
+    - name: Setup Pages
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        branch: gh-pages  # Nome del branch su cui fare il deploy (di solito gh-pages)
+        folder: .  # La cartella che contiene il sito (la root in questo caso)
+        token: ${{ secrets.GITHUB_TOKEN }}  # Usa il token segreto per l'autenticazione
