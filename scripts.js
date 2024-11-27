@@ -5,21 +5,22 @@ const BASE_PATH = 'bots';
 document.addEventListener('DOMContentLoaded', populateBotList);
 
 /**
- * Populate the bot list dynamically by checking existing language directories.
+ * Populate the bot list dynamically by checking the bots.json file.
  */
 async function populateBotList() {
     try {
-        const languages = await fetchLanguages(BASE_PATH);
+        // Load the bots.json configuration
+        const botsConfig = await fetchBotsConfig(BASE_PATH);
 
         // Access the main container for bot sections
         const botSections = document.getElementById('bot-sections');
         botSections.innerHTML = ''; // Clear existing content
 
-        for (const language of languages) {
-            // Fetch bots in each language folder
-            const bots = await fetchBots(BASE_PATH, language);
+        // Iterate through each language in botsConfig
+        for (const language in botsConfig) {
+            const bots = botsConfig[language];
 
-            // If there are no bots, skip this language
+            // If there are no bots for this language, skip it
             if (bots.length === 0) continue;
 
             // Create a section for the language
@@ -36,8 +37,8 @@ async function populateBotList() {
 
                 botDiv.innerHTML = `
                     <h3>${bot.botName}</h3>
-                    <p>Description: ${bot.description}</p>
-                    <a href="${bot.sourcePath}" target="_blank" class="button">View Source</a>
+                    <p>Description: ${bot.description || 'No description available'}</p>
+                    <a href="${bot.sourcePath || '#'}" target="_blank" class="button">View Source</a>
                     <button onclick="downloadBot('${language}', '${bot.botName}')">Download</button>
                 `;
                 botContainer.appendChild(botDiv);
@@ -52,83 +53,22 @@ async function populateBotList() {
 }
 
 /**
- * Fetches the list of language directories (folders) in the bots directory.
- * It checks if a folder contains any bot JSON files by attempting to fetch a sample bot JSON.
- * @param {string} basePath - Base path for bots.
- * @returns {Promise<string[]>} - Array of language folder names.
+ * Fetch the bots configuration from bots.json.
+ * @param {string} basePath - The base path for bots.
+ * @returns {Promise<Object>} - The bots configuration object.
  */
-async function fetchLanguages(basePath) {
-    const languages = [];
-    const languageDirs = ['java', 'javascript', 'python']; // Static list of possible languages
-
-    // Check each language directory to see if it exists by attempting to fetch a bot JSON file
-    for (const language of languageDirs) {
-        const pathToCheck = `${basePath}/${language}/Bot1/bot.json`; // Sample bot file to check existence
-
-        try {
-            const response = await fetch(pathToCheck);
-            if (response.ok) {
-                languages.push(language); // Add language to list if folder exists
-            }
-        } catch (error) {
-            console.log(`${language} folder does not exist.`);
-        }
-    }
-
-    return languages;
-}
-
-/**
- * Fetches bots for a specific language by reading their JSON files.
- * @param {string} basePath - Base path for bots.
- * @param {string} language - Language folder name.
- * @returns {Promise<Object[]>} - Array of bot objects.
- */
-async function fetchBots(basePath, language) {
-    const bots = [];
-    const botFolderPath = `${basePath}/${language}`;
-
+async function fetchBotsConfig(basePath) {
     try {
-        // Fetch all bot folders in the language directory
-        const botDirs = await fetchBotDirectories(botFolderPath); // Dynamically fetch bot directories
-
-        // For each bot directory, fetch the corresponding bot.json file
-        for (const botDir of botDirs) {
-            const botJsonPath = `${botFolderPath}/${botDir}/bot.json`;
-
-            try {
-                const response = await fetch(botJsonPath);
-                if (response.ok) {
-                    const botData = await response.json();
-                    bots.push({
-                        botName: botData.botName,
-                        description: botData.description,
-                        sourcePath: botData.startCommand.replace('python3 ', '').replace('java -jar ', '').replace('node ', ''),
-                    });
-                }
-            } catch (error) {
-                console.error(`No bot.json found for ${botDir} in ${language} folder.`);
-            }
+        const response = await fetch(`${basePath}/bots.json`);
+        if (!response.ok) {
+            throw new Error('Failed to fetch bots configuration.');
         }
+        const botsConfig = await response.json();
+        return botsConfig;
     } catch (error) {
-        console.error(`No bots found in ${language} folder.`);
+        console.error('Error fetching bots configuration:', error);
+        return {}; // Return empty object in case of error
     }
-
-    return bots;
-}
-
-/**
- * Fetches the list of bot directories in a given language folder.
- * @param {string} path - The path to the language folder.
- * @returns {Promise<string[]>} - Array of bot folder names.
- */
-async function fetchBotDirectories(path) {
-    // This function assumes you have a list of bot directories you want to check.
-    // GitHub Pages does not allow directory listings, so you need to know your directory structure.
-    // For now, we will statically return bot directories, but you could also use an API to dynamically list them if available.
-
-    // Example static return, modify if you have other ways to list directories dynamically
-    return ['Bot1', 'Bot2'];
 }
 
 /**
@@ -147,22 +87,22 @@ function capitalize(str) {
  * @param {string} botName - The name of the bot to download.
  */
 function downloadBot(language, botName) {
-   const url = `/api/bots/${language}/${botName}/download`;
-   fetch(url)
-       .then((response) => {
-           if (!response.ok) {
-               throw new Error(`Error: ${response.statusText}`);
-           }
-           return response.blob();
-       })
-       .then((blob) => {
-           const link = document.createElement('a');
-           link.href = window.URL.createObjectURL(blob);
-           link.download = `${botName}.zip`;
-           link.click();
-       })
-       .catch((error) => {
-           console.error('Failed to download bot:', error);
-           alert('Could not download the bot. Please try again.');
-       });
+    const url = `/api/bots/${language}/${botName}/download`;
+    fetch(url)
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(`Error: ${response.statusText}`);
+            }
+            return response.blob();
+        })
+        .then((blob) => {
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = `${botName}.zip`;
+            link.click();
+        })
+        .catch((error) => {
+            console.error('Failed to download bot:', error);
+            alert('Could not download the bot. Please try again.');
+        });
 }
