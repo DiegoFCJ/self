@@ -116,27 +116,22 @@ function capitalize(str) {
 
 /**
  * Function to handle bot downloads.
- * This interacts with the backend API to download bots dynamically.
+ * This downloads the bot file directly from GitHub using raw content URLs.
  * @param {string} language - The language folder of the bot (e.g., 'java', 'python').
  * @param {string} botName - The name of the bot to download.
  */
 function downloadBot(language, botName) {
-    const url = `/api/bots/${language}/${botName}/download`;
-    fetch(url)
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error(`Error: ${response.statusText}`);
-            }
-            return response.blob();
-        })
-        .then((blob) => {
-            const link = document.createElement('a');
-            link.href = window.URL.createObjectURL(blob);
-            link.download = `${botName}.zip`;
-            link.click();
-        })
-        .catch((error) => {
-            console.error('Failed to download bot:', error);
-            alert('Could not download the bot. Please try again.');
-        });
+    // Crea il percorso diretto al file bot nella repository su GitHub, specificando il branch 'bot-list'
+    const url = `https://github.com/diegofcj/scriptagher/blob/bot-list/bots/${language}/${botName}/Bot.json`; // Usa il link del blob di GitHub
+
+    // Per scaricare il file direttamente, dobbiamo usare il link raw
+    const rawUrl = `https://raw.githubusercontent.com/diegofcj/scriptagher/bot-list/bots/${language}/${botName}/Bot.json`;
+
+    // Crea un link per il download
+    const link = document.createElement('a');
+    link.href = rawUrl;  // Imposta l'URL del file raw su GitHub
+    link.download = `${botName}.json`;  // Il nome del file che verrà scaricato
+
+    // Simula il clic per avviare il download
+    link.click();
 }
