@@ -1,0 +1,5 @@
+{
+    "botName": "Bot3",
+    "startCommand": "python3 bots/Bot3/Bot3.py",
+    "language": "python"
+}

@@ -1,0 +1,5 @@
+{
+    "botName": "Bot2",
+    "startCommand": "node bots/Bot2/Bot2.js",
+    "language": "javascript"
+}
