@@ -14,6 +14,11 @@
 }
 
 /* Per il MenuButton */
+.menu-button:hover{
+    -fx-cursor: hand;
+}
+
+/* Per il MenuButton */
 .menu-button .label {
     -fx-text-fill: white;
 }
@@ -31,4 +36,16 @@
 .menu-item:hover {
     -fx-background-color: #1f1f1f;
     -fx-text-fill: rgb(248, 248, 248);
+}
+
+/* Icona base */
+.icon {
+    -fx-opacity: 1; /* Opacità normale */
+    -fx-cursor: hand; /* Cambia il cursore */
+}
+
+/* Modifica al passaggio del mouse */
+.menu-item:hover .icon {
+    -fx-opacity: 0.7; /* Cambia opacità */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0, 0, 0); /* Aggiungi un'ombra */
 }

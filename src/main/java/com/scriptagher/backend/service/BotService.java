@@ -17,7 +17,6 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
@@ -57,20 +56,45 @@ public class BotService {
             downloadFile(botZipUrl, botZip);
         }
 
+        // Forza i permessi di scrittura sul file ZIP appena scaricato
+        fixPermissions(botZip);
+
         // Scompatta il file ZIP
         unzipFile(botZip, botDir);
 
         // Leggi il file bot.json per ottenere i dettagli del bot
-        String botJsonPath = botDir + "/bot.json";
+        String botJsonPath = botDir + "/Bot.json";
         Automation automation = fetchBotDetails(botJsonPath);
 
         // Imposta il linguaggio
         automation.setLanguage(language);
 
-        // Rimuovi il file ZIP dopo averlo estratto
+        System.out.println(botZip);
+        // Elimina il file ZIP dopo l'estrazione
         botZip.delete();
 
         return automation;
+    }
+
+    private void fixPermissions(File file) {
+        if (file.exists()) {
+            // Imposta i permessi di scrittura per la cartella o il file
+            if (!file.setWritable(true, false)) {
+                System.err.println("Impossibile impostare i permessi di scrittura per: " + file.getAbsolutePath());
+            } else {
+                System.out.println("Permessi di scrittura settati correttamente per: " + file.getAbsolutePath());
+            }
+    
+            // Se è una directory, percorri ricorsivamente i suoi contenuti
+            if (file.isDirectory()) {
+                File[] files = file.listFiles();
+                if (files != null) {
+                    for (File f : files) {
+                        fixPermissions(f); // Ricorsione sui file e cartelle all'interno
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -97,20 +121,83 @@ public class BotService {
     /**
      * Unzips a ZIP file to the specified directory.
      */
-    private void unzipFile(File zipFile, File destinationDir) throws IOException {
+    public void unzipFile(File zipFile, File destinationDir) throws IOException {
+        boolean extractionSuccessful = false;
+
         try (ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFile))) {
             ZipEntry entry;
             while ((entry = zipIn.getNextEntry()) != null) {
-                File extractedFile = new File(destinationDir, entry.getName());
-
-                // Crea la directory per l'estrazione, se non esiste
-                if (entry.isDirectory()) {
-                    extractedFile.mkdirs();
-                } else {
-                    // Estrai il file
-                    Files.copy(zipIn, Paths.get(extractedFile.getAbsolutePath()));
+                // Verifica se l'entry è vuota
+                if (entry.getSize() == 0) {
+                    System.err.println("Empty file entry detected: " + entry.getName());
+                    continue; // Salta l'entry vuota
                 }
+
+                // Salta l'entry che è il file zip stesso
+                if (entry.getName().equals(zipFile.getName())) {
+                    System.err.println("Skipping the zip file itself: " + entry.getName());
+                    continue; // Non estrarre il file zip
+                }
+
+                String fileName = Paths.get(entry.getName()).getFileName().toString();
+                File extractedFile = new File(destinationDir, fileName);
+
+                // Se l'entry è una directory, la creo
+                if (entry.isDirectory()) {
+                    if (!extractedFile.exists()) {
+                        extractedFile.mkdirs();
+                    }
+                } else {
+                    // Crea la directory del file, se non esiste
+                    File parentDir = extractedFile.getParentFile();
+                    if (!parentDir.exists()) {
+                        parentDir.mkdirs();
+                    }
+
+                    // Estrai il file
+                    try (FileOutputStream fos = new FileOutputStream(extractedFile)) {
+                        byte[] buffer = new byte[1024];
+                        int bytesRead;
+                        while ((bytesRead = zipIn.read(buffer)) != -1) {
+                            fos.write(buffer, 0, bytesRead);
+                        }
+                    }
+                }
+
                 zipIn.closeEntry();
+            }
+
+            // Solo dopo che tutte le estrazioni sono state completate correttamente, setto
+            // extractionSuccessful a true
+            extractionSuccessful = true;
+
+        } catch (IOException e) {
+            e.printStackTrace(); // Gestisce gli errori di IO
+        } finally {
+            // Debugging: Verifica se il file esiste prima di tentare la cancellazione
+            System.out.println("Controllo del file ZIP prima della cancellazione: " + zipFile.getAbsolutePath());
+
+            if (extractionSuccessful) {
+                if (zipFile.exists()) {
+                    // Forza i permessi di scrittura sul file ZIP prima di tentare la cancellazione
+                    fixPermissions(zipFile);
+                    
+                    zipFile.delete();
+                    
+                    if (zipFile.exists()) {
+                        System.out.println("File ZIP eliminato con successo.");
+                    } else {
+                        int i=0;
+                        while (zipFile.exists()) {
+                            zipFile.delete();
+                            i++;
+                            System.out.println("Cancello sta merda tentativo N"+ i);
+                        }
+                        System.err.println("Impossibile eliminare il file ZIP. Verifica i permessi.");
+                    }
+                } else {
+                    System.err.println("File ZIP non trovato al percorso: " + zipFile.getAbsolutePath());
+                }
             }
         }
     }
@@ -119,6 +206,11 @@ public class BotService {
      * Reads the bot.json file and creates an Automation object.
      */
     private Automation fetchBotDetails(String botJsonPath) throws IOException {
+        File botJsonFile = new File(botJsonPath);
+        if (!botJsonFile.exists()) {
+            throw new IOException("bot.json not found in extracted bot directory.");
+        }
+
         ObjectMapper objectMapper = new ObjectMapper();
         try (BufferedReader reader = new BufferedReader(new FileReader(botJsonPath))) {
             return objectMapper.readValue(reader, Automation.class);
@@ -158,15 +250,17 @@ public class BotService {
     /**
      * Fetches a list of all available bots grouped by language.
      * 
-     * This method retrieves a JSON file containing information about bots, 
+     * This method retrieves a JSON file containing information about bots,
      * grouped by their respective programming languages.
      * It then parses the JSON into a map where the key is the language and the
-     * value is a list of Automation objects corresponding to each bot available in that language.
+     * value is a list of Automation objects corresponding to each bot available in
+     * that language.
      *
      * @return A map where the keys are languages (e.g., "python", "java",
      *         "javascript") and the values are lists of
      *         Automation objects representing the bots available for that language.
-     * @throws IOException If there is an error fetching or parsing the list of bots from the external URL.
+     * @throws IOException If there is an error fetching or parsing the list of bots
+     *                     from the external URL.
      */
     public Map<String, List<Automation>> fetchAvailableBots() throws IOException {
         String botsJsonUrl = BOT_ENDPOINTS.BASE_URL + "/bots.json";

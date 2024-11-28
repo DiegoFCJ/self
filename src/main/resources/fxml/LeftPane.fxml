@@ -26,7 +26,6 @@
             AnchorPane.rightAnchor="0.0" 
             AnchorPane.topAnchor="0.0"
         >
-            <!-- I MenuButton verranno aggiunti dinamicamente dal controller -->
         </VBox>
     </children>
 </AnchorPane>
