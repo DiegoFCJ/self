@@ -1,10 +1,17 @@
 package com.scriptagher.frontend.controller;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import com.scriptagher.frontend.dto.Bot;
+import com.scriptagher.frontend.service.BotMenuService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.Tab;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.control.Tab;
 
 public class LeftPaneController {
 
@@ -12,20 +19,20 @@ public class LeftPaneController {
     private AnchorPane leftPane;
 
     @FXML
-    private MenuItem menuItemAction1;
-
-    @FXML
-    private MenuItem menuItemAction2;
+    private VBox menuVBox;  // Questa VBox conterrà i MenuButton
 
     private TabPaneController tabPaneController;
+
+    private BotMenuService botService;  // Istanza di BotService per recuperare i bot
+
+    public LeftPaneController() {
+        botService = new BotMenuService();  // Costruttore per inizializzare il BotService
+    }
 
     @FXML
     public void initialize() {
         System.out.println("Inizializzo LeftPaneController...");
-
-        // Aggiungi listener per i menu item
-        menuItemAction1.setOnAction(event -> createNewTab("Action 1"));
-        menuItemAction2.setOnAction(event -> createNewTab("Action 2"));
+        loadBotMenus();  // Carica i menu dinamici dei bot
     }
 
     // Metodo per creare un nuovo tab
@@ -73,5 +80,40 @@ public class LeftPaneController {
     public void handleMenuAction2(ActionEvent event) {
         System.out.println("Action 2 triggered");
         // Aggiungi la logica per gestire la seconda azione del menu
+    }
+
+    private void loadBotMenus() {
+        List<Bot> bots = botService.fetchBots();  // Supponiamo che Bot rappresenti i bot
+
+        // Raggruppa i bot per linguaggio
+        Map<String, List<Bot>> botsByLanguage = bots.stream()
+                .collect(Collectors.groupingBy(Bot::getLanguage));
+
+        // Per ogni linguaggio, crea un MenuButton
+        for (String language : botsByLanguage.keySet()) {
+            // Crea un MenuButton per ogni linguaggio (es. Python, Java, JavaScript)
+            MenuButton languageMenuButton = new MenuButton(language);
+            languageMenuButton.setMinHeight(50);
+            languageMenuButton.setMinWidth(200);
+
+            // Recupera i bot per il linguaggio corrente
+            List<Bot> languageBots = botsByLanguage.get(language);
+
+            // Aggiungi un MenuItem per ogni bot nel linguaggio corrente
+            for (Bot bot : languageBots) {
+                MenuItem botItem = new MenuItem(bot.getBotName());
+                botItem.setOnAction(event -> handleBotAction(bot));
+                languageMenuButton.getItems().add(botItem);
+            }
+
+            // Aggiungi il MenuButton alla VBox
+            menuVBox.getChildren().add(languageMenuButton);
+        }
+    }
+
+    // Gestisce le azioni dei bot
+    private void handleBotAction(Bot bot) {
+        System.out.println("Bot: " + bot.getBotName() + " - Action triggered");
+        createNewTab(bot.getBotName());
     }
 }
