@@ -1,5 +1,8 @@
 package com.scriptagher.frontend.controller;
 
+import com.scriptagher.frontend.dto.Bot;
+import com.scriptagher.frontend.service.TabPaneService;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -21,6 +24,8 @@ public class TabPaneController {
 
     private Tab toggleTutorialTab;
 
+    private TabPaneService tabPaneService = new TabPaneService();
+
     @FXML
     public void initialize() {
         System.out.println("Inizializzo TabPaneController...");
@@ -30,6 +35,10 @@ public class TabPaneController {
 
         // Crea il tab per riattivare il tutorial
         setupToggleTutorialTab();
+    }
+
+    public void createNewTab(Bot bot) {
+        tabPaneService.createNewTab(tabPane, bot);
     }
 
     // Configura il tutorial tab con contenuto iniziale
@@ -79,15 +88,6 @@ public class TabPaneController {
         }
     }
 
-    // Aggiungi un nuovo tab dinamicamente
-    public void addTab(String title, String content) {
-        Tab newTab = new Tab(title);
-        Label contentLabel = new Label(content);
-        newTab.setContent(contentLabel);
-        tabPane.getTabs().add(newTab);
-        tabPane.getSelectionModel().select(newTab);
-    }
-
     public void dashboardStretch(AnchorPane leftPane, HeaderBarController headerBarController) {
         if (leftPane == null) {
             System.err.println("Errore: LeftPane non è stato trovato o non è collegato correttamente!");
@@ -106,19 +106,9 @@ public class TabPaneController {
         }
     }
 
-    // Metodo per selezionare un tab esistente
-    public void selectTab(Tab tab) {
-        tabPane.getSelectionModel().select(tab);
-    }
-
     @FXML
     public void handleStartTutorial(ActionEvent event) {
         System.out.println("Tutorial started");
         // Aggiungi la logica per avviare il tutorial
-    }
-
-    public TabPane getTabPane() {
-        return tabPane;
-    }
-    
+    }    
 }

@@ -3,7 +3,7 @@ package com.scriptagher.backend.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.scriptagher.backend.model.Automation;
-import com.scriptagher.shared.constants.BOT_ENDPOINTS;
+import com.scriptagher.shared.constants.CONST;
 import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
 import java.io.File;
@@ -41,7 +41,7 @@ public class BotService {
      */
     public Automation downloadBot(String language, String botName) throws IOException {
         // Costruisci l'URL per scaricare il file ZIP
-        String botZipUrl = String.format("%s/%s/%s/%s.zip", BOT_ENDPOINTS.BASE_URL, language, botName, botName);
+        String botZipUrl = String.format("%s/%s/%s/%s.zip", CONST.BASE_URL, language, botName, botName);
         File botDir = new File("data/" + language + "/" + botName);
         File botZip = new File(botDir, botName + ".zip");
 
@@ -69,7 +69,6 @@ public class BotService {
         // Imposta il linguaggio
         automation.setLanguage(language);
 
-        System.out.println(botZip);
         // Elimina il file ZIP dopo l'estrazione
         botZip.delete();
 
@@ -263,7 +262,7 @@ public class BotService {
      *                     from the external URL.
      */
     public Map<String, List<Automation>> fetchAvailableBots() throws IOException {
-        String botsJsonUrl = BOT_ENDPOINTS.BASE_URL + "/bots.json";
+        String botsJsonUrl = CONST.BASE_URL + "/bots.json";
         ObjectMapper mapper = new ObjectMapper();
 
         try (InputStream inputStream = new URL(botsJsonUrl).openStream()) {

@@ -11,20 +11,21 @@ import java.util.stream.Collectors;
 import com.scriptagher.frontend.dto.Bot;
 import com.scriptagher.frontend.service.BotDownloadService;
 import com.scriptagher.frontend.service.BotMenuService;
-import com.scriptagher.shared.constants.BOT_ENDPOINTS;
-
+import com.scriptagher.shared.constants.CONST;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.Cursor;
+import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
-import javafx.scene.control.MenuItem;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.control.Tab;
+import javafx.scene.shape.Circle;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -39,42 +40,14 @@ public class LeftPaneController {
 
     private TabPaneController tabPaneController;
 
-    private BotMenuService botService;
-
-    public LeftPaneController() {
-        botService = new BotMenuService();
-    }
+    private BotMenuService botService = new BotMenuService();
 
     @FXML
     public void initialize() {
-        System.out.println("Inizializzo LeftPaneController...");
-        loadBotMenus(); // Carica i menu dinamici dei bot
-    }
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("src/main/resources/fxml/MainView.fxml"));
+        tabPaneController = loader.getController();
 
-    // Metodo per creare un nuovo tab
-    private void createNewTab(String actionName) {
-        if (tabPaneController != null) {
-            // Verifica se il tab con lo stesso nome esiste già
-            Tab existingTab = getTabByName(actionName);
-
-            if (existingTab != null) {
-                // Se il tab esiste già, lo selezioniamo
-                tabPaneController.selectTab(existingTab);
-            } else {
-                // Se il tab non esiste, creiamo un nuovo tab
-                tabPaneController.addTab(actionName, "Contenuto del tab per " + actionName);
-            }
-        }
-    }
-
-    // Metodo per cercare un tab esistente per nome
-    private Tab getTabByName(String title) {
-        for (Tab tab : tabPaneController.getTabPane().getTabs()) {
-            if (tab.getText().equals(title)) {
-                return tab;
-            }
-        }
-        return null; // Nessun tab trovato con il titolo dato
+        loadBotMenus();
     }
 
     // Metodo per collegare il TabPaneController
@@ -86,14 +59,6 @@ public class LeftPaneController {
         return leftPane;
     }
 
-    /**
-     * Loads the bot menus by fetching the available bots and grouping them by
-     * language.
-     * For each language, a `MenuButton` is created with the list of bots for that
-     * language.
-     * Each bot is displayed with its download icon, and the appropriate actions are
-     * set for each bot.
-     */
     private void loadBotMenus() {
         // Initialize the BotDownloadService to manage download actions
         BotDownloadService botDownloadService = new BotDownloadService();
@@ -118,10 +83,11 @@ public class LeftPaneController {
             // Retrieve the list of bots for the current language
             List<Bot> languageBots = botsByLanguage.get(language);
 
-            // Add a MenuItem for each bot in the language group
+            // Add a CustomMenuItem for each bot in the language group
             for (Bot bot : languageBots) {
-                // Create a MenuItem for the bot
-                MenuItem botItem = new MenuItem();
+                // Create a CustomMenuItem for the bot
+                CustomMenuItem botItem = new CustomMenuItem();
+                botItem.setHideOnClick(false); // Avoid closing the menu on click
 
                 // Create an HBox to hold the text and icons
                 HBox botContent = new HBox();
@@ -132,51 +98,100 @@ public class LeftPaneController {
                 Label botLabel = new Label(bot.getBotName());
                 botLabel.setMinWidth(150); // Optional: Set a fixed width for alignment
 
-                // Add the appropriate download icon
-                ImageView downloadIcon = botDownloadService.getDownloadIcon(language, bot.getBotName(), 20);
+                // Add the download icon
+                ImageView initialDownloadIcon = botDownloadService.getDownloadIcon(language, bot.getBotName(), 20);
+                StackPane downloadIconWrapper = createIconWithCircle(initialDownloadIcon);
+
+                // Disable the download icon if it's "cloud-marcato"
+                if (initialDownloadIcon.getImage().getUrl().contains(CONST.CLOUD_MARK)) {
+                    downloadIconWrapper.setDisable(true);
+                }
 
                 // Add the delete icon (only visible if bot is available locally or on error)
-                ImageView deleteIcon = new ImageView(
-                        new Image(new File("src/main/resources/icons/icons8-elimina-50.png").toURI().toString()));
-                deleteIcon.setFitWidth(20);
-                deleteIcon.setFitHeight(20);
+                ImageView deleteIconImage = new ImageView(
+                        new Image(new File(CONST.BIN_ICON).toURI().toString()));
+                deleteIconImage.setFitWidth(20);
+                deleteIconImage.setFitHeight(20);
+
+                // Create the delete icon with a circle wrapper
+                StackPane deleteIconWrapper = createIconWithCircle(deleteIconImage);
 
                 // Visibility of the delete icon depends on bot state
-                deleteIcon.setVisible(botDownloadService.isBotAvailableLocally(language, bot.getBotName()));
-
-                // Add hover effects for downloadIcon and deleteIcon
-                applyHoverEffect(downloadIcon);
-                applyHoverEffect(deleteIcon);
+                deleteIconWrapper.setVisible(botDownloadService.isBotAvailableLocally(language, bot.getBotName()));
 
                 // Action for delete button
-                deleteIcon.setOnMouseClicked(event -> {
-                    deleteBot(language, bot.getBotName());
-                    downloadIcon.setImage(new Image(
-                            new File("src/main/resources/icons/cloud/icons8-scarica-da-cloud-50.png").toURI()
-                                    .toString()));
-                    deleteIcon.setVisible(false);
+                deleteIconWrapper.setOnMouseClicked(event -> {
+                    event.consume(); // Prevent the event from propagating to the MenuItem
+                    boolean isDeleted = deleteBot(language, bot.getBotName());
+                    if (isDeleted) {
+                        // Hide the delete icon
+                        deleteIconWrapper.setVisible(false);
+
+                        // Change the cloud-marcato icon to scarica-da-cloud if present
+                        if (initialDownloadIcon.getImage().getUrl().contains(CONST.CLOUD_MARK)) {
+                            initialDownloadIcon.setImage(
+                                    new Image(new File(CONST.REMOTE_ICON_PATH)
+                                            .toURI().toString()));
+                            downloadIconWrapper.setDisable(false); // Make the icon clickable again
+                        }
+                    }
+                });
+
+                // Action for download button
+                downloadIconWrapper.setOnMouseClicked(event -> {
+                    event.consume(); // Prevent the event from propagating to the MenuItem
+
+                    // Safely retrieve the ImageView from the StackPane
+                    ImageView downloadIcon = (ImageView) downloadIconWrapper.getChildren().stream()
+                            .filter(node -> node instanceof ImageView)
+                            .findFirst()
+                            .orElse(null);
+
+                    if (downloadIcon != null) {
+                        // Start the download process
+                        botDownloadService.downloadBot(language, bot.getBotName(), downloadIcon);
+                        // Visibility of the delete icon depends on bot state
+                        deleteIconWrapper
+                                .setVisible(botDownloadService.isBotAvailableLocally(language, bot.getBotName()));
+                        // Disable the download icon if it's "cloud-marcato"
+                        if (initialDownloadIcon.getImage().getUrl().contains(CONST.CLOUD_MARK)) {
+                            downloadIconWrapper.setDisable(true);
+                        }
+                    } else {
+                        System.err.println("Download icon not found in StackPane!");
+                    }
+                });
+
+                // Handle the error condition
+                botDownloadService.setOnDownloadError(error -> {
+                    // If there's an error, change the download icon to error icon
+                    initialDownloadIcon.setImage(new Image(new File(CONST.ERROR_ICON_PATH).toURI().toString()));
+                    downloadIconWrapper.setDisable(true); // Disable the icon during error state
+
+                    // Optionally, you can also update the delete icon or any other elements
+                    System.err.println("Error downloading bot: " + error);
                 });
 
                 // Add components to the HBox
-                botContent.getChildren().addAll(botLabel, downloadIcon, deleteIcon);
+                botContent.getChildren().addAll(botLabel, downloadIconWrapper, deleteIconWrapper);
 
-                // Set the HBox as the graphic for the MenuItem
-                botItem.setGraphic(botContent);
+                // Set the HBox as the content for the CustomMenuItem
+                botItem.setContent(botContent);
 
-                // Set the action when a bot is selected
-                botItem.setOnAction(event -> {
+                // Add a handler for clicking the bot item (ignoring events from icons)
+                botContent.setOnMouseClicked(event -> {
                     // Check if the bot is already available locally
                     if (!botDownloadService.isBotAvailableLocally(language, bot.getBotName())) {
-                        // If the bot is not available locally, start the download process and update
-                        // the icon
-                        botDownloadService.downloadBot(language, bot.getBotName(), downloadIcon);
+                        // If the bot is not available locally, start the download process
+                        botDownloadService.downloadBot(language, bot.getBotName(),
+                                (ImageView) downloadIconWrapper.getChildren().get(0));
                     } else {
                         // If the bot is available locally, handle the bot action
                         handleBotAction(bot);
                     }
                 });
 
-                // Add the MenuItem to the MenuButton
+                // Add the CustomMenuItem to the MenuButton
                 languageMenuButton.getItems().add(botItem);
             }
 
@@ -185,40 +200,72 @@ public class LeftPaneController {
         }
     }
 
-    // Method to delete a bot from the local directory
-    private void deleteBot(String language, String botName) {
-        System.out.println("clicked delete " + language + "/" + botName);
-        String botPath = BOT_ENDPOINTS.BASE_DATA_PATH + "/" + language + "/" + botName;
-        File botDir = new File(botPath);
-        if (botDir.exists()) {
-            try {
-                Files.walk(botDir.toPath())
-                        .map(Path::toFile)
-                        .sorted(Comparator.reverseOrder()) // Ensure directories are deleted after files
-                        .forEach(File::delete); // Delete all files and the directory itself
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+    private StackPane createIconWithCircle(ImageView icon) {
+        Circle backgroundCircle = new Circle(15); // Circle radius
+        backgroundCircle.setFill(Color.TRANSPARENT); // Transparent background
+        backgroundCircle.setStrokeWidth(1);
+
+        // Wrap the icon in a StackPane with the circle
+        StackPane iconWrapper = new StackPane();
+        iconWrapper.getChildren().addAll(backgroundCircle, icon);
+
+        // Imposta il clic solo sull'area visibile
+        iconWrapper.setPickOnBounds(false);
+
+        // Center-align the icon
+        StackPane.setAlignment(icon, Pos.CENTER);
+
+        // Apply hover effects dynamically
+        applyHoverEffect(iconWrapper, backgroundCircle);
+
+        return iconWrapper;
     }
 
-    // Method to apply hover effect to icons dynamically
-    private void applyHoverEffect(ImageView icon) {
-        icon.setOnMouseEntered(event -> {
-            icon.setOpacity(0.7); // Reduce opacity on hover
-            icon.setCursor(Cursor.HAND);;
-            icon.setEffect(new DropShadow(10, Color.BLACK)); // Add a shadow effect
+    private void applyHoverEffect(StackPane container, Circle backgroundCircle) {
+        container.setOnMouseEntered(event -> {
+            container.setCursor(Cursor.HAND);
+            backgroundCircle.setFill(Color.LIGHTGRAY.deriveColor(1, 1, 1, 0.3)); // Light gray hover effect
+            backgroundCircle.setEffect(new DropShadow(10, Color.BLACK)); // Optional shadow effect
         });
 
-        icon.setOnMouseExited(event -> {
-            icon.setOpacity(1.0); // Restore original opacity
-            icon.setEffect(null); // Remove the shadow effect
+        container.setOnMouseExited(event -> {
+            backgroundCircle.setFill(Color.TRANSPARENT); // Reset to transparent
+            backgroundCircle.setEffect(null); // Remove shadow effect
         });
+    }
+
+    private boolean deleteBot(String language, String botName) {
+
+        String botPath = CONST.BASE_DATA_PATH + "/" + language + "/" + botName;
+        File botDir = new File(botPath);
+
+        if (!botDir.exists()) {
+            return false;
+        }
+
+        try {
+            // Walk the file tree, delete files, then directories
+            Files.walk(botDir.toPath())
+                    .map(Path::toFile)
+                    .sorted(Comparator.reverseOrder()) // Ensure directories are deleted after files
+                    .forEach(file -> {
+                        boolean deleted = file.delete();
+                        if (!deleted) {
+                            System.err.println("Failed to delete file: " + file.getAbsolutePath());
+                        }
+                    });
+
+            return true;
+
+        } catch (IOException e) {
+            System.err.println("An error occurred while deleting bot: " + language + "/" + botName);
+            e.printStackTrace();
+            return false;
+        }
     }
 
     // Gestisce le azioni dei bot
     private void handleBotAction(Bot bot) {
-        System.out.println("Bot: " + bot.getBotName() + " - Action triggered");
-        createNewTab(bot.getBotName());
+        tabPaneController.createNewTab(bot);
     }
 }
