@@ -8,8 +8,15 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import com.scriptagher.shared.constants.CONST;
 import javafx.application.Platform;
+import javafx.geometry.Pos;
+import javafx.scene.Cursor;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+
 import java.util.function.Consumer;
 
 public class BotDownloadService {
@@ -52,15 +59,18 @@ public class BotDownloadService {
     }
 
     // Simulates downloading the bot and updates the icon based on its status
-    public void downloadBot(String language, String botName, ImageView icon) {
+    public void downloadBot(String language, String botName, ImageView icon, StackPane deleteIconWrapper, StackPane downloadIconWrapper) {
         new Thread(() -> {
             try {
                 updateIcon(icon, CONST.DOWNLOADING_ICON_PATH);
 
                 downloadBotFromApi(language, botName);
 
+                System.out.println(isBotAvailableLocally(language, botName));
                 if (isBotAvailableLocally(language, botName)) {
                     updateIcon(icon, CONST.LOCAL_ICON_PATH);
+                    makeDeleteIcnVisible(language, botName, deleteIconWrapper);
+                    disableDwnld(getDownloadIcon(language, botName, 20), downloadIconWrapper);
                 } else {
                     updateIcon(icon, CONST.REMOTE_ICON_PATH);
                 }
@@ -78,6 +88,62 @@ public class BotDownloadService {
     // Updates the icon's image in a thread-safe way
     private void updateIcon(ImageView icon, String iconPath) {
         Platform.runLater(() -> icon.setImage(new Image(new File(iconPath).toURI().toString())));
+    }
+
+    public void disableDwnld(ImageView initialDownloadIcon, StackPane downloadIconWrapper) {
+        if (initialDownloadIcon.getImage().getUrl().contains(CONST.CLOUD_MARK)) {
+            downloadIconWrapper.setDisable(true);
+        }
+    }
+
+    // Add the delete icon (only visible if bot is available locally or on error)
+    public StackPane getDeleteIconWrapper() {
+        ImageView deleteIconImage = new ImageView(
+                new Image(new File(CONST.BIN_ICON).toURI().toString()));
+        deleteIconImage.setFitWidth(20);
+        deleteIconImage.setFitHeight(20);
+
+        // Create the delete icon with a circle wrapper
+        StackPane deleteIconWrapper = createIconWithCircle(deleteIconImage);
+        return deleteIconWrapper;
+    }
+
+    public StackPane createIconWithCircle(ImageView icon) {
+        Circle backgroundCircle = new Circle(15); // Circle radius
+        backgroundCircle.setFill(Color.TRANSPARENT); // Transparent background
+        backgroundCircle.setStrokeWidth(1);
+
+        // Wrap the icon in a StackPane with the circle
+        StackPane iconWrapper = new StackPane();
+        iconWrapper.getChildren().addAll(backgroundCircle, icon);
+
+        // Imposta il clic solo sull'area visibile
+        iconWrapper.setPickOnBounds(false);
+
+        // Center-align the icon
+        StackPane.setAlignment(icon, Pos.CENTER);
+
+        // Apply hover effects dynamically
+        applyHoverEffect(iconWrapper, backgroundCircle);
+
+        return iconWrapper;
+    }
+
+    private void applyHoverEffect(StackPane container, Circle backgroundCircle) {
+        container.setOnMouseEntered(event -> {
+            container.setCursor(Cursor.HAND);
+            backgroundCircle.setFill(Color.LIGHTGRAY.deriveColor(1, 1, 1, 0.3)); // Light gray hover effect
+            backgroundCircle.setEffect(new DropShadow(10, Color.BLACK)); // Optional shadow effect
+        });
+
+        container.setOnMouseExited(event -> {
+            backgroundCircle.setFill(Color.TRANSPARENT); // Reset to transparent
+            backgroundCircle.setEffect(null); // Remove shadow effect
+        });
+    }
+
+    public void makeDeleteIcnVisible(String language, String botName, StackPane deleteIconWrapper) {
+        deleteIconWrapper.setVisible(isBotAvailableLocally(language, botName));
     }
 
     // Downloads the bot from the backend API and saves it locally

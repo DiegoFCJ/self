@@ -81,7 +81,7 @@ public class BotService {
             if (!file.setWritable(true, false)) {
                 System.err.println("Impossibile impostare i permessi di scrittura per: " + file.getAbsolutePath());
             } else {
-                System.out.println("Permessi di scrittura settati correttamente per: " + file.getAbsolutePath());
+                //System.out.println("Permessi di scrittura settati correttamente per: " + file.getAbsolutePath());
             }
     
             // Se è una directory, percorri ricorsivamente i suoi contenuti
@@ -174,7 +174,7 @@ public class BotService {
             e.printStackTrace(); // Gestisce gli errori di IO
         } finally {
             // Debugging: Verifica se il file esiste prima di tentare la cancellazione
-            System.out.println("Controllo del file ZIP prima della cancellazione: " + zipFile.getAbsolutePath());
+            //System.out.println("Controllo del file ZIP prima della cancellazione: " + zipFile.getAbsolutePath());
 
             if (extractionSuccessful) {
                 if (zipFile.exists()) {
@@ -184,13 +184,13 @@ public class BotService {
                     zipFile.delete();
                     
                     if (zipFile.exists()) {
-                        System.out.println("File ZIP eliminato con successo.");
+                        //System.out.println("File ZIP eliminato con successo.");
                     } else {
                         int i=0;
                         while (zipFile.exists()) {
                             zipFile.delete();
                             i++;
-                            System.out.println("Cancello sta merda tentativo N"+ i);
+                            //System.out.println("Cancello sta merda tentativo N"+ i);
                         }
                         System.err.println("Impossibile eliminare il file ZIP. Verifica i permessi.");
                     }

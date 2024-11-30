@@ -16,7 +16,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
-import javafx.scene.Cursor;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
@@ -24,9 +23,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -41,6 +37,7 @@ public class LeftPaneController {
     private TabPaneController tabPaneController;
 
     private BotMenuService botService = new BotMenuService();
+    private BotDownloadService botDownloadService = new BotDownloadService();
 
     @FXML
     public void initialize() {
@@ -60,9 +57,6 @@ public class LeftPaneController {
     }
 
     private void loadBotMenus() {
-        // Initialize the BotDownloadService to manage download actions
-        BotDownloadService botDownloadService = new BotDownloadService();
-
         // Fetch the list of available bots from the backend service
         List<Bot> bots = botService.fetchBots(); // Retrieve bots list from the backend
 
@@ -72,165 +66,159 @@ public class LeftPaneController {
 
         // Iterate over each language group
         for (String language : botsByLanguage.keySet()) {
-            // Create a MenuButton for each language (e.g., Python, Java, JavaScript)
-            MenuButton languageMenuButton = new MenuButton(language);
-            languageMenuButton.setMinHeight(50);
-            languageMenuButton.setMinWidth(200);
-
-            // Configure the menu to open to the right
-            languageMenuButton.setPopupSide(Side.RIGHT);
-
-            // Retrieve the list of bots for the current language
-            List<Bot> languageBots = botsByLanguage.get(language);
-
-            // Add a CustomMenuItem for each bot in the language group
-            for (Bot bot : languageBots) {
-                // Create a CustomMenuItem for the bot
-                CustomMenuItem botItem = new CustomMenuItem();
-                botItem.setHideOnClick(false); // Avoid closing the menu on click
-
-                // Create an HBox to hold the text and icons
-                HBox botContent = new HBox();
-                botContent.setSpacing(5); // Spacing of 5 pixels between elements
-                botContent.setAlignment(Pos.CENTER_LEFT);
-
-                // Create a Label for the bot name
-                Label botLabel = new Label(bot.getBotName());
-                botLabel.setMinWidth(150); // Optional: Set a fixed width for alignment
-
-                // Add the download icon
-                ImageView initialDownloadIcon = botDownloadService.getDownloadIcon(language, bot.getBotName(), 20);
-                StackPane downloadIconWrapper = createIconWithCircle(initialDownloadIcon);
-
-                // Disable the download icon if it's "cloud-marcato"
-                if (initialDownloadIcon.getImage().getUrl().contains(CONST.CLOUD_MARK)) {
-                    downloadIconWrapper.setDisable(true);
-                }
-
-                // Add the delete icon (only visible if bot is available locally or on error)
-                ImageView deleteIconImage = new ImageView(
-                        new Image(new File(CONST.BIN_ICON).toURI().toString()));
-                deleteIconImage.setFitWidth(20);
-                deleteIconImage.setFitHeight(20);
-
-                // Create the delete icon with a circle wrapper
-                StackPane deleteIconWrapper = createIconWithCircle(deleteIconImage);
-
-                // Visibility of the delete icon depends on bot state
-                deleteIconWrapper.setVisible(botDownloadService.isBotAvailableLocally(language, bot.getBotName()));
-
-                // Action for delete button
-                deleteIconWrapper.setOnMouseClicked(event -> {
-                    event.consume(); // Prevent the event from propagating to the MenuItem
-                    boolean isDeleted = deleteBot(language, bot.getBotName());
-                    if (isDeleted) {
-                        // Hide the delete icon
-                        deleteIconWrapper.setVisible(false);
-
-                        // Change the cloud-marcato icon to scarica-da-cloud if present
-                        if (initialDownloadIcon.getImage().getUrl().contains(CONST.CLOUD_MARK)) {
-                            initialDownloadIcon.setImage(
-                                    new Image(new File(CONST.REMOTE_ICON_PATH)
-                                            .toURI().toString()));
-                            downloadIconWrapper.setDisable(false); // Make the icon clickable again
-                        }
-                    }
-                });
-
-                // Action for download button
-                downloadIconWrapper.setOnMouseClicked(event -> {
-                    event.consume(); // Prevent the event from propagating to the MenuItem
-
-                    // Safely retrieve the ImageView from the StackPane
-                    ImageView downloadIcon = (ImageView) downloadIconWrapper.getChildren().stream()
-                            .filter(node -> node instanceof ImageView)
-                            .findFirst()
-                            .orElse(null);
-
-                    if (downloadIcon != null) {
-                        // Start the download process
-                        botDownloadService.downloadBot(language, bot.getBotName(), downloadIcon);
-                        // Visibility of the delete icon depends on bot state
-                        deleteIconWrapper
-                                .setVisible(botDownloadService.isBotAvailableLocally(language, bot.getBotName()));
-                        // Disable the download icon if it's "cloud-marcato"
-                        if (initialDownloadIcon.getImage().getUrl().contains(CONST.CLOUD_MARK)) {
-                            downloadIconWrapper.setDisable(true);
-                        }
-                    } else {
-                        System.err.println("Download icon not found in StackPane!");
-                    }
-                });
-
-                // Handle the error condition
-                botDownloadService.setOnDownloadError(error -> {
-                    // If there's an error, change the download icon to error icon
-                    initialDownloadIcon.setImage(new Image(new File(CONST.ERROR_ICON_PATH).toURI().toString()));
-                    downloadIconWrapper.setDisable(true); // Disable the icon during error state
-
-                    // Optionally, you can also update the delete icon or any other elements
-                    System.err.println("Error downloading bot: " + error);
-                });
-
-                // Add components to the HBox
-                botContent.getChildren().addAll(botLabel, downloadIconWrapper, deleteIconWrapper);
-
-                // Set the HBox as the content for the CustomMenuItem
-                botItem.setContent(botContent);
-
-                // Add a handler for clicking the bot item (ignoring events from icons)
-                botContent.setOnMouseClicked(event -> {
-                    // Check if the bot is already available locally
-                    if (!botDownloadService.isBotAvailableLocally(language, bot.getBotName())) {
-                        // If the bot is not available locally, start the download process
-                        botDownloadService.downloadBot(language, bot.getBotName(),
-                                (ImageView) downloadIconWrapper.getChildren().get(0));
-                    } else {
-                        // If the bot is available locally, handle the bot action
-                        handleBotAction(bot);
-                    }
-                });
-
-                // Add the CustomMenuItem to the MenuButton
-                languageMenuButton.getItems().add(botItem);
-            }
-
-            // Add the MenuButton to the VBox for the UI
-            menuVBox.getChildren().add(languageMenuButton);
+            getLanguageMenu(botsByLanguage, language);
         }
     }
 
-    private StackPane createIconWithCircle(ImageView icon) {
-        Circle backgroundCircle = new Circle(15); // Circle radius
-        backgroundCircle.setFill(Color.TRANSPARENT); // Transparent background
-        backgroundCircle.setStrokeWidth(1);
+    private void getLanguageMenu(Map<String, List<Bot>> botsByLanguage,
+            String language) {
+        // Create a MenuButton for each language (e.g., Python, Java, JavaScript)
+        MenuButton languageMenuButton = new MenuButton(language);
+        languageMenuButton.setMinHeight(50);
+        languageMenuButton.setMinWidth(200);
 
-        // Wrap the icon in a StackPane with the circle
-        StackPane iconWrapper = new StackPane();
-        iconWrapper.getChildren().addAll(backgroundCircle, icon);
+        // Configure the menu to open to the right
+        languageMenuButton.setPopupSide(Side.RIGHT);
 
-        // Imposta il clic solo sull'area visibile
-        iconWrapper.setPickOnBounds(false);
+        // Retrieve the list of bots for the current language
+        List<Bot> languageBots = botsByLanguage.get(language);
 
-        // Center-align the icon
-        StackPane.setAlignment(icon, Pos.CENTER);
+        // Add a CustomMenuItem for each bot in the language group
+        for (Bot bot : languageBots) {
+            getMenuItem(language, languageMenuButton, bot);
+        }
 
-        // Apply hover effects dynamically
-        applyHoverEffect(iconWrapper, backgroundCircle);
-
-        return iconWrapper;
+        // Add the MenuButton to the VBox for the UI
+        menuVBox.getChildren().add(languageMenuButton);
     }
 
-    private void applyHoverEffect(StackPane container, Circle backgroundCircle) {
-        container.setOnMouseEntered(event -> {
-            container.setCursor(Cursor.HAND);
-            backgroundCircle.setFill(Color.LIGHTGRAY.deriveColor(1, 1, 1, 0.3)); // Light gray hover effect
-            backgroundCircle.setEffect(new DropShadow(10, Color.BLACK)); // Optional shadow effect
-        });
+    private void getMenuItem(String language,
+            MenuButton languageMenuButton, Bot bot) {
+        // Create a CustomMenuItem for the bot
+        CustomMenuItem botItem = new CustomMenuItem();
+        botItem.setHideOnClick(false); // Avoid closing the menu on click
 
-        container.setOnMouseExited(event -> {
-            backgroundCircle.setFill(Color.TRANSPARENT); // Reset to transparent
-            backgroundCircle.setEffect(null); // Remove shadow effect
+        // Create an HBox to hold the text and icons
+        HBox botContent = new HBox();
+        botContent.setSpacing(5); // Spacing of 5 pixels between elements
+        botContent.setAlignment(Pos.CENTER_LEFT);
+
+        // Create a Label for the bot name
+        Label botLabel = new Label(bot.getBotName());
+        botLabel.setMinWidth(150); // Optional: Set a fixed width for alignment
+
+        // Add the download icon
+        ImageView initialDownloadIcon = botDownloadService.getDownloadIcon(language, bot.getBotName(), 20);
+        StackPane downloadIconWrapper = botDownloadService.createIconWithCircle(initialDownloadIcon);
+
+        botDownloadService.disableDwnld(initialDownloadIcon, downloadIconWrapper);
+        StackPane deleteIconWrapper = botDownloadService.getDeleteIconWrapper();
+
+        // Visibility of the delete icon depends on bot state
+        botDownloadService.makeDeleteIcnVisible(language, bot.getBotName(), deleteIconWrapper);
+
+        // Action for delete button
+        handleDeleteBtn(language, bot, initialDownloadIcon, downloadIconWrapper, deleteIconWrapper);
+
+        // Action for download button
+        handleDwnldBtn(language, bot, initialDownloadIcon, downloadIconWrapper, deleteIconWrapper);
+
+        // Handle the error condition
+        handleErrBtn(initialDownloadIcon, downloadIconWrapper);
+
+        // Add components to the HBox
+        botContent.getChildren().addAll(botLabel, downloadIconWrapper, deleteIconWrapper);
+
+        // Set the HBox as the content for the CustomMenuItem
+        botItem.setContent(botContent);
+
+        // Add a handler for clicking the bot item (ignoring events from icons)
+        handleMenuItemClick(language, bot, botContent, downloadIconWrapper, deleteIconWrapper);
+
+        // Add the CustomMenuItem to the MenuButton
+        languageMenuButton.getItems().add(botItem);
+    }
+
+    private void handleMenuItemClick(String language, Bot bot, HBox botContent,
+            StackPane downloadIconWrapper, StackPane deleteIconWrapper) {
+        botContent.setOnMouseClicked(event -> {
+            // Check if the bot is already available locally
+            if (!botDownloadService.isBotAvailableLocally(language, bot.getBotName())) {
+
+                // Safely retrieve the ImageView from the StackPane
+                ImageView downloadIcon = (ImageView) downloadIconWrapper.getChildren().stream()
+                        .filter(node -> node instanceof ImageView)
+                        .findFirst()
+                        .orElse(null);
+
+                // If the bot is not available locally, start the download process
+                botDownloadService.downloadBot(
+                        language,
+                        bot.getBotName(),
+                        downloadIcon,
+                        deleteIconWrapper,
+                        downloadIconWrapper);
+            } else {
+                // If the bot is available locally, handle the bot action
+                handleBotAction(bot);
+            }
+        });
+    }
+
+    private void handleErrBtn(ImageView initialDownloadIcon,
+            StackPane downloadIconWrapper) {
+        botDownloadService.setOnDownloadError(error -> {
+            // If there's an error, change the download icon to error icon
+            initialDownloadIcon.setImage(new Image(new File(CONST.ERROR_ICON_PATH).toURI().toString()));
+            downloadIconWrapper.setDisable(true); // Disable the icon during error state
+
+            // Optionally, you can also update the delete icon or any other elements
+            System.err.println("Error downloading bot: " + error);
+        });
+    }
+
+    private void handleDwnldBtn(
+            String language, Bot bot,
+            ImageView initialDownloadIcon,
+            StackPane downloadIconWrapper,
+            StackPane deleteIconWrapper) {
+        downloadIconWrapper.setOnMouseClicked(event -> {
+            event.consume(); // Prevent the event from propagating to the MenuItem
+
+            // Safely retrieve the ImageView from the StackPane
+            ImageView downloadIcon = (ImageView) downloadIconWrapper.getChildren().stream()
+                    .filter(node -> node instanceof ImageView)
+                    .findFirst()
+                    .orElse(null);
+
+            if (downloadIcon != null) {
+                // Start the download process
+                botDownloadService.downloadBot(language, bot.getBotName(), downloadIcon, deleteIconWrapper, downloadIconWrapper);
+                // Disable the download icon if it's "cloud-marcato"
+                botDownloadService.disableDwnld(initialDownloadIcon, downloadIconWrapper);
+            } else {
+                System.err.println("Download icon not found in StackPane!");
+            }
+        });
+    }
+
+    private void handleDeleteBtn(String language, Bot bot, ImageView initialDownloadIcon, StackPane downloadIconWrapper,
+            StackPane deleteIconWrapper) {
+        deleteIconWrapper.setOnMouseClicked(event -> {
+            event.consume(); // Prevent the event from propagating to the MenuItem
+            boolean isDeleted = deleteBot(language, bot.getBotName());
+            if (isDeleted) {
+                // Hide the delete icon
+                deleteIconWrapper.setVisible(false);
+
+                // Change the cloud-marcato icon to scarica-da-cloud if present
+                if (initialDownloadIcon.getImage().getUrl().contains(CONST.CLOUD_MARK)) {
+                    initialDownloadIcon.setImage(
+                            new Image(new File(CONST.REMOTE_ICON_PATH)
+                                    .toURI().toString()));
+                    downloadIconWrapper.setDisable(false); // Make the icon clickable again
+                }
+            }
         });
     }
 
