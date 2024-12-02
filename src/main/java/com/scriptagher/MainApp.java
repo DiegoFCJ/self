@@ -11,6 +11,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import com.scriptagher.backend.SpringApp;
 import com.scriptagher.frontend.service.StageManager;
+import com.scriptagher.shared.constants.LOGS;
 import com.scriptagher.shared.logger.CustomLogger;
 
 import java.io.IOException;
@@ -55,18 +56,19 @@ public class MainApp extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws IOException {
-        CustomLogger.info("start", "Loading MainView.fxml");
+        CustomLogger.info("start", "Loading " + LOGS.MAIN_FXML);
 
         // Imposta lo stage nel StageManager
         if (primaryStage != null) {
             StageManager.setStage(primaryStage);
-            System.out.println("Stage impostato correttamente: " + primaryStage);
+            CustomLogger.info("MainApp", "Stage impostato correttamente: " + primaryStage);
         } else {
             System.err.println("primaryStage è nullo");
+            CustomLogger.info("MainApp", "primaryStage è nullo: " + primaryStage);
         }
 
         // Continua con il caricamento della scena
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainView.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(LOGS.MAIN_FXML));
         Parent root = loader.load();
         Scene scene = new Scene(root);
         scene.setFill(Color.TRANSPARENT);

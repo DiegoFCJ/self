@@ -3,6 +3,8 @@ package com.scriptagher.frontend.controller;
 import com.scriptagher.frontend.service.MaximizeService;
 import com.scriptagher.frontend.service.StageManager;
 import com.scriptagher.frontend.service.WindowService;
+import com.scriptagher.shared.constants.LOGS;
+import com.scriptagher.shared.logger.CustomLogger;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
@@ -46,20 +48,27 @@ public class HeaderBarController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle bundle) {
         // Configura i pulsanti della finestra
-        closeButton.setOnAction(e -> System.exit(0));
+        closeButton.setOnAction(e -> {
+            CustomLogger.info(LOGS.HEADER_BAR_CONTROLLER, String.format(LOGS.BUTTON_CLICKED, "Close"));
+            System.exit(0);
+        });
 
         minimizeButton.setOnAction(e -> {
+            CustomLogger.info(LOGS.HEADER_BAR_CONTROLLER, String.format(LOGS.BUTTON_CLICKED, "Minimize"));
             // Usa StageManager per minimizzare la finestra
             StageManager.minimize();
         });
 
         maximizeButton.setOnAction(e -> {
+            CustomLogger.info(LOGS.HEADER_BAR_CONTROLLER, String.format(LOGS.BUTTON_CLICKED, "Maximize"));
             // Usa StageManager per gestire la massimizzazione
             StageManager.maximize();
             maximizeService.updateMaximizeButton(StageManager.getStage(), maximizeButton);
         });
 
-        back.setOnAction(e -> System.out.println("back: " + e));
+        back.setOnAction(e -> {
+            CustomLogger.info(LOGS.HEADER_BAR_CONTROLLER, String.format(LOGS.BUTTON_CLICKED, "Back"));
+        });
     }
 
     /**
@@ -75,9 +84,11 @@ public class HeaderBarController implements Initializable {
 
         dashboard.setOnAction(event -> {
             if (leftPane == null || fullContent == null) {
-                System.err.println("Errore: Pannelli non inizializzati!");
+                CustomLogger.error(LOGS.HEADER_BAR_CONTROLLER, "Errore: Pannelli non inizializzati!");
                 return;
             }
+
+            CustomLogger.info(LOGS.HEADER_BAR_CONTROLLER, LOGS.DASHBOARD_TOGGLE);
 
             if (leftPane.isVisible()) {
                 // Nascondi il pannello sinistro con animazione
@@ -105,11 +116,12 @@ public class HeaderBarController implements Initializable {
         });
     }
 
-
     /**
      * Anima i margini di un nodo in modo fluido utilizzando una Timeline.
      */
     private void animateMargins(TabPane fullContent, int startMargin, int endMargin) {
+        CustomLogger.info(LOGS.HEADER_BAR_CONTROLLER, String.format(LOGS.ANIMATION_STARTED, "Margins"));
+
         Timeline timeline = new Timeline();
 
         // Numero di step per l'animazione (può essere aggiustato)
@@ -140,6 +152,8 @@ public class HeaderBarController implements Initializable {
      * Anima lo spostamento del pannello sinistro con una transizione fluida.
      */
     private void animateSlide(AnchorPane leftPane, int widthChange, boolean visible) {
+        CustomLogger.info(LOGS.HEADER_BAR_CONTROLLER, String.format(LOGS.ANIMATION_STARTED, "Left pane slide"));
+
         TranslateTransition slide = new TranslateTransition();
         slide.setDuration(Duration.seconds(0.1));
         slide.setNode(leftPane);
@@ -152,6 +166,8 @@ public class HeaderBarController implements Initializable {
      * Anima il contenuto principale per simulare un effetto di margine fluido.
      */
     private void animateFullContent(TabPane fullContent, double fromX, double toX) {
+        CustomLogger.info(LOGS.HEADER_BAR_CONTROLLER, String.format(LOGS.ANIMATION_STARTED, "Full content"));
+
         TranslateTransition transition = new TranslateTransition();
         transition.setDuration(Duration.seconds(0.1));
         transition.setNode(fullContent);
@@ -170,6 +186,7 @@ public class HeaderBarController implements Initializable {
 
     @FXML
     private void moveWindow(MouseEvent event) {
+        CustomLogger.info(LOGS.HEADER_BAR_CONTROLLER, LOGS.WINDOW_DRAGGED);
         windowService.moveWindow(event);
     }
 

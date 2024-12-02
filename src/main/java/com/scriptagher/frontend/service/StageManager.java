@@ -3,7 +3,12 @@ package com.scriptagher.frontend.service;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import com.scriptagher.shared.logger.CustomLogger;
+import com.scriptagher.shared.constants.LOGS;
 
+/**
+ * Service class for managing the application's Stage, including minimizing, maximizing, 
+ * and applying appropriate styles when the window state changes.
+ */
 public class StageManager {
 
     private static Stage stage;
@@ -16,9 +21,9 @@ public class StageManager {
      */
     public static void setStage(Stage stage) {
         if (stage != null) {
-            CustomLogger.info("Stage set: ", "" + stage);
+            CustomLogger.info(LOGS.STAGE_MANAGER, LOGS.STAGE_SET + stage);
         } else {
-            CustomLogger.warn("Attempt to set a null stage.", "");
+            CustomLogger.warn(LOGS.STAGE_MANAGER, LOGS.NULL_STAGE_SET);
         }
         StageManager.stage = stage;
     }
@@ -31,7 +36,7 @@ public class StageManager {
      */
     public static Stage getStage() {
         if (stage == null) {
-            CustomLogger.warn("Stage not initialized!", "");
+            CustomLogger.warn(LOGS.STAGE_MANAGER, LOGS.STAGE_NOT_INITIALIZED);
         }
         return stage;
     }
@@ -42,9 +47,9 @@ public class StageManager {
     public static void minimize() {
         if (stage != null) {
             stage.setIconified(true);
-            CustomLogger.info("Stage minimized.", "");
+            CustomLogger.info(LOGS.STAGE_MANAGER, LOGS.STAGE_MINIMIZED);
         } else {
-            CustomLogger.warn("Attempt to minimize a null stage.", "");
+            CustomLogger.warn(LOGS.STAGE_MANAGER, LOGS.NULL_STAGE_MINIMIZE);
         }
     }
 
@@ -57,7 +62,7 @@ public class StageManager {
             applyMaximizedStyles();
             stage.setFullScreen(!stage.isFullScreen());
         } else {
-            CustomLogger.warn("Attempt to maximize a null stage.", "");
+            CustomLogger.warn(LOGS.STAGE_MANAGER, LOGS.NULL_STAGE_MAXIMIZE);
         }
     }
 
@@ -77,26 +82,24 @@ public class StageManager {
         Platform.runLater(() -> {
             Stage currentStage = StageManager.getStage();
             if (currentStage != null && currentStage.getScene() != null) {
-                // Ottieni tutti i nodi della scena
+                // Get all nodes in the scene
                 currentStage.getScene().getRoot().lookupAll("*").forEach(node -> {
                     if (StageManager.isMaximized()) {
                         if (node instanceof javafx.scene.layout.Region) {
-                            CustomLogger.info("Applying styles to node: " + node.getClass().getSimpleName(), "");
-                            // Forza i bordi e il background radius a 0 con !important
+                            CustomLogger.info(LOGS.STAGE_MANAGER, LOGS.APPLYING_STYLE + node.getClass().getSimpleName());
+                            // Force background and border radius to 0 with !important
                             node.setStyle("-fx-background-radius: 0 !important; -fx-border-radius: 0 !important;");
-                            CustomLogger.info(
-                                    "Current style of " + node.getClass().getSimpleName() + ": " + node.getStyle(), "");
+                            CustomLogger.info(LOGS.STAGE_MANAGER, LOGS.NODE_STYLE + node.getClass().getSimpleName() + ": " + node.getStyle());
                         }
                     } else {
-                        node.setStyle(""); // Ripristina lo stile originale
-                        CustomLogger.info("Removing styles from node: " + node.getClass().getSimpleName(), "");
+                        node.setStyle(""); // Restore original style
+                        CustomLogger.info(LOGS.STAGE_MANAGER, LOGS.REMOVING_STYLE + node.getClass().getSimpleName());
                     }
                 });
-                CustomLogger.info("Maximized styles applied or removed.", "");
+                CustomLogger.info(LOGS.STAGE_MANAGER, LOGS.MAXIMIZED_STYLE_APPLIED);
             } else {
-                CustomLogger.warn("Stage or scene is not initialized.", "");
+                CustomLogger.warn(LOGS.STAGE_MANAGER, LOGS.STAGE_OR_SCENE_NOT_INITIALIZED);
             }
         });
     }
-
 }

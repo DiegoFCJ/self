@@ -1,5 +1,7 @@
 package com.scriptagher.frontend.service;
 
+import com.scriptagher.shared.constants.ICN;
+
 import javafx.scene.Cursor;
 import javafx.scene.ImageCursor;
 import javafx.scene.input.MouseEvent;
@@ -23,8 +25,8 @@ public class WindowService {
      * Initializes the service and loads custom cursors for window interactions.
      */
     public WindowService() {
-        openHandCursor = new ImageCursor(new Image(getClass().getResourceAsStream("/icons/icons8-grabbing-tool-48.png")));
-        closedHandCursor = new ImageCursor(new Image(getClass().getResourceAsStream("/icons/icons8-grabbed-tool-48.png")));
+        openHandCursor = new ImageCursor(new Image(getClass().getResourceAsStream(ICN.ICNS + ICN.GRABBING)));
+        closedHandCursor = new ImageCursor(new Image(getClass().getResourceAsStream(ICN.ICNS + ICN.GRABBED)));
     }
 
     /**

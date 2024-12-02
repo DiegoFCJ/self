@@ -1,5 +1,7 @@
 package com.scriptagher.frontend.controller;
 
+import com.scriptagher.shared.constants.LOGS;
+import com.scriptagher.shared.logger.CustomLogger;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -15,35 +17,42 @@ public class MainViewController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle bundle) {
         try {
-            System.out.println("Inizializzo MainViewController...");
+            CustomLogger.info(LOGS.MAIN_VIEW_CONTROLLER, LOGS.INIT_MAIN_CONTR);
 
             mainPane.getStyleClass().add("rounded-border");
 
-            FXMLLoader headerBarLoader = new FXMLLoader(getClass().getResource("/fxml/HeaderBar.fxml"));
-            FXMLLoader tabPaneLoader = new FXMLLoader(getClass().getResource("/fxml/TabPane.fxml"));
-            FXMLLoader leftPaneLoader = new FXMLLoader(getClass().getResource("/fxml/LeftPane.fxml"));
+            FXMLLoader headerBarLoader = new FXMLLoader(getClass().getResource(LOGS.PATH_HEAD));
+            FXMLLoader tabPaneLoader = new FXMLLoader(getClass().getResource(LOGS.PATH_TABPANE));
+            FXMLLoader leftPaneLoader = new FXMLLoader(getClass().getResource(LOGS.PATH_LEFTPANE));
 
             // Carica i componenti FXML
             mainPane.setTop(headerBarLoader.load());
+            CustomLogger.info(LOGS.MAIN_VIEW_CONTROLLER, String.format(LOGS.FXML_COMPONENT_LOADED, LOGS.HEAD));
+
             mainPane.setCenter(tabPaneLoader.load());
+            CustomLogger.info(LOGS.MAIN_VIEW_CONTROLLER, String.format(LOGS.FXML_COMPONENT_LOADED, LOGS.TABPANE));
+
             mainPane.setLeft(leftPaneLoader.load());
+            CustomLogger.info(LOGS.MAIN_VIEW_CONTROLLER, String.format(LOGS.FXML_COMPONENT_LOADED, LOGS.LEFTPANE));
 
             // Ottieni i controller dai file FXML
             HeaderBarController headerBarController = headerBarLoader.getController();
             TabPaneController tabPaneController = tabPaneLoader.getController();
             LeftPaneController leftPaneController = leftPaneLoader.getController();
 
-            // Imposta il titolo e il stage nel controller della HeaderBar
-            headerBarController.setTitle();
-
-            // Passa il controller di LeftPane a TabPaneController se necessario
+            // Passa il controller di TabPaneController a LeftPane se necessario
             leftPaneController.setTabPaneController(tabPaneController);
 
-            // Configura il pulsante dashboard per estendere o comprimere il pannello sinistro
+            // Imposta il titolo e il stage nel controller della HeaderBar
+            headerBarController.setTitle();
+            CustomLogger.info(LOGS.MAIN_VIEW_CONTROLLER, LOGS.CONTROLLER_SETUP);
+
+            // Configura il pulsante dashboard per estendere o comprimere il pannello
+            // sinistro
             tabPaneController.dashboardStretch(leftPaneController.getLeftPane(), headerBarController);
 
         } catch (Exception e) {
-            System.err.println("Errore durante l'inizializzazione del MainViewController: ");
+            CustomLogger.error(LOGS.MAIN_VIEW_CONTROLLER, LOGS.INITIALIZATION_ERROR);
             e.printStackTrace();
         }
     }

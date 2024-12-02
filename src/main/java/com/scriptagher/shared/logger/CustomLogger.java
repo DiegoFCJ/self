@@ -72,7 +72,6 @@ public class CustomLogger {
         } else {
             component = "GENERAL";
         }
-        System.out.println("operationType: " + operationType + "\n component: " + component);
         return component;
     }
 
@@ -89,11 +88,6 @@ public class CustomLogger {
 
         Logger componentLogger = LoggerFactory.getLogger("com.scriptagher." + component.toLowerCase());
         File logFile = createLogFile(logDirectory, component);
-
-        System.out.println("component: " + component);
-        System.out.println("logDirectory: " + logDirectory);
-        System.out.println("componentLogger: " + componentLogger);
-        System.out.println("logFile: " + logFile);
 
         // Ensure the directory exists
         if (!logFile.getParentFile().exists() && !logFile.getParentFile().mkdirs()) {
@@ -140,7 +134,6 @@ public class CustomLogger {
         // Check if the class name matches any of the expected components
         String classUpperFolder = getClassNameAfter(caller.getClassName(), "scriptagher");
         String component;
-        System.out.println(caller.getClassName());
         component = componentCheck(classUpperFolder);
 
         return component;

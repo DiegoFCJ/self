@@ -1,42 +1,55 @@
 package com.scriptagher.frontend.service;
 
 import com.scriptagher.frontend.controller.HeaderBarController;
+import com.scriptagher.shared.constants.ICN;
 import com.scriptagher.shared.constants.LOGS;
 import com.scriptagher.shared.logger.CustomLogger;
-
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
+/**
+ * Service class for handling the maximize button state and updating its icon.
+ */
 public class MaximizeService {
 
-    // Metodo per aggiornare l'icona del pulsante di massimizzazione
+    /**
+     * Updates the maximize button icon based on the current state of the window.
+     * If the window is in full screen, the restore icon is set, otherwise the maximize icon is set.
+     *
+     * @param primaryStage the main window stage (Stage) of the application
+     * @param maximizeButton the Button used for maximizing/restoring the window
+     */
     public void updateMaximizeButton(Stage primaryStage, Button maximizeButton) {
         try {
             ImageView imageView = null;
 
-            // If the window is maximized to fill the screen
+            // If the window is maximized to fill the screen, set the restore icon
             if (primaryStage.isFullScreen()) {
                 imageView = new ImageView(
-                        new Image(HeaderBarController.class.getResourceAsStream("/icons/icons8-circle-32.png")));
-                System.out.println("Set restore icon.");
+                        new Image(HeaderBarController.class.getResourceAsStream(ICN.CIRCLE)));
+                CustomLogger.debug(LOGS.MAXIMIZE_SERVICE, LOGS.WINDOW_FULL_SCREEN);
             } else {
+                // Otherwise, set the maximize icon
                 imageView = new ImageView(
-                        new Image(HeaderBarController.class.getResourceAsStream("/icons/icons8-ripristino-32.png")));
-                System.out.println("Set maximize icon.");
+                        new Image(HeaderBarController.class.getResourceAsStream(ICN.CLOUD_RESTORE)));
+                CustomLogger.debug(LOGS.MAXIMIZE_SERVICE, LOGS.WINDOW_NOT_FULL_SCREEN);
             }
 
-            // Imposta le dimensioni fisse dell'icona
-            imageView.setFitHeight(20); // Imposta l'altezza desiderata
-            imageView.setFitWidth(20); // Imposta la larghezza desiderata
+            // Set fixed icon size
+            imageView.setFitHeight(20);
+            imageView.setFitWidth(20);
 
-            // Assegna l'icona al pulsante
+            // Set the icon on the maximize button
             maximizeButton.setGraphic(imageView);
 
         } catch (Exception e) {
-            System.out.println("Error loading icons: " + e.getMessage());
+            // Log error if icon loading fails
+            CustomLogger.error(LOGS.MAXIMIZE_SERVICE, LOGS.ICON_LOADING_ERROR + e.getMessage());
         }
-        CustomLogger.info(LOGS.BUTTON_FACTORY, "Maximize button graphic updated.");
+
+        // Log button icon update
+        CustomLogger.info(LOGS.MAXIMIZE_SERVICE, LOGS.MAXIMIZE_BUTTON_UPDATED);
     }
 }

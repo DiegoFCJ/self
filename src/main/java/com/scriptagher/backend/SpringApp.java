@@ -3,6 +3,7 @@ package com.scriptagher.backend;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import com.scriptagher.shared.logger.CustomLogger;
+import com.scriptagher.shared.constants.LOGS;
 
 /**
  * Main class for starting the Spring Boot application.
@@ -17,8 +18,9 @@ public class SpringApp {
      * @param args Command-line arguments passed during the application's start.
      */
     public static void main(String[] args) {
-        CustomLogger.info("main", "Launching Spring Boot application");
+        // Usando la costante LOGS.SPRING_APP per loggare l'avvio
+        CustomLogger.info(LOGS.SPRING_APP, "Launching Spring Boot application");
         SpringApplication.run(SpringApp.class, args);
-        CustomLogger.info("main", "Spring Boot application started successfully");
+        CustomLogger.info(LOGS.SPRING_APP, "Spring Boot application started successfully");
     }
 }

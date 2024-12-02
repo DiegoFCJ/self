@@ -3,11 +3,14 @@ package com.scriptagher.backend.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.scriptagher.backend.model.Automation;
-import com.scriptagher.shared.constants.CONST;
+import com.scriptagher.shared.constants.APIS;
+import com.scriptagher.shared.constants.LOGS;
+import com.scriptagher.shared.logger.CustomLogger;
 import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -40,56 +43,69 @@ public class BotService {
      * @throws IOException If there is an issue downloading the bot.
      */
     public Automation downloadBot(String language, String botName) throws IOException {
-        // Costruisci l'URL per scaricare il file ZIP
-        String botZipUrl = String.format("%s/%s/%s/%s.zip", CONST.BASE_URL, language, botName, botName);
-        File botDir = new File("data/" + language + "/" + botName);
-        File botZip = new File(botDir, botName + ".zip");
+        CustomLogger.info(LOGS.BOT_SERVICE, String.format(LOGS.DOWNLOAD_START, language, botName));
 
-        // Verifica se il file ZIP esiste già prima di scaricarlo
+        // Construct the URL for the ZIP file
+        String botZipUrl = String.format("%s/%s/%s/%s" + APIS.ZIP_EXTENSION, APIS.BASE_URL, language, botName, botName);
+        File botDir = new File(APIS.DIR_DATA + "/" + language + "/" + botName);
+        File botZip = new File(botDir, botName + APIS.ZIP_EXTENSION);
+
+        // Check if the ZIP file already exists
         if (!botZip.exists()) {
-            // Crea le directory se non esistono
+            // Create directories if they do not exist
             if (!botDir.exists()) {
                 botDir.mkdirs();
             }
 
-            // Scarica il file ZIP
+            // Download the ZIP file
             downloadFile(botZipUrl, botZip);
         }
 
-        // Forza i permessi di scrittura sul file ZIP appena scaricato
+        // Force write permissions on the downloaded ZIP file
         fixPermissions(botZip);
 
-        // Scompatta il file ZIP
+        // Unzip the ZIP file
+        CustomLogger.info(LOGS.BOT_SERVICE, String.format(LOGS.EXTRACT_START, botZip.getAbsolutePath()));
         unzipFile(botZip, botDir);
+        CustomLogger.info(LOGS.BOT_SERVICE, String.format(LOGS.EXTRACT_COMPLETE, botDir.getAbsolutePath()));
 
-        // Leggi il file bot.json per ottenere i dettagli del bot
-        String botJsonPath = botDir + "/Bot.json";
+        // Read the bot.json file to get bot details
+        String botJsonPath = botDir + "/" + APIS.BOT_CONFIG_FILE;
         Automation automation = fetchBotDetails(botJsonPath);
 
-        // Imposta il linguaggio
+        // Set the language
         automation.setLanguage(language);
 
-        // Elimina il file ZIP dopo l'estrazione
+        // Delete the ZIP file after extraction
         botZip.delete();
 
+        CustomLogger.info(LOGS.BOT_SERVICE, String.format(LOGS.DOWNLOAD_COMPLETE, automation.getBotName()));
         return automation;
     }
 
+    /**
+     * Ensures write permissions are set for the specified file or directory.
+     * 
+     * If the file is a directory, the method is applied recursively to its
+     * contents.
+     *
+     * @param file The file or directory for which permissions need to be fixed.
+     */
     private void fixPermissions(File file) {
+        // Check if the file or directory exists
         if (file.exists()) {
-            // Imposta i permessi di scrittura per la cartella o il file
+            // Attempt to set write permissions
             if (!file.setWritable(true, false)) {
-                System.err.println("Impossibile impostare i permessi di scrittura per: " + file.getAbsolutePath());
-            } else {
-                //System.out.println("Permessi di scrittura settati correttamente per: " + file.getAbsolutePath());
+                // Log a warning if unable to set permissions
+                CustomLogger.warn(LOGS.BOT_SERVICE, String.format(LOGS.ERROR_PERMISSIONS, file.getAbsolutePath()));
             }
-    
-            // Se è una directory, percorri ricorsivamente i suoi contenuti
+
+            // If the file is a directory, recursively fix permissions for its contents
             if (file.isDirectory()) {
                 File[] files = file.listFiles();
                 if (files != null) {
                     for (File f : files) {
-                        fixPermissions(f); // Ricorsione sui file e cartelle all'interno
+                        fixPermissions(f); // Recursive call for sub-files and sub-directories
                     }
                 }
             }
@@ -98,6 +114,10 @@ public class BotService {
 
     /**
      * Downloads a file from a given URL to a specified location.
+     *
+     * @param fileUrl     The URL to download from.
+     * @param destination The file location to save the downloaded content.
+     * @throws IOException If the download fails.
      */
     private void downloadFile(String fileUrl, File destination) throws IOException {
         HttpURLConnection connection = (HttpURLConnection) new URL(fileUrl).openConnection();
@@ -113,96 +133,124 @@ public class BotService {
                 }
             }
         } else {
+            String errorMessage = String.format(LOGS.ERROR_DOWNLOAD, fileUrl);
+            CustomLogger.error(LOGS.BOT_SERVICE, errorMessage);
             throw new IOException("Failed to download file. Response code: " + connection.getResponseCode());
         }
     }
 
     /**
      * Unzips a ZIP file to the specified directory.
+     *
+     * @param zipFile The ZIP file to extract.
+     * @param destinationDir The directory to extract the contents into.
+     * @throws IOException If there is an error during extraction.
      */
     public void unzipFile(File zipFile, File destinationDir) throws IOException {
         boolean extractionSuccessful = false;
 
+        // Try-with-resources to handle the ZipInputStream
         try (ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFile))) {
             ZipEntry entry;
             while ((entry = zipIn.getNextEntry()) != null) {
-                // Verifica se l'entry è vuota
-                if (entry.getSize() == 0) {
-                    System.err.println("Empty file entry detected: " + entry.getName());
-                    continue; // Salta l'entry vuota
-                }
-
-                // Salta l'entry che è il file zip stesso
-                if (entry.getName().equals(zipFile.getName())) {
-                    System.err.println("Skipping the zip file itself: " + entry.getName());
-                    continue; // Non estrarre il file zip
-                }
-
-                String fileName = Paths.get(entry.getName()).getFileName().toString();
-                File extractedFile = new File(destinationDir, fileName);
-
-                // Se l'entry è una directory, la creo
-                if (entry.isDirectory()) {
-                    if (!extractedFile.exists()) {
-                        extractedFile.mkdirs();
-                    }
-                } else {
-                    // Crea la directory del file, se non esiste
-                    File parentDir = extractedFile.getParentFile();
-                    if (!parentDir.exists()) {
-                        parentDir.mkdirs();
-                    }
-
-                    // Estrai il file
-                    try (FileOutputStream fos = new FileOutputStream(extractedFile)) {
-                        byte[] buffer = new byte[1024];
-                        int bytesRead;
-                        while ((bytesRead = zipIn.read(buffer)) != -1) {
-                            fos.write(buffer, 0, bytesRead);
-                        }
-                    }
-                }
-
-                zipIn.closeEntry();
+                getExtractedFile(zipFile, destinationDir, zipIn, entry);
             }
 
-            // Solo dopo che tutte le estrazioni sono state completate correttamente, setto
-            // extractionSuccessful a true
+            // Extraction is considered successful if no errors occurred
             extractionSuccessful = true;
 
         } catch (IOException e) {
-            e.printStackTrace(); // Gestisce gli errori di IO
+            e.printStackTrace(); // Handle IO errors during extraction
         } finally {
-            // Debugging: Verifica se il file esiste prima di tentare la cancellazione
-            //System.out.println("Controllo del file ZIP prima della cancellazione: " + zipFile.getAbsolutePath());
+            // Check if extraction was successful before attempting to delete the zip
+            dleteZipIfUnzipped(zipFile, extractionSuccessful);
+        }
+    }
 
-            if (extractionSuccessful) {
+    /**
+     * Deletes the ZIP file if it was successfully unzipped.
+     *
+     * @param zipFile The ZIP file to delete.
+     * @param extractionSuccessful Whether the extraction was successful or not.
+     */
+    private void dleteZipIfUnzipped(File zipFile, boolean extractionSuccessful) {
+        if (extractionSuccessful) {
+            if (zipFile.exists()) {
+                // Fix permissions before attempting to delete the ZIP file
+                fixPermissions(zipFile);
+
+                // Delete the ZIP file after extraction
+                zipFile.delete();
+
                 if (zipFile.exists()) {
-                    // Forza i permessi di scrittura sul file ZIP prima di tentare la cancellazione
-                    fixPermissions(zipFile);
-                    
-                    zipFile.delete();
-                    
-                    if (zipFile.exists()) {
-                        //System.out.println("File ZIP eliminato con successo.");
-                    } else {
-                        int i=0;
-                        while (zipFile.exists()) {
-                            zipFile.delete();
-                            i++;
-                            //System.out.println("Cancello sta merda tentativo N"+ i);
-                        }
-                        System.err.println("Impossibile eliminare il file ZIP. Verifica i permessi.");
-                    }
+                    //System.out.println("File ZIP eliminato con successo.");
                 } else {
-                    System.err.println("File ZIP non trovato al percorso: " + zipFile.getAbsolutePath());
+                    zipFile.delete();
                 }
+            } else {
+                System.err.println("File ZIP non trovato al percorso: " + zipFile.getAbsolutePath());
             }
         }
     }
 
     /**
-     * Reads the bot.json file and creates an Automation object.
+     * Extracts each file from the ZIP entry to the destination directory.
+     *
+     * @param zipFile The ZIP file being processed.
+     * @param destinationDir The directory to extract files into.
+     * @param zipIn The ZipInputStream reading the ZIP file.
+     * @param entry The current entry (file or directory) in the ZIP archive.
+     * @throws IOException If there is an error during extraction.
+     */
+    private void getExtractedFile(File zipFile, File destinationDir, ZipInputStream zipIn, ZipEntry entry)
+            throws IOException, FileNotFoundException {
+        // Skip empty entries
+        if (entry.getSize() == 0) {
+            System.err.println("Empty file entry detected: " + entry.getName());
+            return;
+        }
+
+        // Skip the entry if it's the zip file itself
+        if (entry.getName().equals(zipFile.getName())) {
+            System.err.println("Skipping the zip file itself: " + entry.getName());
+            return;
+        }
+
+        String fileName = Paths.get(entry.getName()).getFileName().toString();
+        File extractedFile = new File(destinationDir, fileName);
+
+        // If it's a directory, create it
+        if (entry.isDirectory()) {
+            if (!extractedFile.exists()) {
+                extractedFile.mkdirs();
+            }
+        } else {
+            // Create the parent directory for the file if it doesn't exist
+            File parentDir = extractedFile.getParentFile();
+            if (!parentDir.exists()) {
+                parentDir.mkdirs();
+            }
+
+            // Extract the file from the ZIP stream
+            try (FileOutputStream fos = new FileOutputStream(extractedFile)) {
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = zipIn.read(buffer)) != -1) {
+                    fos.write(buffer, 0, bytesRead);
+                }
+            }
+        }
+
+        // Close the current entry
+        zipIn.closeEntry();
+    }
+
+    /**
+     * Reads the bot.json file and creates an Automation object representing the bot.
+     *
+     * @param botJsonPath The path to the bot.json file.
+     * @return The Automation object representing the bot.
+     * @throws IOException If there is an error reading the bot.json file.
      */
     private Automation fetchBotDetails(String botJsonPath) throws IOException {
         File botJsonFile = new File(botJsonPath);
@@ -212,6 +260,7 @@ public class BotService {
 
         ObjectMapper objectMapper = new ObjectMapper();
         try (BufferedReader reader = new BufferedReader(new FileReader(botJsonPath))) {
+            // Deserialize the JSON into an Automation object
             return objectMapper.readValue(reader, Automation.class);
         }
     }
@@ -220,10 +269,8 @@ public class BotService {
      * Executes a downloaded bot and streams its output in real-time.
      *
      * @param automation   The automation object representing the bot to execute.
-     * @param clientOutput The output stream to which the bot's output will be
-     *                     written.
-     * @throws IOException If there is an error during execution or streaming the
-     *                     output.
+     * @param clientOutput The output stream to which the bot's output will be written.
+     * @throws IOException If there is an error during execution or streaming the output.
      */
     public void executeBot(Automation automation, OutputStream clientOutput) throws IOException {
         String command = automation.getStartCommand();
@@ -231,9 +278,11 @@ public class BotService {
             throw new IllegalArgumentException("Invalid start command for bot: " + automation.getBotName());
         }
 
+        // Create a process builder to execute the command
         ProcessBuilder processBuilder = new ProcessBuilder(command.split(" "));
         processBuilder.redirectErrorStream(true);
 
+        // Start the process and stream its output
         Process process = processBuilder.start();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
                 PrintWriter writer = new PrintWriter(clientOutput)) {
@@ -241,7 +290,7 @@ public class BotService {
             String line;
             while ((line = reader.readLine()) != null) {
                 writer.println(line);
-                writer.flush();
+                writer.flush(); // Stream the output to the client in real-time
             }
         }
     }
@@ -250,26 +299,27 @@ public class BotService {
      * Fetches a list of all available bots grouped by language.
      * 
      * This method retrieves a JSON file containing information about bots,
-     * grouped by their respective programming languages.
-     * It then parses the JSON into a map where the key is the language and the
-     * value is a list of Automation objects corresponding to each bot available in
-     * that language.
+     * grouped by their respective programming languages. It parses the JSON
+     * into a map where the key is the language and the value is a list of
+     * Automation objects for each bot available in that language.
      *
      * @return A map where the keys are languages (e.g., "python", "java",
-     *         "javascript") and the values are lists of
-     *         Automation objects representing the bots available for that language.
+     *         "javascript") and the values are lists of Automation objects
+     *         representing the bots available for that language.
      * @throws IOException If there is an error fetching or parsing the list of bots
      *                     from the external URL.
      */
     public Map<String, List<Automation>> fetchAvailableBots() throws IOException {
-        String botsJsonUrl = CONST.BASE_URL + "/bots.json";
+        String botsJsonUrl = APIS.BASE_URL + "/bots.json";
         ObjectMapper mapper = new ObjectMapper();
 
+        // Fetch the JSON file containing bot information
         try (InputStream inputStream = new URL(botsJsonUrl).openStream()) {
             Map<String, List<Map<String, String>>> rawData = mapper.readValue(inputStream,
                     new TypeReference<Map<String, List<Map<String, String>>>>() {
                     });
 
+            // Process the raw data into a map of Automation objects
             return rawData.entrySet().stream().collect(Collectors.toMap(
                     Map.Entry::getKey,
                     entry -> entry.getValue().stream().map(bot -> {
