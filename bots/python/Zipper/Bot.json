@@ -1,7 +1,0 @@
-{
-    "botName": "Zipper",
-    "startCommand": "python3 Zipper.py",
-    "description": "This bot zips a folder into a ZIP archive.",
-    "sourcePath": "https://github.com/DiegoFCJ/scriptagher/tree/bot-list-dev/bots/python/Zipper/Zipper",
-    "language": "python"
-}
