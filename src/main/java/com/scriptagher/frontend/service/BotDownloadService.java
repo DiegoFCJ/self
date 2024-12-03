@@ -211,7 +211,7 @@ public class BotDownloadService {
      * @throws IOException if an I/O error occurs during the download.
      */
     private void downloadBotFromApi(String language, String botName) throws IOException {
-        String apiUrl = APIS.BOT_API_BASE_URL + "/" + language + "/" + botName + APIS.DWNLD;
+        String apiUrl = APIS.BOT_API_BASE_URL + APIS.REQ_MAP_REMOTE + "/" + language + "/" + botName + APIS.DWNLD;
         URL url = new URL(apiUrl);
 
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();

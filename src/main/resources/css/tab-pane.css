@@ -13,8 +13,6 @@
 .tab {
     -fx-background-color: #181818;
     -fx-color: white;
-    -fx-translate-y: -1px;
-    -fx-translate-x: -1px;
 }
 
 .tab:selected {

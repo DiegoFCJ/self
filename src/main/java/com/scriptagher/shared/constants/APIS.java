@@ -28,7 +28,7 @@ public class APIS {
     // ============================================================================
     // API ENDPOINTS (Bot API)
     // ============================================================================
-    public static final String BOT_API_BASE_URL = "http://localhost:8080/api/bots"; // Base URL for the bot API
+    public static final String BOT_API_BASE_URL = "http://localhost:8080"; // Base URL for the bot API
     public static final String REQ_MAP_REMOTE = "/api/remote"; // API request map
     public static final String REQ_MAP_LOCAL = "/api/local"; // API request map
 
@@ -49,5 +49,6 @@ public class APIS {
     // ============================================================================
     // FINAL API ENDPOINTS
     // ============================================================================
-    public static final String API_BOT_LIST = APIS.BOT_API_BASE_URL + BOT_LIST; // Full bot list API URL
+    public static final String API_BOT_LIST = APIS.BOT_API_BASE_URL + APIS.REQ_MAP_REMOTE + BOT_LIST;
+    public static final String API_BOT_EXEC = APIS.BOT_API_BASE_URL + APIS.REQ_MAP_REMOTE + APIS.BOT_EXEC_STREAM;
 }
