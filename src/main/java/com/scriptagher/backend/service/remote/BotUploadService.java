@@ -1,4 +1,4 @@
-package com.scriptagher.backend.service;
+package com.scriptagher.backend.service.remote;
 
 import java.io.File;
 import java.io.FileOutputStream;

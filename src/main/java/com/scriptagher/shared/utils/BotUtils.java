@@ -70,7 +70,7 @@ public class BotUtils {
      * @return true if the bot is available locally; false otherwise.
      */
     public static boolean isBotAvailableLocally(String language, String botName) {
-        String botPath = APIS.BOT_DIR_DATA + "/" + language + "/" + botName;
+        String botPath = APIS.BOT_DIR_DATA_REMOTE + "/" + language + "/" + botName;
         File botDir = new File(botPath);
 
         System.out.println(botDir.exists() && botDir.isDirectory());

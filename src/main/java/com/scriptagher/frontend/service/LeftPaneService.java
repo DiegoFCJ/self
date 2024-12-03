@@ -240,7 +240,7 @@ public class LeftPaneService {
      */
     private boolean deleteBot(String language, String botName) {
         // Construct the path to the bot's directory
-        String botPath = APIS.BOT_DIR_DATA + "/" + language + "/" + botName;
+        String botPath = APIS.BOT_DIR_DATA_REMOTE + "/" + language + "/" + botName;
         File botDir = new File(botPath);
 
         // Check if the directory exists

@@ -1,4 +1,4 @@
-package com.scriptagher.backend.service;
+package com.scriptagher.backend.service.remote;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.scriptagher.backend.model.Automation;
@@ -29,7 +29,7 @@ public class BotExecutionService {
      */
     public void executeBot(String language, String botName, OutputStream clientOutput) throws IOException {
         // Costruisce il percorso del file Bot.json
-        String botJsonPath = Paths.get(APIS.BOT_DIR_DATA, "/", language, botName, "Bot.json").toString();
+        String botJsonPath = Paths.get(APIS.BOT_DIR_DATA_REMOTE, "/", language, botName, "Bot.json").toString();
         File botJsonFile = new File(botJsonPath);
 
         if (!botJsonFile.exists()) {
@@ -48,7 +48,7 @@ public class BotExecutionService {
 
         // Comando completo: prima cd nella directory, poi esecuzione del comando del
         // bot
-        String workingDir = Paths.get(APIS.BOT_DIR_DATA, "/", language).toString();
+        String workingDir = Paths.get(APIS.BOT_DIR_DATA_REMOTE, "/", language).toString();
         String fullCommand = String.format("cd %s && %s", workingDir, botCommand);
 
         // Configura il processo

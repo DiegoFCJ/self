@@ -1,10 +1,10 @@
-package com.scriptagher.backend.controller;
+package com.scriptagher.backend.controller.remote;
 
 import com.scriptagher.backend.model.Automation;
-import com.scriptagher.backend.service.BotGetService;
-import com.scriptagher.backend.service.BotUploadService;
-import com.scriptagher.backend.service.BotDownloadService;
-import com.scriptagher.backend.service.BotExecutionService;
+import com.scriptagher.backend.service.remote.BotGetService;
+import com.scriptagher.backend.service.remote.BotUploadService;
+import com.scriptagher.backend.service.remote.BotDownloadService;
+import com.scriptagher.backend.service.remote.BotExecutionService;
 import com.scriptagher.shared.constants.APIS;
 import com.scriptagher.shared.constants.LOGS;
 import com.scriptagher.shared.logger.CustomLogger;
@@ -29,7 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
  * Provides endpoints for downloading, uploading, and executing bots.
  */
 @RestController
-@RequestMapping(APIS.REQ_MAP)
+@RequestMapping(APIS.REQ_MAP_REMOTE)
 public class BotController {
 
     @Autowired

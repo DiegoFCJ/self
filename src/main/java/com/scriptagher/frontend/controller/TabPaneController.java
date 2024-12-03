@@ -81,7 +81,7 @@ public class TabPaneController {
      * again.
      */
     private void setupToggleTutorialTab() {
-        toggleTutorialTab = new Tab("Show Tutorial");
+        toggleTutorialTab = new Tab("T");
         toggleTutorialTab.setClosable(false);
         toggleTutorialTab.setOnSelectionChanged(event -> {
             if (toggleTutorialTab.isSelected()) {

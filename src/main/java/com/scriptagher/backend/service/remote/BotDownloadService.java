@@ -1,4 +1,4 @@
-package com.scriptagher.backend.service;
+package com.scriptagher.backend.service.remote;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -30,7 +30,7 @@ public class BotDownloadService {
 
         // Construct the URL for the ZIP file
         String botZipUrl = String.format("%s/%s/%s/%s" + APIS.ZIP_EXTENSION, APIS.BASE_URL, language, botName, botName);
-        File botDir = new File(APIS.BOT_DIR_DATA + "/" + language + "/" + botName);
+        File botDir = new File(APIS.BOT_DIR_DATA_REMOTE + "/" + language + "/" + botName);
         File botZip = new File(botDir, botName + APIS.ZIP_EXTENSION);
 
         // Check if the ZIP file already exists
@@ -65,7 +65,7 @@ public class BotDownloadService {
         CustomLogger.info(LOGS.BOT_SERVICE, String.format(LOGS.DOWNLOAD_COMPLETE, automation.getBotName()));
         return automation;
     }
-    
+
     /**
      * Downloads a file from a given URL to a specified location.
      *

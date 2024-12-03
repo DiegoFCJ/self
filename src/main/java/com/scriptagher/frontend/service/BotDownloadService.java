@@ -218,7 +218,7 @@ public class BotDownloadService {
         connection.setRequestMethod("GET");
 
         if (connection.getResponseCode() == 200) {
-            String botPath = APIS.BOT_DIR_DATA + "/" + language + "/" + botName;
+            String botPath = APIS.BOT_DIR_DATA_REMOTE + "/" + language + "/" + botName;
             File botDir = new File(botPath);
             if (!botDir.exists()) {
                 botDir.mkdirs();

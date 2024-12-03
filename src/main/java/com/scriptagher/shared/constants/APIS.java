@@ -18,22 +18,26 @@ public class APIS {
     // ============================================================================
     // FILE AND FOLDER NAMES
     // ============================================================================
-    public static final String BOT_DIR_DATA = "data/remote"; // Directory to store data
+    public static final String BOT_DIR_DATA_REMOTE = "data/remote"; // Directory to store data
+    public static final String BOT_DIR_DATA_LOCAL = "data/local";
     public static final String BOT_DIR_UPLOAD = "bots/"; // Directory for bot uploads
     public static final String BOT_FILE_CONFIG = "Bot.json"; // Bot configuration file name
     public static final String ZIP_EXTENSION = ".zip"; // File extension for zip files
+    public static final String LOCAL_BOTS_FILE = BOT_DIR_DATA_LOCAL + "/local_bots.json";
 
     // ============================================================================
     // API ENDPOINTS (Bot API)
     // ============================================================================
     public static final String BOT_API_BASE_URL = "http://localhost:8080/api/bots"; // Base URL for the bot API
-    public static final String REQ_MAP = "/api/bots"; // API request map
+    public static final String REQ_MAP_REMOTE = "/api/remote"; // API request map
+    public static final String REQ_MAP_LOCAL = "/api/local"; // API request map
 
     // API Endpoints for Bots
     public static final String LANG = "/{language}"; // Language parameter
     public static final String B_NAME = "/{botName}"; // Bot name parameter
     public static final String EXEC = "/execute"; // Execute bot endpoint
     public static final String DWNLD = "/download"; // Download bot endpoint
+    public static final String LOCAL_BOT_LIST = "/local-bots";
 
     // Combined API Endpoints
     public static final String BOT_DWNLD = LANG + B_NAME + DWNLD; // Bot download endpoint

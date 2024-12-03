@@ -1,4 +1,4 @@
-package com.scriptagher.backend.service;
+package com.scriptagher.backend.service.remote;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
