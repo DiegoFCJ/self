@@ -1,7 +1,6 @@
 {
-    "botName": "Bot1",
-    "startCommand": "java -cp . Bot1",
+    "botName": "Bot",
+    "startCommand": "cd data/java && javac -d . Bot1/Bot.java && java -cp . Bot1.Bot",
     "description": "This bot performs automated data scraping for websites.",
-    "sourcePath": "https://github.com/DiegoFCJ/scriptagher/tree/bot-list-dev/bots/java/Bot1/Bot1",
     "language": "java"
 }
