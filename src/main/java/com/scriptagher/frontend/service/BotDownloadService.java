@@ -10,7 +10,7 @@ import java.nio.file.StandardCopyOption;
 import com.scriptagher.shared.constants.APIS;
 import com.scriptagher.shared.constants.ICN;
 import com.scriptagher.shared.logger.CustomLogger;
-import com.scriptagher.shared.utils.BotDwnldUtils;
+import com.scriptagher.shared.utils.BotUtils;
 import com.scriptagher.shared.constants.LOGS;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
@@ -65,7 +65,7 @@ public class BotDownloadService {
      * @return an ImageView object representing the bot's status.
      */
     public ImageView getDownloadIcon(String language, String botName, double size) {
-        boolean isAvailable = BotDwnldUtils.isBotAvailableLocally(language, botName);
+        boolean isAvailable = BotUtils.isBotAvailableLocally(language, botName);
         String iconPath = isAvailable ? ICN.PATH_CLOUD_MARK : ICN.PATH_CLOUD_DWNLD;
         return createIcon(iconPath, size);
     }
@@ -88,7 +88,7 @@ public class BotDownloadService {
 
                 downloadBotFromApi(language, botName);
 
-                if (BotDwnldUtils.isBotAvailableLocally(language, botName)) {
+                if (BotUtils.isBotAvailableLocally(language, botName)) {
                     updateIcon(icon, ICN.PATH_CLOUD_MARK);
                     makeDeleteIcnVisible(language, botName, deleteIconWrapper);
                     disableDwnld(getDownloadIcon(language, botName, 20), downloadIconWrapper);
@@ -198,7 +198,7 @@ public class BotDownloadService {
      * @param deleteIconWrapper the wrapper containing the delete icon.
      */
     public void makeDeleteIcnVisible(String language, String botName, StackPane deleteIconWrapper) {
-        boolean isAvailable = BotDwnldUtils.isBotAvailableLocally(language, botName);
+        boolean isAvailable = BotUtils.isBotAvailableLocally(language, botName);
         deleteIconWrapper.setVisible(isAvailable);
         CustomLogger.info(LOGS.BOT_DOWNLOAD_SERVICE, LOGS.DEL_ICN_VIS + isAvailable);
     }
@@ -218,7 +218,7 @@ public class BotDownloadService {
         connection.setRequestMethod("GET");
 
         if (connection.getResponseCode() == 200) {
-            String botPath = APIS.DIR_DATA + "/" + language + "/" + botName;
+            String botPath = APIS.BOT_DIR_DATA + "/" + language + "/" + botName;
             File botDir = new File(botPath);
             if (!botDir.exists()) {
                 botDir.mkdirs();

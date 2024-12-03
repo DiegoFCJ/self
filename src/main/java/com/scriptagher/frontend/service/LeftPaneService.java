@@ -14,7 +14,7 @@ import com.scriptagher.frontend.dto.Bot;
 import com.scriptagher.shared.constants.APIS;
 import com.scriptagher.shared.constants.ICN;
 import com.scriptagher.shared.logger.CustomLogger;
-import com.scriptagher.shared.utils.BotDwnldUtils;
+import com.scriptagher.shared.utils.BotUtils;
 
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
@@ -104,7 +104,7 @@ public class LeftPaneService {
             TabPaneController tabPaneController) {
         botContent.setOnMouseClicked(event -> {
             CustomLogger.info("MenuItem Click", "Bot clicked: " + bot.getBotName());
-            if (!BotDwnldUtils.isBotAvailableLocally(language, bot.getBotName())) {
+            if (!BotUtils.isBotAvailableLocally(language, bot.getBotName())) {
                 ImageView downloadIcon = (ImageView) downloadIconWrapper.getChildren().stream()
                         .filter(node -> node instanceof ImageView)
                         .findFirst()
@@ -240,7 +240,7 @@ public class LeftPaneService {
      */
     private boolean deleteBot(String language, String botName) {
         // Construct the path to the bot's directory
-        String botPath = APIS.DIR_DATA + "/" + language + "/" + botName;
+        String botPath = APIS.BOT_DIR_DATA + "/" + language + "/" + botName;
         File botDir = new File(botPath);
 
         // Check if the directory exists

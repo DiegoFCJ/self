@@ -10,8 +10,12 @@
     -fx-background-color: #181818;
     -fx-border-color: #1f1f1f;
     -fx-border-width: 0.5px;
-    -fx-min-height: 500.0px;
-    -fx-min-width: 700.0px;
+    -fx-min-height: 500px;
+    -fx-min-width: 700px;
+}
+
+.hbox-header {
+    -fx-min-width: 700px;
 }
 
 .button {

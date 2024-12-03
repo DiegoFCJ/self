@@ -18,9 +18,9 @@ public class APIS {
     // ============================================================================
     // FILE AND FOLDER NAMES
     // ============================================================================
-    public static final String DIR_DATA = "data"; // Directory to store data
-    public static final String BOT_UPLOAD_DIR = "bots/"; // Directory for bot uploads
-    public static final String BOT_CONFIG_FILE = "Bot.json"; // Bot configuration file name
+    public static final String BOT_DIR_DATA = "data/remote"; // Directory to store data
+    public static final String BOT_DIR_UPLOAD = "bots/"; // Directory for bot uploads
+    public static final String BOT_FILE_CONFIG = "Bot.json"; // Bot configuration file name
     public static final String ZIP_EXTENSION = ".zip"; // File extension for zip files
 
     // ============================================================================
