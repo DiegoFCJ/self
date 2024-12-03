@@ -1,5 +1,6 @@
 package com.scriptagher.backend.service;
 
+import com.scriptagher.backend.model.Automation;
 import com.scriptagher.shared.constants.LOGS;
 import com.scriptagher.shared.logger.CustomLogger;
 import org.springframework.stereotype.Service;
@@ -7,6 +8,9 @@ import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.File;
+import java.nio.file.Paths;
 
 /**
  * Service for executing automation bots and streaming their output in
@@ -23,54 +27,63 @@ public class ExecutionService {
      */
     public void executeBot(String botName) {
         try {
-            // Log the start of the execution
+            // Log l'inizio dell'esecuzione
             CustomLogger.info(LOGS.EXECUTION_SERVICE, String.format(LOGS.STARTING_EXECUTION, botName));
 
-            // Configure the ProcessBuilder based on the bot type
-            ProcessBuilder processBuilder = new ProcessBuilder();
+            // Costruzione del percorso del file Bot.json
+            String botDirectory = "data"; // Base directory
+            String botJsonPath = Paths
+                    .get(botDirectory, getLanguageFolder(botName), botName.replace(".java", ""), "Bot.json").toString();
 
-            // Determine the appropriate command to execute based on the file extension
-            if (botName.endsWith(".java")) {
-                // Compile the Java file
-                Process compileProcess = new ProcessBuilder("javac", "bots/" + botName).start();
-                compileProcess.waitFor(); // Wait for the compilation to complete
-
-                // Run the compiled Java class
-                String className = botName.substring(0, botName.lastIndexOf('.'));
-                processBuilder.command("java", "-cp", "bots", className);
-            } else if (botName.endsWith(".py")) {
-                processBuilder.command("python3", "bots/" + botName);
-            } else if (botName.endsWith(".js")) {
-                processBuilder.command("node", "bots/" + botName);
-            } else {
-                throw new IllegalArgumentException("Unsupported file type for bot: " + botName);
+            // Leggi il file JSON
+            ObjectMapper objectMapper = new ObjectMapper();
+            File botJsonFile = new File(botJsonPath);
+            if (!botJsonFile.exists()) {
+                throw new IllegalArgumentException("Bot.json non trovato per il bot: " + botName);
             }
 
-            // Start the process
+            // Carica i dettagli del bot in un oggetto Automation
+            Automation automation = objectMapper.readValue(botJsonFile, Automation.class);
+
+            // Costruisci il comando da eseguire
+            ProcessBuilder processBuilder = new ProcessBuilder("bash", "-c", automation.getStartCommand());
+            processBuilder.directory(new File(botDirectory)); // Imposta la directory di lavoro
+
+            // Avvia il processo
             Process process = processBuilder.start();
 
-            // Stream the output of the process in real-time
+            // Stream l'output del processo in tempo reale
             new Thread(() -> {
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
                     String line;
                     while ((line = reader.readLine()) != null) {
-                        System.out.println(line); // Output to the console (or use WebSocket for real-time client
-                                                  // updates)
+                        System.out.println(line);
                     }
                 } catch (IOException e) {
-                    CustomLogger.error(LOGS.EXECUTION_SERVICE, "Error reading output of process: " + e.getMessage());
+                    CustomLogger.error(LOGS.EXECUTION_SERVICE,
+                            "Errore durante la lettura dell'output: " + e.getMessage());
                 }
             }).start();
 
-            // Wait for the process to complete
+            // Aspetta il completamento del processo
             process.waitFor();
 
-            // Log that the bot execution has completed
+            // Log fine esecuzione
             CustomLogger.info(LOGS.EXECUTION_SERVICE, String.format(LOGS.BOT_EXECUTION_COMPLETED, botName));
 
-        } catch (IOException | InterruptedException e) {
-            String errorMessage = String.format(LOGS.ERROR_EXECUTING_BOT, e.getMessage());
-            CustomLogger.error(LOGS.EXECUTION_SERVICE, errorMessage);
+        } catch (Exception e) {
+            CustomLogger.error(LOGS.EXECUTION_SERVICE, String.format(LOGS.ERROR_EXECUTING_BOT, e.getMessage()));
         }
     }
+
+    private String getLanguageFolder(String botName) {
+        if (botName.endsWith(".java"))
+            return "java";
+        if (botName.endsWith(".py"))
+            return "python";
+        if (botName.endsWith(".js"))
+            return "javascript";
+        throw new IllegalArgumentException("Tipo di bot non supportato: " + botName);
+    }
+
 }

@@ -14,6 +14,8 @@ import com.scriptagher.frontend.dto.Bot;
 import com.scriptagher.shared.constants.APIS;
 import com.scriptagher.shared.constants.ICN;
 import com.scriptagher.shared.logger.CustomLogger;
+import com.scriptagher.shared.utils.BotDwnldUtils;
+
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.control.CustomMenuItem;
@@ -102,7 +104,7 @@ public class LeftPaneService {
             TabPaneController tabPaneController) {
         botContent.setOnMouseClicked(event -> {
             CustomLogger.info("MenuItem Click", "Bot clicked: " + bot.getBotName());
-            if (!botDownloadService.isBotAvailableLocally(language, bot.getBotName())) {
+            if (!BotDwnldUtils.isBotAvailableLocally(language, bot.getBotName())) {
                 ImageView downloadIcon = (ImageView) downloadIconWrapper.getChildren().stream()
                         .filter(node -> node instanceof ImageView)
                         .findFirst()

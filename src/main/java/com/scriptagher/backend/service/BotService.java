@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import java.util.concurrent.Executors;
 
 /**
  * Service class responsible for downloading, executing, and fetching
@@ -142,7 +143,7 @@ public class BotService {
     /**
      * Unzips a ZIP file to the specified directory.
      *
-     * @param zipFile The ZIP file to extract.
+     * @param zipFile        The ZIP file to extract.
      * @param destinationDir The directory to extract the contents into.
      * @throws IOException If there is an error during extraction.
      */
@@ -167,10 +168,11 @@ public class BotService {
         }
     }
 
+    // TODO FIX
     /**
      * Deletes the ZIP file if it was successfully unzipped.
      *
-     * @param zipFile The ZIP file to delete.
+     * @param zipFile              The ZIP file to delete.
      * @param extractionSuccessful Whether the extraction was successful or not.
      */
     private void dleteZipIfUnzipped(File zipFile, boolean extractionSuccessful) {
@@ -183,7 +185,7 @@ public class BotService {
                 zipFile.delete();
 
                 if (zipFile.exists()) {
-                    //System.out.println("File ZIP eliminato con successo.");
+                    // System.out.println("File ZIP eliminato con successo.");
                 } else {
                     zipFile.delete();
                 }
@@ -196,10 +198,11 @@ public class BotService {
     /**
      * Extracts each file from the ZIP entry to the destination directory.
      *
-     * @param zipFile The ZIP file being processed.
+     * @param zipFile        The ZIP file being processed.
      * @param destinationDir The directory to extract files into.
-     * @param zipIn The ZipInputStream reading the ZIP file.
-     * @param entry The current entry (file or directory) in the ZIP archive.
+     * @param zipIn          The ZipInputStream reading the ZIP file.
+     * @param entry          The current entry (file or directory) in the ZIP
+     *                       archive.
      * @throws IOException If there is an error during extraction.
      */
     private void getExtractedFile(File zipFile, File destinationDir, ZipInputStream zipIn, ZipEntry entry)
@@ -246,7 +249,8 @@ public class BotService {
     }
 
     /**
-     * Reads the bot.json file and creates an Automation object representing the bot.
+     * Reads the bot.json file and creates an Automation object representing the
+     * bot.
      *
      * @param botJsonPath The path to the bot.json file.
      * @return The Automation object representing the bot.
@@ -269,8 +273,10 @@ public class BotService {
      * Executes a downloaded bot and streams its output in real-time.
      *
      * @param automation   The automation object representing the bot to execute.
-     * @param clientOutput The output stream to which the bot's output will be written.
-     * @throws IOException If there is an error during execution or streaming the output.
+     * @param clientOutput The output stream to which the bot's output will be
+     *                     written.
+     * @throws IOException If there is an error during execution or streaming the
+     *                     output.
      */
     public void executeBot(Automation automation, OutputStream clientOutput) throws IOException {
         String command = automation.getStartCommand();
@@ -278,20 +284,38 @@ public class BotService {
             throw new IllegalArgumentException("Invalid start command for bot: " + automation.getBotName());
         }
 
-        // Create a process builder to execute the command
-        ProcessBuilder processBuilder = new ProcessBuilder(command.split(" "));
-        processBuilder.redirectErrorStream(true);
+        // Usa bash -c per gestire comandi complessi
+        ProcessBuilder processBuilder = new ProcessBuilder("bash", "-c", command);
+        processBuilder.redirectErrorStream(true); // Reindirizza l'output di errore allo stesso flusso dell'output
+                                                  // standard
 
-        // Start the process and stream its output
+        // Avvia il processo
         Process process = processBuilder.start();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                PrintWriter writer = new PrintWriter(clientOutput)) {
 
-            String line;
-            while ((line = reader.readLine()) != null) {
-                writer.println(line);
-                writer.flush(); // Stream the output to the client in real-time
-            }
+        // Esegui il processamento dei flussi in parallelo
+        try (
+                BufferedReader processOutputReader = new BufferedReader(
+                        new InputStreamReader(process.getInputStream()));
+                PrintWriter clientWriter = new PrintWriter(clientOutput, true) // Auto-flush attivato
+        ) {
+            // Legge l'output del processo e lo invia al client in tempo reale
+            Executors.newSingleThreadExecutor().submit(() -> {
+                String line;
+                try {
+                    while ((line = processOutputReader.readLine()) != null) {
+                        clientWriter.println(line);
+                    }
+                } catch (IOException e) {
+                    clientWriter.println("Error reading process output: " + e.getMessage());
+                }
+            });
+
+            // Aspetta la fine del processo
+            int exitCode = process.waitFor();
+            clientWriter.println("Process exited with code: " + exitCode);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IOException("Process execution was interrupted", e);
         }
     }
 

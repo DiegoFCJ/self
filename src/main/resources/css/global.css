@@ -1,15 +1,11 @@
-/* Stile per il Root AnchorPane */
 .root {
     -fx-background-radius: 10px;
     -fx-border-radius: 10px;
     -fx-background-color: #181818;
     -fx-border-color: #1f1f1f;
     -fx-border-width: 0.5px;
-    -fx-min-height: 500.0px;
-    -fx-min-width: 700.0px;
 }
 
-/* Stile per il BorderPane */
 .border-pane {
     -fx-background-color: #181818;
     -fx-border-color: #1f1f1f;
@@ -18,7 +14,6 @@
     -fx-min-width: 700.0px;
 }
 
-/* Stile per i pulsanti generici */
 .button {
     -fx-cursor: hand;
 }

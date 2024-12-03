@@ -4,9 +4,14 @@ import com.scriptagher.frontend.controller.HeaderBarController;
 import com.scriptagher.shared.constants.ICN;
 import com.scriptagher.shared.constants.LOGS;
 import com.scriptagher.shared.logger.CustomLogger;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class MaximizeService {
@@ -78,57 +83,68 @@ public class MaximizeService {
      * Updates the CSS for a maximized window.
      */
     private void updateCssForMaximized(Stage primaryStage) {
-        System.out.println("Maximized Foglio di stile: " + primaryStage.getScene().getRoot().getStylesheets());
+        // Ottieni le dimensioni dello schermo corrente
+        Screen screen = Screen.getPrimary();
+        double screenWidth = screen.getBounds().getWidth();
+        double screenHeight = screen.getBounds().getHeight();
 
-        // Rimuove il file CSS 'global.css' quando la finestra è massimizzata
-        if (primaryStage.getScene().getRoot().getStylesheets()
-                .contains(getClass().getResource("/css/global.css").toExternalForm())) {
-            primaryStage.getScene().getRoot().getStylesheets()
-                    .remove(getClass().getResource("/css/global.css").toExternalForm());
-            System.out.println(
-                    "Maximized Foglio di stile rimosso?: " + primaryStage.getScene().getRoot().getStylesheets());
+        // Percorso al file full-screen.css
+        String cssPath = getClass().getResource("/css/full-screen.css").getPath();
 
-            // Aggiungi un altro CSS per la modalità fullscreen
+        // Modifica dinamica del file CSS
+        File cssFile = new File(cssPath);
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(cssFile, false))) {
+            writer.write(".border-pane {");
+            writer.newLine();
+            writer.write(String.format("-fx-min-width: %.2fpx;", screenWidth));
+            writer.newLine();
+            writer.write(String.format("-fx-min-height: %.2fpx;", screenHeight));
+            writer.newLine();
+            writer.write("}");
+            CustomLogger.debug(LOGS.MAXIMIZE_SERVICE, "Updated full-screen.css with dynamic dimensions.");
+        } catch (IOException e) {
+            CustomLogger.error(LOGS.MAXIMIZE_SERVICE, "Failed to update full-screen.css: " + e.getMessage());
+        }
+
+        // Applica il foglio di stile aggiornato
+        if (!primaryStage.getScene().getRoot().getStylesheets()
+                .contains(getClass().getResource("/css/full-screen.css").toExternalForm())) {
             primaryStage.getScene().getRoot().getStylesheets()
                     .add(getClass().getResource("/css/full-screen.css").toExternalForm());
-            System.out.println(
-                    "Maximized Foglio di stile aggiunto?: " + primaryStage.getScene().getRoot().getStylesheets());
-            CustomLogger.debug(LOGS.MAXIMIZE_SERVICE, "Removed global.css from the scene and added full-screen.css.");
-        } else {
-            // Solo se full-screen.css non è già stato aggiunto
-            if (!primaryStage.getScene().getRoot().getStylesheets()
-                    .contains(getClass().getResource("/css/full-screen.css").toExternalForm())) {
-                primaryStage.getScene().getRoot().getStylesheets()
-                        .add(getClass().getResource("/css/full-screen.css").toExternalForm());
-                System.out.println(
-                        "Maximized Foglio di stile aggiunto?: " + primaryStage.getScene().getRoot().getStylesheets());
-                CustomLogger.debug(LOGS.MAXIMIZE_SERVICE, "Added full-screen.css to the scene.");
-            }
         }
     }
 
+    /**
+     * Restores the CSS for a normal window state.
+     */
     private void restoreCss(Stage primaryStage) {
-        System.out.println("restore Foglio di stile: " + primaryStage.getScene().getRoot().getStylesheets());
+        // Ripristina il file CSS originale (opzionale: resettare il file
+        // full-screen.css)
+        String cssPath = getClass().getResource("/css/full-screen.css").getPath();
+        File cssFile = new File(cssPath);
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(cssFile, false))) {
+            writer.write(".border-pane {");
+            writer.newLine();
+            writer.write("-fx-min-width: 700px;");
+            writer.newLine();
+            writer.write("-fx-min-height: 500px;");
+            writer.newLine();
+            writer.write("}");
+            CustomLogger.debug(LOGS.MAXIMIZE_SERVICE, "Restored default dimensions in full-screen.css.");
+        } catch (IOException e) {
+            CustomLogger.error(LOGS.MAXIMIZE_SERVICE, "Failed to reset full-screen.css: " + e.getMessage());
+        }
 
-        // Rimuove il foglio di stile 'full-screen.css' se presente
+        // Rimuove full-screen.css e aggiunge global.css
         if (primaryStage.getScene().getRoot().getStylesheets()
                 .contains(getClass().getResource("/css/full-screen.css").toExternalForm())) {
             primaryStage.getScene().getRoot().getStylesheets()
                     .remove(getClass().getResource("/css/full-screen.css").toExternalForm());
-            System.out.println(
-                    "Full-Screen Foglio di stile rimosso?: " + primaryStage.getScene().getRoot().getStylesheets());
-            CustomLogger.debug(LOGS.MAXIMIZE_SERVICE, "Removed full-screen.css from the scene.");
         }
-
-        // Ripristina il CSS originale quando la finestra non è massimizzata
         if (!primaryStage.getScene().getRoot().getStylesheets()
                 .contains(getClass().getResource("/css/global.css").toExternalForm())) {
-            // Aggiungi global.css se non presente
             primaryStage.getScene().getRoot().getStylesheets()
                     .add(getClass().getResource("/css/global.css").toExternalForm());
-            System.out.println(
-                    "restore Foglio di stile aggiunto?: " + primaryStage.getScene().getRoot().getStylesheets());
-            CustomLogger.debug(LOGS.MAXIMIZE_SERVICE, "Added global.css back to the scene.");
         }
     }
 }

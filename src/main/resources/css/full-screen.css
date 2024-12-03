@@ -1,15 +1,15 @@
 .root {
-    -fx-background-radius: 0;
-    -fx-border-radius: 0;
+    -fx-background-radius: 0 !important;
+    -fx-border-radius: 0 !important;
     -fx-background-color: #181818;
 }
 
 .border-pane {
+    -fx-background-radius: 0 !important;
+    -fx-border-radius: 0 !important;
     -fx-background-color: #181818;
     -fx-border-color: #1f1f1f;
     -fx-border-width: 0.5px;
-    -fx-min-width: 1920.0px;
-    -fx-min-height: 1080.0px;
 }
 
 .button {
@@ -23,5 +23,5 @@
 
 .tab-pane {
     -fx-background-radius: 0 !important;
-    -fx-background-radius: 0 !important;
+    -fx-border-radius: 0 !important;
 }
