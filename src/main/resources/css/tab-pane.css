@@ -1,13 +1,4 @@
-.tab-pane:focused .tab-header-area .headers-region .tab:selected .focus-indicator {
-    -fx-border-width: 0;
-    -fx-border-insets: 0 0 0 0;
-    -fx-border-radius: 0;
-}
-
-.tab-pane:top *.tab-header-area {
-    -fx-padding: 0;
-}
-
+/* Stile per il TabPane */
 .tab-pane {
     -fx-background-color: #1f1f1f;
     -fx-border-color: #1f1f1f;
@@ -18,6 +9,7 @@
     -fx-tab-min-height: 30px;
 }
 
+/* Stile per il Tab */
 .tab {
     -fx-background-color: #181818;
     -fx-color: white;
@@ -29,7 +21,7 @@
     -fx-background-color: #1f1f1f;
 }
 
-/* Per i Tab */
+/* Stile per l'area del Tab Header */
 .tab-pane .tab-header-background {
     -fx-background-color: #1f1f1f;
     -fx-padding: 0 0 0 0;
@@ -39,8 +31,28 @@
     -fx-text-fill: white;
 }
 
-/* Per il Label di benvenuto */
+/* Stile per il Label di benvenuto */
 .label#welcomeLabel {
     -fx-font-size: 24;
     -fx-text-fill: white;
+}
+
+/* Stile per il contenitore AnchorPane */
+.tutorial-anchor-pane {
+    -fx-min-height: 0.0;
+    -fx-min-width: 0.0;
+    -fx-pref-height: 423.0;
+    -fx-pref-width: 468.0;
+}
+
+/* Stile per il VBox del tutorial */
+.tutorial-vbox {
+    -fx-alignment: CENTER;
+    -fx-pref-height: 423.0;
+    -fx-pref-width: 499.0;
+    -fx-spacing: 10;
+    -fx-bottom-anchor: 0.0;
+    -fx-left-anchor: 0.0;
+    -fx-right-anchor: 39.0;
+    -fx-top-anchor: 0.0;
 }

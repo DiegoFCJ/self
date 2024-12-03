@@ -6,6 +6,12 @@
     -fx-border-width: 0.5px;
 }
 
+/* Per il VBox che contiene il menu */
+.menu-vbox {
+    -fx-border-color: #1f1f1f;
+    -fx-border-width: 0.5px;
+}
+
 /* Per il MenuButton */
 .menu-button {
     -fx-background-color: #181818;
@@ -13,26 +19,29 @@
     -fx-font-size: 14px;
 }
 
-/* Per il MenuButton */
-.menu-button:hover{
+/* Per il MenuButton (hover) */
+.menu-button:hover {
     -fx-cursor: hand;
 }
 
-/* Per il MenuButton */
+/* Per il MenuButton (testo) */
 .menu-button .label {
     -fx-text-fill: white;
 }
 
-.menu-button .arrow-button .arrow{
+/* Per la freccia del MenuButton */
+.menu-button .arrow-button .arrow {
     -fx-text-fill: white;
     -fx-background-color: white;
 }
 
+/* Per il MenuItem */
 .menu-item {
     -fx-background-color: #181818;
     -fx-text-fill: white;
 }
 
+/* Per il MenuItem (hover) */
 .menu-item:hover {
     -fx-background-color: #1f1f1f;
     -fx-text-fill: rgb(248, 248, 248);

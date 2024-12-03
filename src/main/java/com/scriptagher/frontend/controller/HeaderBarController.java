@@ -63,7 +63,7 @@ public class HeaderBarController implements Initializable {
             CustomLogger.info(LOGS.HEADER_BAR_CONTROLLER, String.format(LOGS.BUTTON_CLICKED, "Maximize"));
             // Usa StageManager per gestire la massimizzazione
             StageManager.maximize();
-            maximizeService.updateMaximizeButton(StageManager.getStage(), maximizeButton);
+            maximizeService.updateMaximizeButton(maximizeButton);
         });
 
         back.setOnAction(e -> {

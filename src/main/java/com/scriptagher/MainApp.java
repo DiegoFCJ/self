@@ -58,23 +58,25 @@ public class MainApp extends Application {
     public void start(Stage primaryStage) throws IOException {
         CustomLogger.info("start", "Loading " + LOGS.MAIN_FXML);
 
-        // Imposta lo stage nel StageManager
+        // Imposta lo stage e la scena nel StageManager
         if (primaryStage != null) {
-            StageManager.setStage(primaryStage);
-            CustomLogger.info("MainApp", "Stage impostato correttamente: " + primaryStage);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(LOGS.MAIN_FXML));
+            Parent root = loader.load();
+            Scene scene = new Scene(root);
+            scene.setFill(Color.TRANSPARENT);
+            primaryStage.initStyle(StageStyle.TRANSPARENT);
+            primaryStage.setScene(scene);
+            primaryStage.setTitle("Scriptagher");
+
+            // Impostiamo sia lo Stage che la Scene nel StageManager
+            StageManager.setStageAndScene(primaryStage, scene);
+
+            CustomLogger.info("MainApp", "Stage e Scene impostati correttamente: " + primaryStage + ", " + scene);
         } else {
             System.err.println("primaryStage è nullo");
             CustomLogger.info("MainApp", "primaryStage è nullo: " + primaryStage);
         }
 
-        // Continua con il caricamento della scena
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(LOGS.MAIN_FXML));
-        Parent root = loader.load();
-        Scene scene = new Scene(root);
-        scene.setFill(Color.TRANSPARENT);
-        primaryStage.initStyle(StageStyle.TRANSPARENT);
-        primaryStage.setScene(scene);
-        primaryStage.setTitle("Scriptagher");
         primaryStage.show();
     }
 

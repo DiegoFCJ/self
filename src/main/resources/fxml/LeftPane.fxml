@@ -7,8 +7,6 @@
 
 <AnchorPane  
     fx:id="leftPane"
-    prefHeight="200.0" 
-    prefWidth="200.0" 
     stylesheets="@../css/left-pane.css"
     BorderPane.alignment="CENTER"
     xmlns="http://javafx.com/javafx/23.0.1" 
@@ -18,9 +16,7 @@
     <children>
         <VBox 
             fx:id="menuVBox"
-            prefHeight="200.0" 
-            prefWidth="100.0" 
-            style="-fx-border-color: #1f1f1f; -fx-border-width: 0.5px;" 
+            styleClass="menu-vbox"
             AnchorPane.bottomAnchor="0.0" 
             AnchorPane.leftAnchor="0.0" 
             AnchorPane.rightAnchor="0.0" 

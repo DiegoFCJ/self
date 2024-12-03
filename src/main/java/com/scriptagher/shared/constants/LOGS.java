@@ -93,6 +93,7 @@ public class LOGS {
     public static final String API_FAILURE = "Failed to fetch bots. HTTP Status: ";
     public static final String API_EMPTY_RESPONSE = "API returned no bot data.";
     public static final String STAGE_NOT_INITIALIZED = "Stage not initialized!";
+    public static final String SCENE_NOT_INITIALIZED = "La scena non è stata inizializzata";
 
     // ============================================================================
     // SUCCESS LOG MESSAGES
@@ -115,6 +116,8 @@ public class LOGS {
     public static final String NEW_TAB_ADDED = "New tab added: ";
     public static final String STAGE_SET = "Stage set: ";
     public static final String STAGE_MINIMIZED = "Stage minimized.";
+    public static final String SCENE_SET = "Scene impostata: ";
+    public static final String TUT_START = "Tutorial started";
 
     // ============================================================================
     // INFO LOG MESSAGES
@@ -136,6 +139,7 @@ public class LOGS {
     public static final String INIT_MAIN_CONTR = "Initializing MainViewController...";
     public static final String WINDOW_FULL_SCREEN = "Window is in full screen, set restore icon.";
     public static final String WINDOW_NOT_FULL_SCREEN = "Window is not in full screen, set maximize icon.";
+    public static final String WINDOW_MAXIMIZED = "Window is maximized.";
     public static final String MAXIMIZE_BUTTON_UPDATED = "Maximize button graphic updated.";
     public static final String NULL_STAGE_SET = "Attempt to set a null stage.";
     public static final String NULL_STAGE_MINIMIZE = "Attempt to minimize a null stage.";
@@ -152,5 +156,6 @@ public class LOGS {
     public static final String DEL_ICN_VIS = "Delete icon visibility set to: ";
     public static final String CREATED_DIR = "Created directory for bot: ";
     public static final String LEFT_PAN_HIDDEN = "Left panel initially hidden.";
-    public static final String TUT_START = "Tutorial started";
+    public static final String NULL_SCENE_SET = "Tentativo di impostare una scena nulla";
+
 }

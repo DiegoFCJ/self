@@ -6,17 +6,13 @@
 <?import javafx.scene.layout.*?>
 
 <AnchorPane 
-    maxHeight="-Infinity" 
-    maxWidth="-Infinity" 
-    minHeight="500.0" 
-    minWidth="700.0"
     stylesheets="@../css/global.css" 
     xmlns="http://javafx.com/javafx/23.0.1" 
     xmlns:fx="http://javafx.com/fxml/1" 
     fx:controller="com.scriptagher.frontend.controller.MainViewController"
     >
     <children>
-        <BorderPane fx:id="mainPane" minHeight="500.0" minWidth="700.0" prefHeight="508.0" prefWidth="744.0">
+        <BorderPane fx:id="mainPane" styleClass="border-pane">
             <top>
                 <fx:include source="HeaderBar.fxml"/>
             </top>

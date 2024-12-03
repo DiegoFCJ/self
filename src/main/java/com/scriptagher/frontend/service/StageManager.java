@@ -1,31 +1,40 @@
 package com.scriptagher.frontend.service;
 
 import javafx.application.Platform;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 import com.scriptagher.shared.logger.CustomLogger;
 import com.scriptagher.shared.constants.LOGS;
 
 /**
- * Service class for managing the application's Stage, including minimizing, maximizing, 
- * and applying appropriate styles when the window state changes.
+ * Service class for managing the application's Stage and Scene,
+ * including minimizing, maximizing, and applying appropriate styles when the window state changes.
  */
 public class StageManager {
 
     private static Stage stage;
+    private static Scene scene;
 
     /**
-     * Sets the Stage.
-     * Logs a message when the stage is set or if it's null.
+     * Sets the Stage and Scene.
+     * Logs a message when the stage or scene is set or if they are null.
      *
      * @param stage the stage to be set
+     * @param scene the scene to be set
      */
-    public static void setStage(Stage stage) {
+    public static void setStageAndScene(Stage stage, Scene scene) {
         if (stage != null) {
             CustomLogger.info(LOGS.STAGE_MANAGER, LOGS.STAGE_SET + stage);
         } else {
             CustomLogger.warn(LOGS.STAGE_MANAGER, LOGS.NULL_STAGE_SET);
         }
+        if (scene != null) {
+            CustomLogger.info(LOGS.STAGE_MANAGER, LOGS.SCENE_SET + scene);
+        } else {
+            CustomLogger.warn(LOGS.STAGE_MANAGER, LOGS.NULL_SCENE_SET);
+        }
         StageManager.stage = stage;
+        StageManager.scene = scene;
     }
 
     /**
@@ -39,6 +48,19 @@ public class StageManager {
             CustomLogger.warn(LOGS.STAGE_MANAGER, LOGS.STAGE_NOT_INITIALIZED);
         }
         return stage;
+    }
+
+    /**
+     * Gets the Scene.
+     * Logs a warning if the scene is not initialized.
+     *
+     * @return the current scene
+     */
+    public static Scene getScene() {
+        if (scene == null) {
+            CustomLogger.warn(LOGS.STAGE_MANAGER, LOGS.SCENE_NOT_INITIALIZED);
+        }
+        return scene;
     }
 
     /**
@@ -81,9 +103,10 @@ public class StageManager {
     private static void applyMaximizedStyles() {
         Platform.runLater(() -> {
             Stage currentStage = StageManager.getStage();
-            if (currentStage != null && currentStage.getScene() != null) {
+            Scene currentScene = StageManager.getScene();
+            if (currentStage != null && currentScene != null && currentScene.getRoot() != null) {
                 // Get all nodes in the scene
-                currentStage.getScene().getRoot().lookupAll("*").forEach(node -> {
+                currentScene.getRoot().lookupAll("*").forEach(node -> {
                     if (StageManager.isMaximized()) {
                         if (node instanceof javafx.scene.layout.Region) {
                             CustomLogger.info(LOGS.STAGE_MANAGER, LOGS.APPLYING_STYLE + node.getClass().getSimpleName());
