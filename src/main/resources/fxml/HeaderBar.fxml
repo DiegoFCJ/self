@@ -10,26 +10,23 @@
 <?import javafx.scene.text.Font?>
 
 <HBox alignment="CENTER_LEFT" minWidth="400.0" onDragDetected="#moveWindow" onDragOver="#releaseAndChangeCursor" 
-      styleClass="hbox-header" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" 
+      styleClass="hbox-header" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" 
       fx:controller="com.scriptagher.frontend.controller.HeaderBarController"
       stylesheets="@../css/header.css">
-    <!-- Logo o icona -->
-    <Circle radius="15" styleClass="logo-circle" />
-
-    <Button fx:id="titleLabel" mnemonicParsing="false" text="Scriptagher" styleClass="title-button" translateX="-10.0" />
-
-    <!-- Spaziatore -->
-    <Region HBox.hgrow="ALWAYS" />
-
-    <Button fx:id="back" styleClass="button" visible="false">
+    
+    <Button styleClass="title-button">
         <graphic>
-            <ImageView fitHeight="20" fitWidth="20">
+            <ImageView fitHeight="30" fitWidth="30">
                 <image>
-                    <Image url="@../icons/icons8-go-back-32.png" />
+                    <Image url="@../icons/scriptagher-icon.png" />
                 </image>
             </ImageView>
         </graphic>
     </Button>
+
+
+    <!-- Spaziatore -->
+    <Region HBox.hgrow="ALWAYS" />
 
     <Button fx:id="dashboard" styleClass="button">
         <graphic>

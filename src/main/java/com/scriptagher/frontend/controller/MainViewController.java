@@ -43,12 +43,9 @@ public class MainViewController implements Initializable {
             // Passa il controller di TabPaneController a LeftPane se necessario
             leftPaneController.setTabPaneController(tabPaneController);
 
-            // Imposta il titolo e il stage nel controller della HeaderBar
-            headerBarController.setTitle();
             CustomLogger.info(LOGS.MAIN_VIEW_CONTROLLER, LOGS.CONTROLLER_SETUP);
 
             // Configura il pulsante dashboard per estendere o comprimere il pannello
-            // sinistro
             tabPaneController.dashboardStretch(leftPaneController.getLeftPane(), headerBarController);
 
         } catch (Exception e) {

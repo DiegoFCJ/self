@@ -9,7 +9,7 @@
     fx:id="leftPane"
     stylesheets="@../css/left-pane.css"
     BorderPane.alignment="CENTER"
-    xmlns="http://javafx.com/javafx/23.0.1" 
+    xmlns="http://javafx.com/javafx/11.0.2" 
     xmlns:fx="http://javafx.com/fxml/1" 
     fx:controller="com.scriptagher.frontend.controller.LeftPaneController"
 >

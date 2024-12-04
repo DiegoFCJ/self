@@ -28,9 +28,6 @@ public class HeaderBarController implements Initializable {
     private final WindowService windowService = new WindowService();
 
     @FXML
-    private Button titleLabel;
-
-    @FXML
     private Button minimizeButton;
 
     @FXML
@@ -38,9 +35,6 @@ public class HeaderBarController implements Initializable {
 
     @FXML
     private Button closeButton;
-
-    @FXML
-    private Button back;
 
     @FXML
     private Button dashboard;
@@ -64,10 +58,6 @@ public class HeaderBarController implements Initializable {
             // Usa StageManager per gestire la massimizzazione
             StageManager.maximize();
             maximizeService.updateMaximizeButton(maximizeButton);
-        });
-
-        back.setOnAction(e -> {
-            CustomLogger.info(LOGS.HEADER_BAR_CONTROLLER, String.format(LOGS.BUTTON_CLICKED, "Back"));
         });
     }
 
@@ -174,14 +164,6 @@ public class HeaderBarController implements Initializable {
         transition.setFromX(fromX);
         transition.setToX(toX);
         transition.play();
-    }
-
-    /**
-     * Imposta dinamicamente il titolo della barra.
-     */
-    public void setTitle() {
-        String userName = System.getProperty("user.name");
-        titleLabel.setText(userName.toUpperCase());
     }
 
     @FXML

@@ -3,7 +3,6 @@ package com.scriptagher.frontend.service;
 import com.scriptagher.frontend.dto.Bot;
 import com.scriptagher.shared.constants.LOGS;
 import com.scriptagher.shared.logger.CustomLogger;
-
 import javafx.concurrent.Task;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
@@ -27,46 +26,38 @@ public class TabPaneService {
      */
     public void createNewTab(TabPane tabPane, Bot bot) {
         String tabName = bot.getLanguage() + "/" + bot.getBotName();
-
-        // Log the attempt to create or select a tab
+    
         CustomLogger.debug(LOGS.TAB_PANE_SERVICE, LOGS.TAB_CREATION_ATTEMPT + tabName);
-
-        // Check if the tab with the same name already exists
+    
         Tab existingTab = getTabByName(tabPane, tabName);
-
+    
         if (existingTab != null) {
-            // If the tab already exists, select it
             tabPane.getSelectionModel().select(existingTab);
             CustomLogger.info(LOGS.TAB_PANE_SERVICE, LOGS.TAB_EXISTS + tabName);
         } else {
-            // Create new Tab
             Tab newTab = new Tab(tabName);
-
-            // Create TextArea to simulate terminal
+    
             TextArea textArea = new TextArea();
-            textArea.setEditable(false); // Non permette l'editing manuale
-
-            // Aggiungi la TextArea al nuovo tab
+            textArea.setEditable(false);
+    
             newTab.setContent(textArea);
+    
             tabPane.getTabs().add(newTab);
             tabPane.getSelectionModel().select(newTab);
-
-            // Crea e avvia il task per eseguire il bot
+    
             Task<Void> task = botExecutionService.executeBot(bot.getLanguage(), bot.getBotName());
-
-            // Aggiungi un listener per aggiornare il contenuto del TextArea in tempo reale
+    
             task.messageProperty().addListener((observable, oldValue, newValue) -> {
                 textArea.appendText(newValue + "\n");
-                textArea.setScrollTop(Double.MAX_VALUE); // Scorri verso il basso automaticamente
+                textArea.setScrollTop(Double.MAX_VALUE);
             });
-
-            // Esegui il task in un nuovo thread
+    
             new Thread(task).start();
-
+    
             CustomLogger.info(LOGS.TAB_PANE_SERVICE, LOGS.NEW_TAB_CREATED + tabName);
         }
     }
-
+    
     /**
      * Searches for a tab by name in the TabPane.
      *

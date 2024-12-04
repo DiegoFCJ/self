@@ -8,7 +8,7 @@
 <TabPane 
     fx:id="tabPane" 
     styleClass="tab-pane"
-    xmlns="http://javafx.com/javafx/23.0.1" 
+    xmlns="http://javafx.com/javafx/11.0.2" 
     stylesheets="@../css/tab-pane.css" 
     xmlns:fx="http://javafx.com/fxml/1" 
     fx:controller="com.scriptagher.frontend.controller.TabPaneController"

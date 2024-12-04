@@ -35,6 +35,13 @@
     -fx-text-fill: white;
 }
 
+.tutorial-text {
+    -fx-font-size: 24;
+    -fx-text-fill: white;
+    -fx-alignment: center;
+    -fx-padding: 10px;
+}
+
 /* Stile per il contenitore AnchorPane */
 .tutorial-anchor-pane {
     -fx-min-height: 0.0;

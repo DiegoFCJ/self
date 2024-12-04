@@ -40,6 +40,22 @@ public class TabPaneController {
     public void initialize() {
         CustomLogger.info(LOGS.TAB_PANE_CONTROLLER, LOGS.INIT_TAB_PANE);
 
+        // Check if the tabPane has a scene before accessing its width
+        if (tabPane.getScene() != null) {
+            tabPane.getScene().widthProperty().addListener((observable, oldWidth, newWidth) -> {
+                // Calculate the max width only after the scene is ready
+                double maxWidth = newWidth.doubleValue() - 200;
+                tabPane.setStyle("-fx-max-width: " + maxWidth + "px;");
+            });
+
+            // Set the initial max width if the scene is available
+            double initialMaxWidth = tabPane.getScene().getWidth() - 200;
+            tabPane.setStyle("-fx-max-width: " + initialMaxWidth + "px;");
+        } else {
+            // Log an error or handle the case where the scene is not available
+            CustomLogger.error(LOGS.TAB_PANE_CONTROLLER, "Scene is not available for the TabPane.");
+        }
+
         setupTutorialTab();
         setupToggleTutorialTab();
     }
@@ -47,7 +63,8 @@ public class TabPaneController {
     /**
      * Creates a new tab for a given bot and adds it to the tab pane.
      * 
-     * @param bot the bot to create a tab for.
+     * @param bot  the bot to create a tab for.
+     * @param root the root node of the application layout.
      */
     public void createNewTab(Bot bot) {
         tabPaneService.createNewTab(tabPane, bot);
@@ -65,6 +82,8 @@ public class TabPaneController {
                 + "1. You can navigate between tabs to access functions.\n"
                 + "2. Use the left menu to dynamically create new functions.\n"
                 + "3. Follow the tutorial to get started!");
+
+        welcomeMessage.getStyleClass().add("tutorial-text");
 
         Button hideTutorialButton = new Button("Hide Tutorial");
         hideTutorialButton.setOnAction(event -> hideTutorial());

@@ -8,14 +8,12 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import com.scriptagher.frontend.controller.TabPaneController;
 import com.scriptagher.frontend.dto.Bot;
 import com.scriptagher.shared.constants.APIS;
 import com.scriptagher.shared.constants.ICN;
 import com.scriptagher.shared.logger.CustomLogger;
 import com.scriptagher.shared.utils.BotUtils;
-
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.control.CustomMenuItem;
