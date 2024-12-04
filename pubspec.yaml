@@ -1,15 +1,17 @@
-name: my_app
-description: Un'app Flutter di esempio
+name: scriptagher
+description: flutter scriptagher app
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.5.0 <4.0.0'
+  sdk: ">=3.5.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
   sqflite: ^2.0.0+3
   sqflite_common_ffi: ^2.0.0+3
+  logging: ^1.3.0
+  intl: ^0.17.0
   path_provider: ^2.0.11
 
 flutter:

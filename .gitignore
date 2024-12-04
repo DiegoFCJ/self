@@ -73,7 +73,8 @@ build/
 *.swp
 *.swo
 *.DS_Store
-.idea/
+.metadata
+analysis_options
 
 # Avoid tracking the generated Flutter plugin registrants
 flutter/.plugin/
