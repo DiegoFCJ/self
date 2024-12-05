@@ -1,68 +1,43 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'shared/custom_logger.dart';  // Assicurati di importare il CustomLogger
+import 'package:scriptagher/frontend/views/home_view.dart';
+import 'shared/custom_logger.dart';  // Importa la tua classe CustomLogger
+import 'backend/server/server.dart';  // Assicurati che il path al server sia corretto
 
-void main() {
+// La tua vista principale di Flutter
+Future<void> main() async {
+  // Avvio del backend
+  await startBackend();
+
+  // Avvio del frontend
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  final CustomLogger logger = CustomLogger();  // Crea un'istanza del CustomLogger
+// Funzione per avviare il backend
+Future<void> startBackend() async {
+  // Crea un'istanza del CustomLogger
+  final CustomLogger logger = CustomLogger();
 
-  @override
-  Widget build(BuildContext context) {
-    // Log di esempio all'avvio dell'app
-    logger.info('frontend', 'App started');
-    
-    return MaterialApp(
-      title: 'Flutter Logging Example',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(logger: logger),  // Passa il logger alla HomePage
-    );
+  try {
+    // Log di avvio del backend
+    logger.info('Avvio del server...', 'Avvio del backend');
+    await startServer();  // Qui dovrai avviare il server vero e proprio
+    logger.info('Server avviato con successo', 'Avvio del backend');
+  } catch (e) {
+    logger.error('Errore durante l\'avvio del server: $e', 'Errore nel backend');
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  final CustomLogger logger;  // Riceve il logger come parametro
-
-  MyHomePage({required this.logger});
-
+// Classe principale dell'app Flutter
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // Log di esempio nella HomePage
-    logger.debug('frontend', 'HomePage loaded');
-    
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Flutter Logging Example'),
+    return MaterialApp(
+      title: 'Scriptagher',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
       ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            // Logga l'azione dell'utente
-            logger.info('frontend', 'User pressed the button');
-            showDialog(
-              context: context,
-              builder: (_) => AlertDialog(
-                title: Text('Button Pressed'),
-                content: Text('You pressed the button!'),
-                actions: [
-                  TextButton(
-                    child: Text('OK'),
-                    onPressed: () {
-                      // Logga la chiusura del dialogo
-                      logger.info('frontend', 'User closed the dialog');
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              ),
-            );
-          },
-          child: Text('Press me'),
-        ),
-      ),
+      home: HomeView(),
     );
   }
 }

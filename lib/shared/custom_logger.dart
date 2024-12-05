@@ -4,7 +4,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart';
 
 class CustomLogger {
-  static final Logger _logger = Logger('CustomLogger');
+  final Logger _logger = Logger('CustomLogger'); // Non statico
   
   // Formato data
   static final DateFormat dateFormatter = DateFormat('yyyy-MM-dd');
@@ -105,8 +105,6 @@ class CustomLogger {
   // Metodo centrale per il logging
   void _log(String level, String operationType, String description) {
     final formattedMessage = '[$operationType] - $description';
-    //final className = 'CustomLogger';
-    
     Level logLevel;
 
     // Assegna il valore numerico in base al livello di log
@@ -132,4 +130,3 @@ class CustomLogger {
     _logger.log(logLevel, formattedMessage);
   }
 }
-

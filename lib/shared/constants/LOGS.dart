@@ -172,4 +172,8 @@ class LOGS {
   static const String CREATED_DIR = "Created directory for bot: ";
   static const String LEFT_PAN_HIDDEN = "Left panel initially hidden.";
   static const String NULL_SCENE_SET = "Tentativo di impostare una scena nulla";
+
+  static const String serverStart = 'Server avviato con successo:';
+  static const String serverError = 'Errore durante l\'avvio del server';
+  static const String requestReceived = 'Richiesta ricevuta';
 }
