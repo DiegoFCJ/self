@@ -8,15 +8,22 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
   flutter_test:
     sdk: flutter
+    
   sqflite: ^2.0.0+3
   sqflite_common_ffi: ^2.0.0+3
   logging: ^1.3.0
   intl: ^0.17.0
   shelf: ^1.3.0
+  archive: ^3.0.0
+  shelf_router: ^1.0.0
+  http: ^1.2.2
   path_provider: ^2.0.11
-
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - assets/sql/queries.sql

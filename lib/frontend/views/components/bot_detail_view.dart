@@ -10,7 +10,7 @@ class BotDetailView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(bot.name),
+        title: Text(bot.botName),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -18,7 +18,7 @@ class BotDetailView extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Nome: ${bot.name}',
+              'Nome: ${bot.botName}',
               style: Theme.of(context).textTheme.headlineMedium,  // Cambiato headline5 in headlineMedium
             ),
             SizedBox(height: 10),
@@ -31,7 +31,7 @@ class BotDetailView extends StatelessWidget {
               onPressed: () {
                 // Azione quando si vuole eseguire l'operazione sul bot
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Esegui bot: ${bot.name}')),
+                  SnackBar(content: Text('Esegui bot: ${bot.botName}')),
                 );
               },
               child: Text('Esegui Bot'),

@@ -12,7 +12,7 @@ class BotCard extends StatelessWidget {
     return Card(
       margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       child: ListTile(
-        title: Text(bot.name),
+        title: Text(bot.botName),
         subtitle: Text(bot.description),
         onTap: onTap,
       ),

@@ -6,9 +6,9 @@ import 'components/bot_detail_view.dart';
 class HomeView extends StatelessWidget {
   // Lista di bot simulata
   final List<Bot> bots = [
-    Bot(name: 'Bot 1', description: 'Questo è il primo bot'),
-    Bot(name: 'Bot 2', description: 'Questo è il secondo bot'),
-    Bot(name: 'Bot 3', description: 'Questo è il terzo bot'),
+    Bot(botName: 'Bot 1', description: 'Questo è il primo bot', startCommand: '', sourcePath: '', language: ''),
+    Bot(botName: 'Bot 2', description: 'Questo è il secondo bot', startCommand: '', sourcePath: '', language: ''),
+    Bot(botName: 'Bot 3', description: 'Questo è il terzo bot', startCommand: '', sourcePath: '', language: ''),
   ];
 
   @override

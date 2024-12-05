@@ -58,6 +58,7 @@ class LOGS {
   static const String STAGE_MANAGER = "StageManager";
   static const String ICN_HOVER_EFFECT = "IconHoverEffect";
   static const String IMAGE_PROCESSING = "ImageProcessing";
+  static const String REQUEST_LOG = "RequestLog";
 
   // ============================================================================
   // FXML FILES
@@ -176,4 +177,15 @@ class LOGS {
   static const String serverStart = 'Server avviato con successo:';
   static const String serverError = 'Errore durante l\'avvio del server';
   static const String requestReceived = 'Richiesta ricevuta';
+
+
+  // ============================================================================
+  // Functions for LOG MESSAGES
+  // ============================================================================
+  static String downloadStart(String language, String botName) =>
+      'Starting download of $botName ($language)...';
+  static String extractStart(String path) => 'Starting extraction of $path...';
+  static String extractComplete(String path) => 'Extraction completed for $path.';
+  static String downloadComplete(String botName) => '$botName downloaded successfully.';
+  static String errorDownload(String url) => 'Failed to download from $url.';
 }

@@ -8,8 +8,8 @@ class APIS {
   // ============================================================================
   // BASE URLs
   // ============================================================================
-  static const String BASE_URL =
-      "https://raw.githubusercontent.com/$GH_USR/$PROJECT/bot-list/bots";
+  static const String BASE_URL = "https://raw.githubusercontent.com/$GH_USR/$PROJECT/bot-list/bots";
+  //https://raw.githubusercontent.com/diegofcj/scriptagher/bot-list/bots/bots.json
   static const String BASE_URL_GH_PAGES = "https://$GH_USR.github.io/$PROJECT/";
 
   // ============================================================================
