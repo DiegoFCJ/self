@@ -14,8 +14,20 @@ class BotDatabase {
   factory BotDatabase() => _instance;
 
   Future<Database> get database async {
-    if (_database != null) return _database!;
+    if (_database != null) {
+      print("Database already initialized.");
+      return _database!;
+    }
+
+    print("Initializing database...");
     _database = await _initDatabase();
+
+    if (_database != null) {
+      print("Database initialized successfully.");
+    } else {
+      print("Database initialization failed.");
+    }
+
     return _database!;
   }
 
@@ -94,10 +106,16 @@ class BotDatabase {
 
   Future<List<Bot>> getAllBots() async {
     final db = await database;
-    final List<Map<String, dynamic>> maps = await db.query('bots');
-    return List.generate(maps.length, (i) {
-      return Bot.fromMap(maps[i]);
-    });
+    try {
+      final List<Map<String, dynamic>> maps = await db.query('bots');
+      print('Data fetched from database: $maps');
+      return List.generate(maps.length, (i) {
+        return Bot.fromMap(maps[i]);
+      });
+    } catch (e) {
+      print('Error fetching bots: $e');
+      rethrow;
+    }
   }
 
   Future<void> deleteBot(int id) async {

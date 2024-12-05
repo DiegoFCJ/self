@@ -18,10 +18,10 @@ class Bot {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'botName': botName,
+      'bot_name': botName,
       'description': description,
-      'startCommand': startCommand,
-      'sourcePath': sourcePath,
+      'start_command': startCommand,
+      'source_path': sourcePath,
       'language': language,
     };
   }
@@ -29,11 +29,11 @@ class Bot {
   factory Bot.fromMap(Map<String, dynamic> map) {
     return Bot(
       id: map['id'] as int?,
-      botName: map['botName'] as String,
-      description: map['description'] as String,
-      startCommand: map['startCommand'] as String,
-      sourcePath: map['sourcePath'] as String,
-      language: map['language'] as String,
+      botName: map['bot_name'] as String,
+      description: map['description'] as String?,
+      startCommand: map['start_command'] as String?,
+      sourcePath: map['source_path'] as String?,
+      language: map['language'] as String?,
     );
   }
 }
