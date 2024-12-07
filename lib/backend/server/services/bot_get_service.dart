@@ -18,36 +18,36 @@ class BotGetService {
       // Fetch the list of bots from GitHub API
       final rawData = await gitHubApi.fetchBotsList();
 
-      // List to collect all bots that will be inserted into the DB
+      // Lista per contenere tutti i bot
       List<Bot> allBots = [];
 
-      // Iterate over each language and create Bot objects
       for (var language in rawData.keys) {
         for (var botData in rawData[language]) {
           final botName = botData['botName'];
           final path = botData['path'];
 
-          // Create a Bot object and populate it with the data
+          // Crea un bot con valori di fallback
           Bot bot = Bot(
             botName: botName,
+            description: 'No description available',
+            startCommand: 'No start command',
             sourcePath: path,
             language: language,
           );
 
-          // Fetch additional details from the Bot.json file for the individual bot
+          // Aggiorna ulteriormente con informazioni più precise
           final botDetails = await _getBotDetails(language, bot);
 
-          // Add the Bot to the list
           allBots.add(botDetails);
         }
       }
 
-      // Save the list of bots in the database
+      // Salva la lista dei bot nel database
       await botDatabase.insertBots(allBots);
 
-      logger.info('BotService', 'Successfully saved ${allBots.length} bots to the database.');
+      logger.info('BotService',
+          'Successfully saved ${allBots.length} bots to the database.');
 
-      // Return the list of bots with their details
       return allBots;
     } catch (e) {
       logger.error('BotService', 'Error fetching bots: $e');
@@ -58,17 +58,19 @@ class BotGetService {
   /// Fetches the detailed information of a bot by extracting and reading the Bot.json inside the bot directory.
   Future<Bot> _getBotDetails(String language, Bot bot) async {
     try {
-      // Fetch the details from GitHub API
-      final botDetailsMap = await gitHubApi.fetchBotDetails(language, bot.botName);
+      // Ottieni i dettagli
+      final botDetailsMap =
+          await gitHubApi.fetchBotDetails(language, bot.botName);
 
-      // Update the Bot object with the fetched details
-      bot.description = botDetailsMap['description'] ?? 'No description available';
-      bot.startCommand = botDetailsMap['startCommand'];
-
+      bot = bot.copyWith(
+        description: botDetailsMap['description'],
+        startCommand: botDetailsMap['startCommand'],
+      );
       return bot;
     } catch (e) {
-      logger.error('BotService', 'Error fetching details for ${bot.botName}: $e');
-      throw Exception('Failed to load bot details');
+      logger.error(
+          'BotService', 'Error fetching details for ${bot.botName}: $e');
+      return bot; // Fallisce solo parzialmente, ritorna comunque il bot senza aggiornamenti
     }
   }
 }

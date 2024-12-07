@@ -1,5 +1,5 @@
 class Bot {
-  int? id;
+  final int? id;
   final String botName;
   final String description;
   final String startCommand;
@@ -15,23 +15,50 @@ class Bot {
     required this.language,
   });
 
-  Map<String, dynamic> toJson() {
+  // Metodo factory per creare una nuova versione di Bot con dettagli aggiornati
+  Bot copyWith({
+    String? description,
+    String? startCommand,
+  }) {
+    return Bot(
+      id: id,
+      botName: botName,
+      description: description ?? this.description,
+      startCommand: startCommand ?? this.startCommand,
+      sourcePath: sourcePath,
+      language: language,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
     return {
-      'botName': botName,
+      'id': id,
+      'bot_name': botName,
       'description': description,
-      'startCommand': startCommand,
-      'sourcePath': sourcePath,
+      'start_command': startCommand,
+      'source_path': sourcePath,
       'language': language,
     };
   }
 
-  static Bot fromJson(Map<String, dynamic> json) {
+  factory Bot.fromMap(Map<String, dynamic> map) {
     return Bot(
-      botName: json['botName'],
-      description: json['description'],
-      startCommand: json['startCommand'],
-      sourcePath: json['sourcePath'],
-      language: json['language'],
+      id: map['id'],
+      botName: map['bot_name'],
+      description: map['description'] ?? '',
+      startCommand: map['start_command'] ?? '',
+      sourcePath: map['source_path'],
+      language: map['language'],
+    );
+  }
+
+  factory Bot.fromJson(Map<String, dynamic> json) {
+    return Bot(
+      botName: json['bot_name'] ?? '',
+      description: json['description'] ?? '',
+      startCommand: json['start_command'] ?? '',
+      sourcePath: json['source_path'] ?? '',
+      language: json['language'] ?? '',
     );
   }
 }

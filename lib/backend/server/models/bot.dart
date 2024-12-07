@@ -1,19 +1,34 @@
 class Bot {
-  int? id;
+  final int? id;
   final String botName;
-  String? description;
-  String? startCommand;
-  String? sourcePath;
-  String? language;
+  final String description;
+  final String startCommand;
+  final String sourcePath;
+  final String language;
 
   Bot({
     this.id,
     required this.botName,
-    this.description,
-    this.startCommand,
-    this.sourcePath,
-    this.language,
+    required this.description,
+    required this.startCommand,
+    required this.sourcePath,
+    required this.language,
   });
+
+  // Metodo factory per creare una nuova versione di Bot con dettagli aggiornati
+  Bot copyWith({
+    String? description,
+    String? startCommand,
+  }) {
+    return Bot(
+      id: id,
+      botName: botName,
+      description: description ?? this.description,
+      startCommand: startCommand ?? this.startCommand,
+      sourcePath: sourcePath,
+      language: language,
+    );
+  }
 
   Map<String, dynamic> toMap() {
     return {
@@ -28,12 +43,12 @@ class Bot {
 
   factory Bot.fromMap(Map<String, dynamic> map) {
     return Bot(
-      id: map['id'] as int?,
-      botName: map['bot_name'] as String,
-      description: map['description'] as String?,
-      startCommand: map['start_command'] as String?,
-      sourcePath: map['source_path'] as String?,
-      language: map['language'] as String?,
+      id: map['id'],
+      botName: map['bot_name'],
+      description: map['description'] ?? '',
+      startCommand: map['start_command'] ?? '',
+      sourcePath: map['source_path'],
+      language: map['language'],
     );
   }
 }

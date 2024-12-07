@@ -20,18 +20,12 @@ function get_os() {
 
 # Funzione per eseguire il comando su macOS/Linux
 function run_on_unix() {
-    echo "Pulizia del progetto..."
-    flutter clean
-
     echo "Avvio del progetto..."
     flutter run
 }
 
 # Funzione per eseguire il comando su Windows (utilizzando Git Bash o terminale compatibile)
 function run_on_windows() {
-    echo "Pulizia del progetto..."
-    flutter clean
-
     echo "Avvio del progetto..."
     flutter run
 }

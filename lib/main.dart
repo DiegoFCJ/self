@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:scriptagher/frontend/views/home_view.dart';
+import 'package:scriptagher/frontend/widgets/home_view.dart';
 import 'shared/custom_logger.dart';
 import 'backend/server/server.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:scriptagher/shared/constants/LOGS.dart';
 import 'backend/server/db/bot_database.dart';
+import 'package:bitsdojo_window/bitsdojo_window.dart';
+import 'package:scriptagher/frontend/widgets/components/window_title_bar.dart';
 
 // La tua vista principale di Flutter
 Future<void> main() async {
@@ -53,16 +55,31 @@ Future<void> startBackend(CustomLogger logger) async {
   }
 }
 
-// Classe principale dell'app Flutter
+// Avvio dell'app principale
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Scriptagher',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: WindowBorder(
+        child: HomeScreen(),
+        color: Colors.transparent,
       ),
-      home: HomeView(),
+    );
+  }
+}
+
+class HomeScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        WindowTitleBar(),
+        Expanded(
+          child: HomeView(),
+        ),
+      ],
     );
   }
 }
