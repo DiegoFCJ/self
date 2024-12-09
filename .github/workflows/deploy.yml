@@ -1,16 +1,16 @@
-name: Deploy to bot-list branch
+name: Deploy to GitHub Pages
 
 on:
   push:
     branches:
-      - bot-list-angular  # Trigger su push al branch di sviluppo
+      - bot-list-angular  # Esegui il deploy quando ci sono push sul branch bot-list-angular
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout del codice
+      # 1. Checkout il codice
       - name: Checkout repository
         uses: actions/checkout@v3
 
@@ -24,16 +24,14 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # 4. Costruisci il progetto
+      # 4. Compila il progetto
       - name: Build project
-        run: npm run build -- --output-path=dist/bot-list-app --configuration=production
+        run: npm run build -- --output-path=dist --configuration=production
 
-      # 5. Deploy direttamente sul branch `bot-list`
+      # 5. Fai il deploy su bot-list
       - name: Deploy to bot-list branch
-        run: |
-          git config --global user.email "you@example.com"
-          git config --global user.name "Your Name"
-          git checkout -b bot-list
-          git add -A
-          git commit -m "Deploy changes to bot-list"
-          git push origin bot-list
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          publish_branch: bot-list
