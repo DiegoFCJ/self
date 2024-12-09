@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { BotCardComponent } from '../bot-card/bot-card.component';
 import { CommonModule } from '@angular/common';
 import { BotService } from '../../services/bot.service';
@@ -13,14 +13,11 @@ import { BotService } from '../../services/bot.service';
   templateUrl: './bot-section.component.html',
   styleUrl: './bot-section.component.scss'
 })
-export class BotSectionComponent implements OnInit{
+export class BotSectionComponent{
   @Input() language: string = '';
   @Input() bots: any[] = [];
 
   constructor(private botService: BotService) {}
-  ngOnInit(): void {
-    console.log('bots', this.bots);
-  }
 
   downloadBot(bot: any) {
     bot.language = this.language;
