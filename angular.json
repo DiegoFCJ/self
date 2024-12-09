@@ -112,7 +112,8 @@
         "deploy": {
           "builder": "angular-cli-ghpages:deploy",
           "options": {
-            "baseHref": "/gh-pages/",
+            "outputPath": "dist/bot-list",
+            "baseHref": "/bot-list/",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [

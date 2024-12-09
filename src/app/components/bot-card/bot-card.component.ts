@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
+import { BotService } from '../../services/bot.service';
 
 @Component({
   selector: 'app-bot-card',
@@ -14,12 +15,10 @@ export class BotCardComponent {
   @Input() language: string = '';
   @Output() download = new EventEmitter<void>();
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private botService: BotService) {}
 
   openBot() {
-    this.bot.sourcePath = `https://github.com/DiegoFCJ/scriptagher/tree/bot-list/bots/${this.bot.language}/${this.bot.botName}`
-    console.log('this.bot.sourcePath', this.bot.sourcePath)
-    window.open(this.bot.sourcePath || '#', '_blank');
+    this.botService.openBot(this.bot);
   }
 
   downloadBot() {

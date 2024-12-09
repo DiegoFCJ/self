@@ -6,16 +6,30 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class BotService {
-  private readonly BASE_PATH = 'https://raw.githubusercontent.com/diegofcj/scriptagher/gh-pages/bots';
+  private readonly APP_NAME = 'scriptagher';
+  private readonly BASE_PATH = `https://raw.githubusercontent.com/diegofcj/${this.APP_NAME}`;
+  private readonly BASE_SOURCE = `https://github.com/DiegoFCJ/${this.APP_NAME}`;
+  private readonly BOTS = 'bots';
+  private readonly GH_PAGES = `${this.BASE_PATH}/gh-pages/${this.BOTS}/bots.json`;
+  private readonly TREE_BOT_LIST = `${this.BASE_SOURCE}/tree/gh-pages/${this.BOTS}`
 
   constructor(private http: HttpClient) { }
 
+  botDetailsPath(botName: string, language: string){
+    return `${this.TREE_BOT_LIST}/${language}/${botName}/Bot.json`
+  }  
+  
   /**
    * Fetch the bots configuration from bots.json.
    */
   getBotsConfig(): Observable<any> {
-    const botsJsonPath = `${this.BASE_PATH}/bots.json`;
+    const botsJsonPath = this.GH_PAGES;
     return this.http.get(botsJsonPath);
+  }
+
+  openBot(bot: any) {
+    bot.sourcePath = `${this.TREE_BOT_LIST}/${bot.language}/${bot.botName}`
+    window.open(bot.sourcePath || '#', '_blank');
   }
 
   /**
@@ -23,6 +37,7 @@ export class BotService {
    * @param botJsonPath - The URL to the Bot.json file.
    */
   getBotDetails(botJsonPath: string): Observable<any> {
+    console.log('botJsonPath', botJsonPath)
     return this.http.get(botJsonPath);
   }
 

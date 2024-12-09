@@ -36,7 +36,8 @@ export class BotListComponent implements OnInit {
           if (!bots || bots.length === 0) continue;
           const botDetails = await Promise.all(
             bots.map(async (bot: any) => {
-              const botJsonPath = `${this.botService['BASE_PATH']}/${language}/${bot.botName}/Bot.json`;
+              const botJsonPath = this.botService.botDetailsPath(bot.botName, language);
+              console.log('botJsonPath v4t5t54vb45tbv', botJsonPath)
               try {
                 return await this.botService.getBotDetails(botJsonPath).toPromise();
               } catch {
