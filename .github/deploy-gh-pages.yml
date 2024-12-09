@@ -3,14 +3,14 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - bot-list-angular
+      - bot-list-angular # Trigger su push al branch principale di sviluppo
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout il codice
+      # 1. Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
@@ -20,18 +20,18 @@ jobs:
         with:
           node-version: "18"
 
-      # 3. Installa le dipendenze
+      # 3. Installa dipendenze
       - name: Install dependencies
         run: npm install
 
-      # 4. Compila il progetto
+      # 4. Compila il progetto con configurazione production
       - name: Build project
-        run: npm run build -- --output-path=dist --configuration=production
+        run: npm run build -- --output-path=dist/bot-list-app --configuration=production
 
-      # 5. Fai il deploy su bot-list
-      - name: Deploy to bot-list branch
+      # 5. Deploy sulla branch bot-list
+      - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          publish_dir: ./dist/bot-list-app
           publish_branch: bot-list
