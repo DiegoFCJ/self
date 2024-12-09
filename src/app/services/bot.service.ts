@@ -7,30 +7,18 @@ import { Observable } from 'rxjs';
 })
 export class BotService {
   private readonly APP_NAME = 'scriptagher';
-  private readonly BASE_PATH = `https://raw.githubusercontent.com/diegofcj/${this.APP_NAME}`;
-  private readonly BASE_SOURCE = `https://github.com/DiegoFCJ/${this.APP_NAME}`;
-  private readonly BOTS = 'bots';
-  private readonly GH_PAGES = `/api/diegofcj/${this.APP_NAME}/gh-pages/${this.BOTS}/bots.json`;
-  private readonly TREE_BOT_LIST = `${this.BASE_SOURCE}/tree/gh-pages/${this.BOTS}`
+  private readonly BASE_PATH = `https://raw.githubusercontent.com/diegofcj/${this.APP_NAME}/gh-pages/bots`;
+  private readonly BASE_SOURCE = `https://github.com/diegofcj/${this.APP_NAME}/tree/gh-pages/bots`;
 
   constructor(private http: HttpClient) { }
 
-  botDetailsPath(botName: string, language: string){
-    return `${this.TREE_BOT_LIST}/${language}/${botName}/Bot.json`
-  }  
-  
   /**
    * Fetch the bots configuration from bots.json.
    */
   getBotsConfig(): Observable<any> {
-    const botsJsonPath = this.GH_PAGES;
-    console.log('this.GH_PAGES: ', this.GH_PAGES)
+    const botsJsonPath = `${this.BASE_PATH}/bots.json`;
+    console.log('Fetching bots.json from:', botsJsonPath);
     return this.http.get(botsJsonPath);
-  }
-
-  openBot(bot: any) {
-    bot.sourcePath = `${this.TREE_BOT_LIST}/${bot.language}/${bot.botName}`
-    window.open(bot.sourcePath || '#', '_blank');
   }
 
   /**
@@ -38,6 +26,7 @@ export class BotService {
    * @param botJsonPath - The URL to the Bot.json file.
    */
   getBotDetails(botJsonPath: string): Observable<any> {
+    console.log('Fetching Bot.json from:', botJsonPath);
     return this.http.get(botJsonPath);
   }
 
@@ -46,13 +35,41 @@ export class BotService {
    * @param language - The language folder of the bot.
    * @param botName - The bot's name.
    */
-  downloadBot(language: string, botName: string): Observable<Blob> {
+  downloadBot(language: string, botName: string): void {
     const zipPath = `${this.BASE_PATH}/${language}/${botName}/${botName}.zip`;
-    return this.http.get(zipPath, { responseType: 'blob' });
+    console.log('Downloading bot ZIP from:', zipPath);
+
+    this.http.get(zipPath, { responseType: 'blob' }).subscribe(
+      (blob: Blob) => {
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = `${botName}.zip`;
+        link.click();
+      },
+      (error) => {
+        console.error('Error downloading bot:', error);
+        alert('Could not download the bot. Please try again.');
+      }
+    );
   }
 
-  getBotDetailsByName(botName: string) {
-    const url = `${this['BASE_PATH']}/bots/${botName}/Bot.json`;
-    return this.http.get(url);
+  /**
+   * Open the bot source code in a new tab.
+   * @param bot - Bot object containing language and name.
+   */
+  openBot(bot: any): void {
+    const sourcePath = `${this.BASE_SOURCE}/${bot.language}/${bot.botName}`;
+    console.log('Opening bot source at:', sourcePath);
+    window.open(sourcePath, '_blank');
+  }
+
+  /**
+   * Get Bot Details by Name
+   * @param botName - The bot's name.
+   */
+  getBotDetailsByName(botName: string): Observable<any> {
+    const botJsonPath = `${this.BASE_PATH}/${botName}/Bot.json`;
+    console.log('Fetching Bot.json by name from:', botJsonPath);
+    return this.http.get(botJsonPath);
   }
 }

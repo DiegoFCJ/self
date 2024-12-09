@@ -1,10 +1,7 @@
 {
-    "/api": {
-        "target": "https://raw.githubusercontent.com/",
+    "/bots": {
+        "target": "https://raw.githubusercontent.com/diegofcj/scriptagher/",
         "secure": false,
-        "changeOrigin": true,
-        "pathRewrite": {
-            "^/api": ""
-        }
+        "changeOrigin": true
     }
 }
