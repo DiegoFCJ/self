@@ -15,7 +15,6 @@ export class BotService {
    */
   getBotsConfig(): Observable<any> {
     const botsJsonPath = `${this.BASE_PATH}/bots.json`;
-    console.log('botsJsonPath getBotsConfig: ', botsJsonPath)
     return this.http.get(botsJsonPath);
   }
 
@@ -24,7 +23,6 @@ export class BotService {
    * @param botJsonPath - The URL to the Bot.json file.
    */
   getBotDetails(botJsonPath: string): Observable<any> {
-    console.log('botJsonPath getBotDetails: ', botJsonPath)
     return this.http.get(botJsonPath);
   }
 
@@ -35,13 +33,11 @@ export class BotService {
    */
   downloadBot(language: string, botName: string): Observable<Blob> {
     const zipPath = `${this.BASE_PATH}/${language}/${botName}/${botName}.zip`;
-    console.log('zipPath downloadBot: ', zipPath)
     return this.http.get(zipPath, { responseType: 'blob' });
   }
 
   getBotDetailsByName(botName: string) {
     const url = `${this['BASE_PATH']}/bots/${botName}/Bot.json`;
-    console.log('url getBotDetailsByName: ', url)
     return this.http.get(url);
   }
 }
