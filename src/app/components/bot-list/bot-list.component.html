@@ -1,0 +1,9 @@
+<app-header></app-header>
+<main *ngIf="botSections.length; else errorTemplate">
+  <app-bot-section *ngFor="let section of botSections" [language]="section.language"
+    [bots]="section.botDetails"></app-bot-section>
+</main>
+<ng-template #errorTemplate>
+  <p>{{ errorMessage || 'No bots available.' }}</p>
+</ng-template>
+<app-footer></app-footer>

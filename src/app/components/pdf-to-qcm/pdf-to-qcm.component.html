@@ -1,0 +1,20 @@
+<app-header></app-header>
+<div class="container">
+    <div class="hero-section">
+        <h1>PDF to QCM Converter</h1>
+        <p>Carica un file PDF per convertirlo in un formato QCM innovativo.</p>
+    </div>
+
+    <div class="upload-section">
+        <input type="file" id="fileInput" accept=".pdf" class="hidden-input" (change)="onFileSelected($event)" />
+        <label for="fileInput" class="custom-button">Choose File</label>
+        <p *ngIf="uploadedFile">{{ uploadedFile.name }}</p>
+    </div>
+
+    <div *ngIf="qcmContent" class="output-section">
+        <div class="output-card">
+            <h3>Risultato Conversione:</h3>
+            <p>{{ qcmContent }}</p>
+        </div>
+    </div>
+</div>

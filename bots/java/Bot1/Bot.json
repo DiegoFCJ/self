@@ -1,6 +1,0 @@
-{
-    "botName": "Bot",
-    "startCommand": "javac -d . Bot1/Bot.java && java -cp . Bot1.Bot",
-    "description": "This bot performs automated data scraping for websites.",
-    "language": "java"
-}
