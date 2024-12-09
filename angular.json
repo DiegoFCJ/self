@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "bot-list-app": {
+    "bot-list": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -77,10 +77,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "bot-list-app:build:production"
+              "buildTarget": "bot-list:build:production"
             },
             "development": {
-              "buildTarget": "bot-list-app:build:development"
+              "buildTarget": "bot-list:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -112,7 +112,7 @@
         "deploy": {
           "builder": "angular-cli-ghpages:deploy",
           "options": {
-            "outputPath": "dist/bot-list-app",
+            "outputPath": "dist/bot-list",
             "baseHref": "/bot-list/",
             "index": "src/index.html",
             "browser": "src/main.ts",

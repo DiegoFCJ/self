@@ -1,5 +1,5 @@
 {
-  "name": "bot-list-app",
+  "name": "bot-list",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -7,7 +7,7 @@
     "build": "ng build --configuration production --base-href /",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:bot-list-app": "node dist/bot-list-app/server/server.mjs"
+    "serve:ssr:bot-list": "node dist/bot-list/server/server.mjs"
   },
   "private": true,
   "dependencies": {
