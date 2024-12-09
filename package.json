@@ -4,10 +4,11 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --configuration production --base-href /",
+    "build": "ng build --configuration production --base-href /bot-list/",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:bot-list": "node dist/bot-list/server/server.mjs"
+    "serve:ssr:bot-list": "node dist/bot-list/server/server.mjs",
+    "deploy": "npx angular-cli-ghpages --branch=gh-pages --message 'Deploy to GitHub Pages'"
   },
   "private": true,
   "dependencies": {

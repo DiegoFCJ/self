@@ -15,12 +15,13 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:application",
+          "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/",
-            "baseHref": "/bot-list/browser/",
+            "outputPath": "dist/bot-list",
+            "main": "src/main.ts",
+            "baseHref": "/bot-list/",
+            "deployUrl": "/bot-list/",
             "index": "src/index.html",
-            "browser": "src/main.ts",
             "polyfills": [
               "zone.js"
             ],
@@ -34,40 +35,16 @@
             ],
             "styles": [
               "src/styles.scss"
-            ],
-            "scripts": [],
-            "server": "src/main.server.ts",
-            "prerender": true,
-            "ssr": {
-              "entry": "server.ts"
-            }
+            ]
           },
           "configurations": {
             "production": {
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "2kB",
-                  "maximumError": "4kB"
-                },
-                {
-                  "type": "all",
-                  "maximumWarning": "2MB",
-                  "maximumError": "5MB"
-                }
-              ],
               "optimization": true,
               "sourceMap": false,
               "outputHashing": "all"
             },
             "development": {
               "optimization": false,
-              "extractLicenses": false,
               "sourceMap": true
             }
           },
@@ -113,10 +90,9 @@
           "builder": "angular-cli-ghpages:deploy",
           "options": {
             "outputPath": "dist/bot-list",
-            "baseHref": "/bot-list/browser/",
-            "deployUrl": "/bot-list/browser/",
+            "baseHref": "/bot-list/",
+            "deployUrl": "/bot-list/",
             "index": "src/index.html",
-            "main": "src/main.ts",
             "polyfills": [
               "zone.js"
             ],
