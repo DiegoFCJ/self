@@ -18,6 +18,7 @@ export class BotCardComponent {
   constructor(private router: Router, private botService: BotService) {}
 
   openBot() {
+    this.bot.language = this.language;
     this.botService.openBot(this.bot);
   }
 

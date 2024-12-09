@@ -36,9 +36,9 @@ export class BotListComponent implements OnInit {
           if (!bots || bots.length === 0) continue;
           const botDetails = await Promise.all(
             bots.map(async (bot: any) => {
-              const botJsonPath = this.botService.botDetailsPath(bot.botName, language);
               try {
-                return await this.botService.getBotDetails(botJsonPath).toPromise();
+                bot.language = language;
+                return await this.botService.getBotDetails(bot).toPromise();
               } catch {
                 return { botName: bot.botName, description: 'Error loading details' };
               }

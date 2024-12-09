@@ -17,40 +17,26 @@ export class BotService {
    */
   getBotsConfig(): Observable<any> {
     const botsJsonPath = `${this.BASE_PATH}/bots.json`;
-    console.log('Fetching bots.json from:', botsJsonPath);
     return this.http.get(botsJsonPath);
   }
 
   /**
+   * Costruisce il percorso completo per ottenere i dettagli di un bot specifico.
    * Fetch detailed bot information from Bot.json.
-   * @param botJsonPath - The URL to the Bot.json file.
+   * @param bot - The bot's name.
    */
-  getBotDetails(botJsonPath: string): Observable<any> {
-    console.log('Fetching Bot.json from:', botJsonPath);
+  getBotDetails(bot: any): Observable<any> {
+    let botJsonPath = `${this.BASE_SOURCE}/${bot.language}/${bot.botName}/Bot.json`
     return this.http.get(botJsonPath);
   }
 
   /**
    * Fetch and download the bot ZIP file.
-   * @param language - The language folder of the bot.
-   * @param botName - The bot's name.
+   * @param bot - The bot's name.
    */
-  downloadBot(language: string, botName: string): void {
-    const zipPath = `${this.BASE_PATH}/${language}/${botName}/${botName}.zip`;
-    console.log('Downloading bot ZIP from:', zipPath);
-
-    this.http.get(zipPath, { responseType: 'blob' }).subscribe(
-      (blob: Blob) => {
-        const link = document.createElement('a');
-        link.href = window.URL.createObjectURL(blob);
-        link.download = `${botName}.zip`;
-        link.click();
-      },
-      (error) => {
-        console.error('Error downloading bot:', error);
-        alert('Could not download the bot. Please try again.');
-      }
-    );
+  downloadBot(bot: any): Observable<Blob> {
+    const zipPath = `${this.BASE_PATH}/${bot.language}/${bot.botName}/${bot.botName}.zip`;
+    return this.http.get(zipPath, { responseType: 'blob' });
   }
 
   /**
@@ -59,17 +45,6 @@ export class BotService {
    */
   openBot(bot: any): void {
     const sourcePath = `${this.BASE_SOURCE}/${bot.language}/${bot.botName}`;
-    console.log('Opening bot source at:', sourcePath);
     window.open(sourcePath, '_blank');
-  }
-
-  /**
-   * Get Bot Details by Name
-   * @param botName - The bot's name.
-   */
-  getBotDetailsByName(botName: string): Observable<any> {
-    const botJsonPath = `${this.BASE_PATH}/${botName}/Bot.json`;
-    console.log('Fetching Bot.json by name from:', botJsonPath);
-    return this.http.get(botJsonPath);
   }
 }
