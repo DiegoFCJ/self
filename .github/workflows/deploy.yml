@@ -3,7 +3,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - bot-list-angular  # Esegui il deploy quando ci sono push sul branch bot-list-angular
+      - bot-list
 
 jobs:
   build-and-deploy:
