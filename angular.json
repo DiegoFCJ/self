@@ -114,8 +114,9 @@
           "options": {
             "outputPath": "dist/bot-list",
             "baseHref": "/bot-list/",
+            "deployUrl": "/bot-list/browser/",
             "index": "src/index.html",
-            "browser": "src/main.ts",
+            "main": "src/main.ts",
             "polyfills": [
               "zone.js"
             ],
