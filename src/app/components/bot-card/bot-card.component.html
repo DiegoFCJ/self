@@ -4,7 +4,7 @@
     <p>Start Command <br>{{ bot.startCommand || 'No start commands provided' }}</p>
 
     <!-- Bottone "Vai al PDF to QCM" solo se il nome del bot è pdfToQCM -->
-    <button *ngIf="bot.botName === 'Zipper'" class="nav-link-button" (click)="navigateToPdfToQcm()">
+    <button *ngIf="bot.botName === 'pdf-to-qcm'" class="nav-link-button" (click)="navigateToPdfToQcm()">
         Vai al Converter PDF to QCM
     </button>
 
