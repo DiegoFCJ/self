@@ -17,7 +17,7 @@ export class BotSectionComponent {
   @Input() bots: any[] = [];
 
   downloadBot(bot: any) {
-    console.log(`Downloading ${bot.botName}...`);
+    //TODO aggiungi coidce per il download
   }
 
   capitalize(str: string): string {

@@ -10,8 +10,8 @@ export class BotService {
   private readonly BASE_PATH = `https://raw.githubusercontent.com/diegofcj/${this.APP_NAME}`;
   private readonly BASE_SOURCE = `https://github.com/DiegoFCJ/${this.APP_NAME}`;
   private readonly BOTS = 'bots';
-  private readonly GH_PAGES = `${this.BASE_PATH}/gh-pages/browser/${this.BOTS}/bots.json`;
-  private readonly TREE_BOT_LIST = `${this.BASE_SOURCE}/tree/gh-pages/browser/${this.BOTS}`
+  private readonly GH_PAGES = `${this.BASE_PATH}/gh-pages/${this.BOTS}/bots.json`;
+  private readonly TREE_BOT_LIST = `${this.BASE_SOURCE}/tree/gh-pages/${this.BOTS}`
 
   constructor(private http: HttpClient) { }
 
@@ -37,7 +37,6 @@ export class BotService {
    * @param botJsonPath - The URL to the Bot.json file.
    */
   getBotDetails(botJsonPath: string): Observable<any> {
-    console.log('botJsonPath', botJsonPath)
     return this.http.get(botJsonPath);
   }
 

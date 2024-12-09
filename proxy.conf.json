@@ -1,0 +1,10 @@
+{
+    "/api": {
+        "target": "https://raw.githubusercontent.com",
+        "secure": false,
+        "changeOrigin": true,
+        "pathRewrite": {
+            "^/api": ""
+        }
+    }
+}

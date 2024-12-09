@@ -17,10 +17,9 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/bot-list",
+            "outputPath": "dist",
             "main": "src/main.ts",
-            "baseHref": "/bot-list/",
-            "deployUrl": "/bot-list/",
+            "baseHref": "/scriptagher/",
             "index": "src/index.html",
             "polyfills": [
               "zone.js"
@@ -51,6 +50,9 @@
           "defaultConfiguration": "production"
         },
         "serve": {
+          "options": {
+            "proxyConfig": "proxy.conf.json"
+          },
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
@@ -89,9 +91,8 @@
         "deploy": {
           "builder": "angular-cli-ghpages:deploy",
           "options": {
-            "outputPath": "dist/bot-list",
-            "baseHref": "/bot-list/",
-            "deployUrl": "/bot-list/",
+            "outputPath": "dist",
+            "baseHref": "/scriptagher/",
             "index": "src/index.html",
             "polyfills": [
               "zone.js"
