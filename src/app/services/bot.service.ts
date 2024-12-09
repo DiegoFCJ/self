@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class BotService {
-  private readonly BASE_PATH = 'https://raw.githubusercontent.com/diegofcj/scriptagher/bot-list/bots';
+  private readonly BASE_PATH = 'https://raw.githubusercontent.com/diegofcj/scriptagher/gh-pages/bots';
 
   constructor(private http: HttpClient) { }
 
